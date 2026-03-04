@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Experiment Me — Science-Backed Self-Discovery</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F0E8;
+    --warm-white: #FDF8F3;
+    --terracotta: #C4704F;
+    --terracotta-light: #D98B6A;
+    --terracotta-dark: #A05535;
+    --sage: #7A9B76;
+    --sage-light: #A3BDA0;
+    --amber: #D4A853;
+    --brown-deep: #2C1810;
+    --brown-mid: #5C3D2E;
+    --brown-light: #8B6355;
+    --text-main: #3A2318;
+    --text-muted: #7A5C4E;
+    --border: rgba(92,61,46,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--warm-white);
+    color: var(--text-main);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(253,248,243,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s ease;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--terracotta);
+    letter-spacing: -0.02em;
+  }
+
+  
+
+  nav ul {
+    display: flex; gap: 2.5rem; list-style: none;
+  }
+
+  nav ul a {
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--brown-mid);
+    letter-spacing: 0.02em;
+    transition: color 0.2s;
+  }
+
+  nav ul a:hover { color: var(--terracotta); }
+
+  .nav-cta {
+    background: var(--terracotta);
+    color: white !important;
+    padding: 0.55rem 1.4rem;
+    border-radius: 50px;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+
+  .nav-cta:hover {
+    background: var(--terracotta-dark) !important;
+    color: white !important;
+    transform: translateY(-1px);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 7rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+    background: var(--cream);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -10%; right: -5%;
+    width: 55%; height: 80%;
+    background: radial-gradient(ellipse, rgba(196,112,79,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 30%;
+    width: 60%; height: 50%;
+    background: radial-gradient(ellipse, rgba(122,155,118,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-left {
+    position: relative; z-index: 2;
+    max-width: 580px;
+    animation: fadeUp 0.9s ease both;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(196,112,79,0.1);
+    border: 1px solid rgba(196,112,79,0.25);
+    color: var(--terracotta);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    margin-bottom: 1.8rem;
+  }
+
+  .hero-eyebrow::before { display: none; }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5vw, 4.8rem);
+    line-height: 1.1;
+    color: var(--brown-deep);
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .hero-sub {
+    font-family: 'Lora', serif;
+    font-size: 1.15rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    max-width: 460px;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+    margin-bottom: 3.5rem;
+  }
+
+  .btn-primary {
+    background: var(--terracotta);
+    color: white;
+    padding: 0.9rem 2rem;
+    border-radius: 50px;
+    border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(196,112,79,0.35);
+  }
+
+  .btn-primary:hover {
+    background: var(--terracotta-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(196,112,79,0.4);
+  }
+
+  .btn-secondary {
+    color: var(--brown-mid);
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    transition: color 0.2s;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+  }
+
+  .btn-secondary:hover { color: var(--terracotta); border-color: var(--terracotta); }
+
+  .hero-stats {
+    display: flex; gap: 2.5rem;
+  }
+
+  .stat-item {}
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--terracotta);
+    display: block;
+    line-height: 1;
+    margin-bottom: 0.3rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO RIGHT — CARD ── */
+  .hero-right {
+    position: relative; z-index: 2;
+    display: flex; justify-content: center; align-items: center;
+    animation: fadeUp 0.9s 0.2s ease both;
+  }
+
+  .hero-card {
+    background: white;
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 400px; width: 100%;
+    box-shadow: 0 20px 60px rgba(44,24,16,0.12), 0 4px 16px rgba(44,24,16,0.06);
+    position: relative;
+  }
+
+  .hero-card::before {
+    content: '';
+    position: absolute; top: -2px; left: -2px; right: -2px; bottom: -2px;
+    border-radius: 26px;
+    background: linear-gradient(135deg, rgba(196,112,79,0.3), rgba(122,155,118,0.2), rgba(212,168,83,0.2));
+    z-index: -1;
+  }
+
+  .card-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 1.2rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .card-label::before {
+    content: '';
+    display: inline-block; width: 20px; height: 2px;
+    background: var(--sage);
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--brown-deep);
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+  }
+
+  .card-question {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  .swls-scale {
+    display: flex; gap: 0.4rem; margin-bottom: 1.5rem; justify-content: space-between;
+  }
+
+  .scale-btn {
+    flex: 1; aspect-ratio: 1;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: var(--cream);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0.2rem;
+    padding: 0.5rem 0.2rem;
+  }
+
+  .scale-btn:hover, .scale-btn.active {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(196,112,79,0.3);
+  }
+
+  .scale-labels {
+    display: flex; justify-content: space-between;
+    font-size: 0.68rem; color: var(--text-muted); margin-bottom: 1.5rem;
+  }
+
+  .card-progress {
+    height: 4px; background: var(--cream); border-radius: 4px; overflow: hidden;
+    margin-bottom: 0.7rem;
+  }
+
+  .card-progress-bar {
+    height: 100%;
+    width: 20%;
+    background: linear-gradient(90deg, var(--terracotta), var(--amber));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+  }
+
+  .card-progress-text {
+    font-size: 0.75rem; color: var(--text-muted); text-align: right;
+  }
+
+  .card-insight {
+    background: linear-gradient(135deg, rgba(122,155,118,0.1), rgba(196,112,79,0.08));
+    border-radius: 12px; padding: 1rem 1.2rem;
+    border-left: 3px solid var(--sage);
+    margin-top: 1rem;
+    display: none;
+  }
+
+  .card-insight.show { display: block; }
+
+  .card-insight p {
+    font-size: 0.85rem;
+    color: var(--brown-mid);
+    line-height: 1.6;
+    font-family: 'Lora', serif;
+  }
+
+  .floating-tag {
+    position: absolute;
+    background: white;
+    border-radius: 50px;
+    padding: 0.6rem 1rem;
+    box-shadow: 0 8px 24px rgba(44,24,16,0.12);
+    font-size: 0.78rem;
+    font-weight: 600;
+    display: flex; align-items: center; gap: 0.5rem;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .floating-tag-1 {
+    top: -1rem; right: -1rem;
+    color: var(--sage);
+  }
+
+  .floating-tag-2 {
+    bottom: 1rem; left: -1.5rem;
+    color: var(--terracotta);
+    animation-delay: 1.5s;
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-section {
+    background: var(--brown-deep);
+    padding: 1rem 0;
+    overflow: hidden;
+  }
+
+  .marquee-track {
+    display: flex; gap: 3rem;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+
+  .marquee-item {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    display: flex; align-items: center; gap: 1rem;
+  }
+
+  .marquee-item strong {
+    color: rgba(255,255,255,0.85);
+  }
+
+  .marquee-dot { color: var(--terracotta); }
+
+  /* ── HOW IT WORKS ── */
+  .section {
+    padding: 7rem 4rem;
+  }
+
+  .section-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+
+  .section-tag::before {
+    content: '';
+    display: inline-block; width: 24px; height: 2px;
+    background: var(--terracotta);
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    line-height: 1.2;
+    color: var(--brown-deep);
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+    max-width: 600px;
+  }
+
+  .section-sub {
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+    max-width: 520px;
+    margin-bottom: 4rem;
+  }
+
+  /* STEPS */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 3rem; left: 15%; right: 15%;
+    height: 1px;
+    background: repeating-linear-gradient(90deg, var(--border) 0, var(--border) 6px, transparent 6px, transparent 14px);
+  }
+
+  .step {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .step:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(44,24,16,0.1);
+    border-color: rgba(196,112,79,0.3);
+  }
+
+  .step-num {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: var(--cream);
+    border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--terracotta);
+    position: relative; z-index: 2;
+  }
+
+  .step-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+
+  .step h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: var(--brown-deep);
+    margin-bottom: 0.7rem;
+  }
+
+  .step p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.65;
+  }
+
+  /* ── SPLIT SECTION ── */
+  .split-section {
+    background: var(--cream);
+    padding: 7rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .split-visual {
+    position: relative;
+  }
+
+  .results-mockup {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 20px 60px rgba(44,24,16,0.1);
+  }
+
+  .results-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.5rem;
+  }
+
+  .results-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--brown-deep);
+  }
+
+  .results-badge {
+    background: rgba(122,155,118,0.15);
+    color: var(--sage);
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.3rem 0.8rem;
+    border-radius: 50px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .score-display {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--cream);
+    border-radius: 16px;
+  }
+
+  .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: var(--terracotta);
+    line-height: 1;
+  }
+
+  .score-max { font-size: 1.5rem; color: var(--text-muted); }
+
+  .score-label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.4rem;
+    font-family: 'Lora', serif;
+    font-style: italic;
+  }
+
+  .trait-bars { display: flex; flex-direction: column; gap: 1rem; }
+
+  .trait-row { display: flex; flex-direction: column; gap: 0.4rem; }
+
+  .trait-top {
+    display: flex; justify-content: space-between;
+    font-size: 0.82rem; font-weight: 600;
+    color: var(--brown-mid);
+  }
+
+  .trait-bar {
+    height: 8px; background: var(--cream);
+    border-radius: 8px; overflow: hidden;
+  }
+
+  .trait-fill {
+    height: 100%; border-radius: 8px;
+    transition: width 1.5s ease;
+  }
+
+  .fill-terra { background: linear-gradient(90deg, var(--terracotta-light), var(--terracotta)); }
+  .fill-sage { background: linear-gradient(90deg, var(--sage-light), var(--sage)); }
+  .fill-amber { background: linear-gradient(90deg, #e8c97a, var(--amber)); }
+
+  .insight-box {
+    margin-top: 1.5rem;
+    background: linear-gradient(135deg, rgba(196,112,79,0.06), rgba(122,155,118,0.06));
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    border-left: 3px solid var(--terracotta);
+  }
+
+  .insight-box p {
+    font-family: 'Lora', serif;
+    font-size: 0.88rem;
+    color: var(--brown-mid);
+    line-height: 1.65;
+    font-style: italic;
+  }
+
+  .split-text {}
+
+  /* ── TESTS GRID ── */
+  .tests-section {
+    padding: 7rem 4rem;
+  }
+
+  .tests-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 3rem;
+    flex-wrap: wrap; gap: 1.5rem;
+  }
+
+  .tests-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .test-card {
+    background: white;
+    border-radius: 18px;
+    padding: 1.8rem;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .test-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .test-card.terra::before { background: var(--terracotta); }
+  .test-card.sage::before { background: var(--sage); }
+  .test-card.amber::before { background: var(--amber); }
+
+  .test-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(44,24,16,0.1);
+  }
+
+  .test-emoji { font-size: 2rem; margin-bottom: 1rem; }
+
+  .test-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: var(--brown-deep);
+    margin-bottom: 0.4rem;
+  }
+
+  .test-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 1.2rem;
+  }
+
+  .test-meta {
+    display: flex; gap: 1rem;
+    font-size: 0.75rem; color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .test-meta span {
+    display: flex; align-items: center; gap: 0.3rem;
+  }
+
+  /* ── RESEARCHER SECTION ── */
+  .researcher-section {
+    background: var(--brown-deep);
+    padding: 7rem 4rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .researcher-section::before {
+    content: '';
+    position: absolute;
+    top: -20%; right: -10%;
+    width: 50%; height: 100%;
+    background: radial-gradient(ellipse, rgba(196,112,79,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .researcher-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: center;
+    position: relative; z-index: 1;
+  }
+
+  .researcher-section .section-title { color: white; }
+  .researcher-section .section-sub { color: rgba(255,255,255,0.6); }
+
+  .researcher-features {
+    display: flex; flex-direction: column; gap: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .r-feature {
+    display: flex; gap: 1rem; align-items: flex-start;
+    padding: 1.2rem;
+    background: rgba(255,255,255,0.05);
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: all 0.3s;
+  }
+
+  .r-feature:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(196,112,79,0.3);
+  }
+
+  .r-feature-icon {
+    width: 40px; height: 40px; flex-shrink: 0;
+    background: rgba(196,112,79,0.2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .r-feature h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: white; margin-bottom: 0.3rem;
+  }
+
+  .r-feature p {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.55;
+  }
+
+  .researcher-stat-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+  }
+
+  .r-stat {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .r-stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--terracotta-light);
+    display: block; line-height: 1;
+    margin-bottom: 0.4rem;
+  }
+
+  .r-stat-label {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.4;
+  }
+
+  /* ── QUOTE ── */
+  .quote-section {
+    padding: 7rem 4rem;
+    display: flex; flex-direction: column;
+    align-items: center; text-align: center;
+    background: var(--cream);
+    position: relative; overflow: hidden;
+  }
+
+  .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 8rem;
+    color: var(--terracotta);
+    opacity: 0.15;
+    line-height: 0.5;
+    margin-bottom: 1rem;
+    pointer-events: none;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-style: italic;
+    color: var(--brown-deep);
+    max-width: 780px;
+    line-height: 1.45;
+    margin-bottom: 2rem;
+  }
+
+  .quote-source {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  /* ── CTA ── */
+  .cta-section {
+    padding: 7rem 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  .cta-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 3vw, 2.8rem);
+    color: var(--brown-deep);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    letter-spacing: -0.02em;
+  }
+
+  .cta-text p {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.7;
+  }
+
+  .cta-form {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    border: 1px solid var(--border);
+    box-shadow: 0 12px 40px rgba(44,24,16,0.08);
+  }
+
+  .form-tabs {
+    display: flex;
+    background: var(--cream);
+    border-radius: 50px;
+    padding: 4px;
+    margin-bottom: 1.8rem;
+  }
+
+  .form-tab {
+    flex: 1; text-align: center;
+    padding: 0.6rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none; background: none;
+  }
+
+  .form-tab.active {
+    background: white;
+    color: var(--terracotta);
+    box-shadow: 0 2px 8px rgba(44,24,16,0.1);
+  }
+
+  .form-group { margin-bottom: 1rem; }
+
+  .form-group label {
+    display: block;
+    font-size: 0.8rem; font-weight: 600;
+    color: var(--brown-mid);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+  }
+
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-main);
+    background: var(--warm-white);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--terracotta);
+  }
+
+  .form-btn {
+    width: 100%;
+    background: var(--terracotta);
+    color: white;
+    padding: 0.9rem;
+    border-radius: 50px;
+    border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(196,112,79,0.3);
+    margin-top: 0.5rem;
+  }
+
+  .form-btn:hover {
+    background: var(--terracotta-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(196,112,79,0.4);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--brown-deep);
+    padding: 3rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+
+  footer .logo { font-size: 1.4rem; }
+
+  .footer-tagline {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .footer-links {
+    display: flex; gap: 2rem;
+  }
+
+  .footer-links a {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.4);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: rgba(255,255,255,0.8); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  @keyframes fillBar {
+    from { width: 0; }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    nav ul { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 6rem 1.5rem 3rem; }
+    .hero-right { display: none; }
+    .section, .tests-section, .researcher-section, .quote-section, .cta-section { padding: 4rem 1.5rem; }
+    .split-section { grid-template-columns: 1fr; padding: 4rem 1.5rem; }
+    .steps { grid-template-columns: 1fr; }
+    .steps::before { display: none; }
+    .tests-grid { grid-template-columns: 1fr; }
+    .researcher-inner { grid-template-columns: 1fr; gap: 3rem; }
+    .cta-section { grid-template-columns: 1fr; }
+    footer { flex-direction: column; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Experiment<span style="color:var(--terracotta)">Me</span></div>
+  <ul>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#tests">Assessments</a></li>
+    <li><a href="#researchers">For Researchers</a></li>
+    <li><a href="#signup" class="nav-cta">Get Early Access</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Science-Backed Self-Discovery</div>
+    <h1>Finally, the<br><em>science of you</em>—<br>given back to you.</h1>
+    <p class="hero-sub">
+      Experiment Me connects you with real psychological research and gives you something real in return: evidence-based insight into who you are. Not a quiz. Not a horoscope. Science.
+    </p>
+    <div class="hero-actions">
+      <a href="#signup" class="btn-primary">Discover Yourself →</a>
+      <a href="#researchers" class="btn-secondary">I'm a Researcher ↓</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">12+</span>
+        <span class="stat-label">Validated Assessments</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">100%</span>
+        <span class="stat-label">Evidence-Based</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">Free</span>
+        <span class="stat-label">To Participants</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div style="position:relative;">
+      <div class="floating-tag floating-tag-1">🌱 93rd percentile in Life Satisfaction</div>
+      <div class="hero-card">
+        <div class="card-label">Wellbeing Assessment · SWLS</div>
+        <div class="card-title">Satisfaction with Life Scale</div>
+        <div class="card-question">"In most ways my life is close to my ideal."</div>
+        <div class="swls-scale">
+          <button class="scale-btn" onclick="selectScale(this,1)">1<br><span style="font-size:0.6rem">Strongly Disagree</span></button>
+          <button class="scale-btn" onclick="selectScale(this,2)">2</button>
+          <button class="scale-btn" onclick="selectScale(this,3)">3</button>
+          <button class="scale-btn" onclick="selectScale(this,4)">4</button>
+          <button class="scale-btn" onclick="selectScale(this,5)">5</button>
+          <button class="scale-btn" onclick="selectScale(this,6)">6</button>
+          <button class="scale-btn" onclick="selectScale(this,7)">7<br><span style="font-size:0.6rem">Strongly Agree</span></button>
+        </div>
+        <div class="card-progress">
+          <div class="card-progress-bar" id="heroProgress"></div>
+        </div>
+        <div class="card-progress-text">Question 1 of 5</div>
+        <div class="card-insight" id="heroInsight">
+          <p>✨ People who score high on this item tend to report stronger relationships and greater resilience under stress.</p>
+        </div>
+      </div>
+      <div class="floating-tag floating-tag-2">📊 See your percentile instantly</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-section">
+  <div class="marquee-track" id="marqueeTrack">
+    <div class="marquee-item"><strong>Big Five Personality</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Life Satisfaction (SWLS)</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Rosenberg Self-Esteem</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>PERMA Wellbeing</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Grit Scale</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Growth Mindset</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Emotional Intelligence</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Attachment Style</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Subjective Happiness</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>DASS-21 Wellbeing</strong> <span class="marquee-dot">✦</span></div>
+    <!-- duplicate for loop -->
+    <div class="marquee-item"><strong>Big Five Personality</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Life Satisfaction (SWLS)</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Rosenberg Self-Esteem</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>PERMA Wellbeing</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Grit Scale</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Growth Mindset</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Emotional Intelligence</strong> <span class="marquee-dot">✦</span></div>
+    <div class="marquee-item"><strong>Attachment Style</strong> <span class="marquee-dot">✦</span></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="section-tag">How it works</div>
+  <h2 class="section-title">Research that finally gives something back.</h2>
+  <p class="section-sub">Traditional research takes your data and disappears. Experiment Me makes every study a two-way exchange — your participation fuels real science, and real science tells you about yourself.</p>
+
+  <div class="steps">
+    <div class="step fade-in">
+      <div class="step-num">01</div>
+      <div class="step-icon">🔍</div>
+      <h3>Browse Studies</h3>
+      <p>Explore active research studies from verified universities and labs. Filter by topic, time, and what kind of insight you'll receive back.</p>
+    </div>
+    <div class="step fade-in" style="transition-delay:0.15s">
+      <div class="step-num">02</div>
+      <div class="step-icon">📝</div>
+      <h3>Take the Assessment</h3>
+      <p>Answer validated, science-based questions. Every instrument we use has been published in peer-reviewed journals — not invented for clicks.</p>
+    </div>
+    <div class="step fade-in" style="transition-delay:0.3s">
+      <div class="step-num">03</div>
+      <div class="step-icon">🪞</div>
+      <h3>See Yourself Clearly</h3>
+      <p>Get your results immediately — your score, your percentile, what it actually means, and how you compare to thousands of real participants.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SPLIT — RESULTS PREVIEW -->
+<section class="split-section">
+  <div class="split-visual fade-in">
+    <div class="results-mockup">
+      <div class="results-header">
+        <div class="results-name">Your Wellbeing Report</div>
+        <div class="results-badge">✓ Validated</div>
+      </div>
+      <div class="score-display">
+        <div class="score-num">28<span class="score-max">/35</span></div>
+        <div class="score-label">High Life Satisfaction — 81st Percentile</div>
+      </div>
+      <div class="trait-bars">
+        <div class="trait-row">
+          <div class="trait-top"><span>Meaning & Purpose</span><span>84%</span></div>
+          <div class="trait-bar"><div class="trait-fill fill-terra" style="width:84%"></div></div>
+        </div>
+        <div class="trait-row">
+          <div class="trait-top"><span>Positive Relationships</span><span>71%</span></div>
+          <div class="trait-bar"><div class="trait-fill fill-sage" style="width:71%"></div></div>
+        </div>
+        <div class="trait-row">
+          <div class="trait-top"><span>Engagement with Life</span><span>90%</span></div>
+          <div class="trait-bar"><div class="trait-fill fill-amber" style="width:90%"></div></div>
+        </div>
+      </div>
+      <div class="insight-box">
+        <p>"Your scores suggest you find life highly meaningful and approach daily activities with genuine engagement — a strong predictor of long-term psychological resilience."</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="split-text fade-in">
+    <div class="section-tag">What you get</div>
+    <h2 class="section-title">Your results, explained in plain English.</h2>
+    <p class="section-sub">No raw scores left for you to Google at midnight. Every result includes your score, your global percentile, what the science actually says about people who score like you, and what it means in everyday life.</p>
+    <p class="section-sub" style="margin-bottom:0;">As you take more studies, your profile grows — a living, evidence-based portrait of who you are over time.</p>
+  </div>
+</section>
+
+<!-- TESTS GRID -->
+<section class="tests-section" id="tests">
+  <div class="tests-header">
+    <div>
+      <div class="section-tag">Assessments</div>
+      <h2 class="section-title" style="margin-bottom:0">Start with what matters to you.</h2>
+    </div>
+    <a href="#signup" class="btn-secondary">View all assessments →</a>
+  </div>
+
+  <div class="tests-grid">
+    <div class="test-card terra fade-in">
+      <div class="test-emoji">😊</div>
+      <h3>Life Satisfaction</h3>
+      <p>The Satisfaction with Life Scale (SWLS) — the gold standard for measuring how people evaluate their own lives globally.</p>
+      <div class="test-meta">
+        <span>⏱ 2 min</span>
+        <span>📄 5 questions</span>
+        <span>🌍 25+ languages</span>
+      </div>
+    </div>
+    <div class="test-card sage fade-in" style="transition-delay:0.1s">
+      <div class="test-emoji">🧠</div>
+      <h3>Big Five Personality</h3>
+      <p>The most scientifically validated personality model in psychology. Discover where you fall on openness, conscientiousness, extraversion, agreeableness, and neuroticism.</p>
+      <div class="test-meta">
+        <span>⏱ 10 min</span>
+        <span>📄 44 questions</span>
+        <span>🌍 30+ languages</span>
+      </div>
+    </div>
+    <div class="test-card amber fade-in" style="transition-delay:0.2s">
+      <div class="test-emoji">💪</div>
+      <h3>Grit Scale</h3>
+      <p>Angela Duckworth's validated measure of perseverance and passion for long-term goals — one of the strongest predictors of achievement.</p>
+      <div class="test-meta">
+        <span>⏱ 3 min</span>
+        <span>📄 12 questions</span>
+        <span>🌍 15+ languages</span>
+      </div>
+    </div>
+    <div class="test-card sage fade-in" style="transition-delay:0.05s">
+      <div class="test-emoji">🌱</div>
+      <h3>Growth Mindset</h3>
+      <p>Based on Carol Dweck's groundbreaking research — discover how your beliefs about ability shape your behavior, resilience, and potential.</p>
+      <div class="test-meta">
+        <span>⏱ 4 min</span>
+        <span>📄 16 questions</span>
+        <span>🌍 12+ languages</span>
+      </div>
+    </div>
+    <div class="test-card terra fade-in" style="transition-delay:0.15s">
+      <div class="test-emoji">❤️</div>
+      <h3>Self-Esteem (Rosenberg)</h3>
+      <p>The most widely used self-esteem measure in the world. A 10-item scale that cuts through noise to reveal how you genuinely see yourself.</p>
+      <div class="test-meta">
+        <span>⏱ 2 min</span>
+        <span>📄 10 questions</span>
+        <span>🌍 53+ languages</span>
+      </div>
+    </div>
+    <div class="test-card amber fade-in" style="transition-delay:0.25s">
+      <div class="test-emoji">✨</div>
+      <h3>PERMA Wellbeing</h3>
+      <p>Martin Seligman's five pillars of flourishing — Positive emotions, Engagement, Relationships, Meaning, and Achievement — measured in one profile.</p>
+      <div class="test-meta">
+        <span>⏱ 5 min</span>
+        <span>📄 23 questions</span>
+        <span>🌍 20+ languages</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESEARCHER SECTION -->
+<section class="researcher-section" id="researchers">
+  <div class="researcher-inner">
+    <div>
+      <div class="section-tag" style="color:var(--terracotta-light)">For Researchers</div>
+      <h2 class="section-title">Your best participant pool — already pre-screened.</h2>
+      <p class="section-sub">Experiment Me participants are motivated, engaged, and already profiled on validated instruments. Stop recruiting strangers. Start recruiting people who want to be there.</p>
+
+      <div class="researcher-features">
+        <div class="r-feature">
+          <div class="r-feature-icon">🎯</div>
+          <div>
+            <h4>Pre-screened Participants</h4>
+            <p>Filter by existing trait scores, demographics, and assessment history. Find exactly who your study needs.</p>
+          </div>
+        </div>
+        <div class="r-feature">
+          <div class="r-feature-icon">📊</div>
+          <div>
+            <h4>Higher Data Quality</h4>
+            <p>Engaged participants who understand the value of research produce cleaner, more reliable data.</p>
+          </div>
+        </div>
+        <div class="r-feature">
+          <div class="r-feature-icon">⚡</div>
+          <div>
+            <h4>Faster Recruitment</h4>
+            <p>Post a study and reach thousands of motivated participants within hours, not weeks.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="researcher-stat-grid">
+      <div class="r-stat">
+        <span class="r-stat-num">3×</span>
+        <span class="r-stat-label">Faster recruitment than traditional methods</span>
+      </div>
+      <div class="r-stat">
+        <span class="r-stat-num">94%</span>
+        <span class="r-stat-label">Participant completion rate</span>
+      </div>
+      <div class="r-stat">
+        <span class="r-stat-num">IRB</span>
+        <span class="r-stat-label">Ready compliance framework included</span>
+      </div>
+      <div class="r-stat">
+        <span class="r-stat-num">Global</span>
+        <span class="r-stat-label">Multilingual participant pool across 20+ countries</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <div class="quote-mark">"</div>
+  <p class="quote-text">Most people go their whole lives without ever getting honest, validated feedback about who they actually are. Experiment Me exists to change that — one study at a time.</p>
+  <div class="quote-source">The Experiment Me Mission</div>
+</section>
+
+<!-- CTA / SIGNUP -->
+<section class="cta-section" id="signup">
+  <div class="cta-text fade-in">
+    <div class="section-tag">Join the waitlist</div>
+    <h2>Be the first to discover yourself through science.</h2>
+    <p>Experiment Me is launching soon. Join thousands of curious people — and researchers who are ready to do something different.</p>
+  </div>
+
+  <div class="cta-form fade-in">
+    <div class="form-tabs">
+      <button class="form-tab active" onclick="switchTab(this,'participant')">I'm a Participant</button>
+      <button class="form-tab" onclick="switchTab(this,'researcher')">I'm a Researcher</button>
+    </div>
+
+    <div id="participantForm">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" placeholder="e.g. Maria">
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label>Which assessment interests you most?</label>
+        <select>
+          <option>Life Satisfaction (SWLS)</option>
+          <option>Big Five Personality</option>
+          <option>Self-Esteem (Rosenberg)</option>
+          <option>Grit Scale</option>
+          <option>PERMA Wellbeing</option>
+          <option>Surprise me!</option>
+        </select>
+      </div>
+      <button class="form-btn" onclick="submitForm()">Get Early Access →</button>
+    </div>
+
+    <div id="researcherForm" style="display:none">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" placeholder="Dr. Jane Smith">
+      </div>
+      <div class="form-group">
+        <label>Institutional Email</label>
+        <input type="email" placeholder="jsmith@university.edu">
+      </div>
+      <div class="form-group">
+        <label>Institution / Lab</label>
+        <input type="text" placeholder="e.g. UT El Paso — Psychology Dept.">
+      </div>
+      <div class="form-group">
+        <label>Research Area</label>
+        <select>
+          <option>Personality Psychology</option>
+          <option>Positive Psychology / Wellbeing</option>
+          <option>Clinical / Mental Health</option>
+          <option>Social Psychology</option>
+          <option>Developmental Psychology</option>
+          <option>Cognitive Psychology</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <button class="form-btn" onclick="submitForm()">Request Researcher Access →</button>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="logo" style="color:white">Experiment<span style="color:var(--terracotta-light)">Me</span></div>
+    <div class="footer-tagline">The science of you.</div>
+  </div>
+  <div class="footer-links">
+    <a href="#">About</a>
+    <a href="#">Privacy</a>
+    <a href="#">For Researchers</a>
+    <a href="#">Assessments</a>
+    <a href="#">Contact</a>
+  </div>
+  <div style="font-size:0.78rem;color:rgba(255,255,255,0.25)">© 2025 ExperimentMe.com. All rights reserved. All rights reserved.</div>
+</footer>
+
+<script>
+  // Hero card interaction
+  function selectScale(btn, val) {
+    document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const progress = document.getElementById('heroProgress');
+    const insight = document.getElementById('heroInsight');
+    progress.style.width = (val / 7 * 100) + '%';
+    insight.classList.add('show');
+  }
+
+  // Tab switching
+  function switchTab(tab, type) {
+    document.querySelectorAll('.form-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('participantForm').style.display = type === 'participant' ? 'block' : 'none';
+    document.getElementById('researcherForm').style.display = type === 'researcher' ? 'block' : 'none';
+  }
+
+  // Form submit
+  function submitForm() {
+    const btn = event.target;
+    btn.textContent = '✓ You\'re on the list!';
+    btn.style.background = 'var(--sage)';
+    btn.style.boxShadow = '0 4px 20px rgba(122,155,118,0.4)';
+    btn.disabled = true;
+  }
+
+  // Scroll fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
