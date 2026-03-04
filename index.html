@@ -1321,15 +1321,15 @@
     <div id="participantForm">
       <div class="form-group">
         <label>First Name</label>
-        <input type="text" placeholder="e.g. Maria">
+        <input type="text" id="pName" placeholder="e.g. Maria" required>
       </div>
       <div class="form-group">
         <label>Email Address</label>
-        <input type="email" placeholder="you@email.com">
+        <input type="email" id="pEmail" placeholder="you@email.com" required>
       </div>
       <div class="form-group">
         <label>Which assessment interests you most?</label>
-        <select>
+        <select id="pAssessment">
           <option>Life Satisfaction (SWLS)</option>
           <option>Big Five Personality</option>
           <option>Self-Esteem (Rosenberg)</option>
@@ -1338,25 +1338,25 @@
           <option>Surprise me!</option>
         </select>
       </div>
-      <button class="form-btn" onclick="submitForm()">Get Early Access →</button>
+      <button class="form-btn" onclick="submitParticipant(this)">Get Early Access →</button>
     </div>
 
     <div id="researcherForm" style="display:none">
       <div class="form-group">
         <label>Full Name</label>
-        <input type="text" placeholder="Dr. Jane Smith">
+        <input type="text" id="rName" placeholder="Dr. Jane Smith" required>
       </div>
       <div class="form-group">
         <label>Institutional Email</label>
-        <input type="email" placeholder="jsmith@university.edu">
+        <input type="email" id="rEmail" placeholder="jsmith@university.edu" required>
       </div>
       <div class="form-group">
         <label>Institution / Lab</label>
-        <input type="text" placeholder="e.g. UT El Paso — Psychology Dept.">
+        <input type="text" id="rInstitution" placeholder="e.g. UT El Paso — Psychology Dept.">
       </div>
       <div class="form-group">
         <label>Research Area</label>
-        <select>
+        <select id="rArea">
           <option>Personality Psychology</option>
           <option>Positive Psychology / Wellbeing</option>
           <option>Clinical / Mental Health</option>
@@ -1366,7 +1366,7 @@
           <option>Other</option>
         </select>
       </div>
-      <button class="form-btn" onclick="submitForm()">Request Researcher Access →</button>
+      <button class="form-btn" onclick="submitResearcher(this)">Request Researcher Access →</button>
     </div>
   </div>
 </section>
@@ -1406,13 +1406,45 @@
     document.getElementById('researcherForm').style.display = type === 'researcher' ? 'block' : 'none';
   }
 
-  // Form submit
-  function submitForm() {
-    const btn = event.target;
-    btn.textContent = '✓ You\'re on the list!';
-    btn.style.background = 'var(--sage)';
-    btn.style.boxShadow = '0 4px 20px rgba(122,155,118,0.4)';
+  // Form submit via Formsubmit.co
+  function sendToFormsubmit(data, btn) {
+    const originalText = btn.textContent;
+    btn.textContent = 'Sending...';
     btn.disabled = true;
+
+    fetch('https://formsubmit.co/ajax/fernandez.nicholas@gmail.com', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(() => {
+      btn.textContent = '\u2713 You\'re on the list!';
+      btn.style.background = 'var(--sage)';
+      btn.style.boxShadow = '0 4px 20px rgba(122,155,118,0.4)';
+    })
+    .catch(() => {
+      btn.textContent = originalText;
+      btn.disabled = false;
+      alert('Something went wrong. Please try again.');
+    });
+  }
+
+  function submitParticipant(btn) {
+    const name = document.getElementById('pName').value.trim();
+    const email = document.getElementById('pEmail').value.trim();
+    const assessment = document.getElementById('pAssessment').value;
+    if (!name || !email) { alert('Please fill in your name and email.'); return; }
+    sendToFormsubmit({ _subject: 'New Participant Signup - ExperimentMe', type: 'Participant', name, email, assessment }, btn);
+  }
+
+  function submitResearcher(btn) {
+    const name = document.getElementById('rName').value.trim();
+    const email = document.getElementById('rEmail').value.trim();
+    const institution = document.getElementById('rInstitution').value.trim();
+    const area = document.getElementById('rArea').value;
+    if (!name || !email) { alert('Please fill in your name and email.'); return; }
+    sendToFormsubmit({ _subject: 'New Researcher Signup - ExperimentMe', type: 'Researcher', name, email, institution, research_area: area }, btn);
   }
 
   // Scroll fade-in
