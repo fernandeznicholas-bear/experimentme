@@ -348,6 +348,25 @@
     font-family: 'Lora', serif;
   }
 
+  .card-cta {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    padding: 0.7rem 1.2rem;
+    background: var(--terracotta);
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .card-cta:hover {
+    background: var(--terracotta-dark);
+    transform: translateY(-1px);
+  }
+
   .floating-tag {
     position: absolute;
     background: white;
@@ -1070,6 +1089,7 @@
         <div class="card-insight" id="heroInsight">
           <p>✨ People who score high on this item tend to report stronger relationships and greater resilience under stress.</p>
         </div>
+        <a href="swls.html" class="card-cta">Take the full assessment →</a>
       </div>
       <div class="floating-tag floating-tag-2">📊 See your percentile instantly</div>
     </div>
@@ -1385,7 +1405,7 @@
     <a href="#">Assessments</a>
     <a href="#">Contact</a>
   </div>
-  <div style="font-size:0.78rem;color:rgba(255,255,255,0.25)">© 2025 ExperimentMe.com. All rights reserved. All rights reserved.</div>
+  <div style="font-size:0.78rem;color:rgba(255,255,255,0.25)">© 2026 ExperimentMe.com. All rights reserved.</div>
 </footer>
 
 <script>
@@ -1459,6 +1479,9 @@
 
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
+
+<script data-goatcounter="https://experimentme.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>

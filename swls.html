@@ -841,6 +841,10 @@ function renderQuestion() {
 }
 
 function selectAnswer(val) {
+  // Track first interaction as "started"
+  if (currentQ === 0 && answers[0] === 0 && window.goatcounter) {
+    window.goatcounter.count({ path: '/swls-started', event: true });
+  }
   answers[currentQ] = val;
   const btns = document.querySelectorAll('.scale-btn');
   btns.forEach((btn, i) => {
@@ -909,8 +913,16 @@ function showResults() {
 
   // Update progress to complete
   document.getElementById('progress-fill').style.width = '100%';
+
+  // Track completion
+  if (window.goatcounter) {
+    window.goatcounter.count({ path: '/swls-completed', event: true });
+  }
 }
 </script>
+
+<script data-goatcounter="https://experimentme.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>
