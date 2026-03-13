@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Life Satisfaction Assessment — Experiment Me</title>
+<meta name="description" content="Take the Satisfaction With Life Scale (SWLS) and discover where you stand. 5 questions, 2 minutes, instant personalized results.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Lora:ital,wght@0,400;0,500;1,400&family=Nunito:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F7F0E8;
+    --warm-white: #FDF8F3;
+    --terracotta: #C4704F;
+    --terracotta-light: #D98B6A;
+    --terracotta-dark: #A05535;
+    --sage: #7A9B76;
+    --sage-light: #A3BDA0;
+    --amber: #D4A853;
+    --brown-deep: #2C1810;
+    --brown-mid: #5C3D2E;
+    --brown-light: #8B6355;
+    --text-main: #3A2318;
+    --text-muted: #7A5C4E;
+    --border: rgba(92,61,46,0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--warm-white);
+    color: var(--text-main);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(253,248,243,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--terracotta);
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+
+  .nav-back {
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--brown-mid);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    transition: color 0.2s;
+  }
+
+  .nav-back:hover { color: var(--terracotta); }
+
+  /* ── MAIN CONTAINER ── */
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 7rem 2rem 4rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    width: 100%;
+    display: none;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── INTRO SCREEN ── */
+  .intro-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(196,112,79,0.1);
+    border: 1px solid rgba(196,112,79,0.25);
+    color: var(--terracotta);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    margin-bottom: 1.5rem;
+  }
+
+  .intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.15;
+    color: var(--brown-deep);
+    margin-bottom: 1.2rem;
+  }
+
+  .intro-title em {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .intro-desc {
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    max-width: 520px;
+  }
+
+  .intro-meta {
+    display: flex; gap: 2rem; margin-bottom: 2.5rem; flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.88rem;
+    color: var(--brown-mid);
+    font-weight: 500;
+  }
+
+  .meta-icon {
+    width: 36px; height: 36px;
+    background: var(--cream);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .intro-note {
+    background: var(--cream);
+    border-radius: 14px;
+    padding: 1.2rem 1.5rem;
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+    border-left: 3px solid var(--sage);
+  }
+
+  .btn-primary {
+    background: var(--terracotta);
+    color: white;
+    padding: 0.95rem 2.4rem;
+    border-radius: 50px;
+    border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(196,112,79,0.35);
+  }
+
+  .btn-primary:hover {
+    background: var(--terracotta-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(196,112,79,0.4);
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    width: 100%;
+    margin-bottom: 2.5rem;
+  }
+
+  .progress-label {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.6rem;
+  }
+
+  .progress-step {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--terracotta);
+    letter-spacing: 0.05em;
+  }
+
+  .progress-count {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 6px;
+    background: var(--cream);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--terracotta), var(--terracotta-light));
+    border-radius: 10px;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 30px rgba(44,24,16,0.06);
+    border: 1px solid var(--border);
+  }
+
+  .question-number {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--sage);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+  }
+
+  .question-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.45rem;
+    line-height: 1.4;
+    color: var(--brown-deep);
+    margin-bottom: 2rem;
+  }
+
+  /* ── SCALE BUTTONS ── */
+  .scale-labels {
+    display: flex; justify-content: space-between;
+    margin-bottom: 0.8rem;
+  }
+
+  .scale-label {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .scale-buttons {
+    display: flex; gap: 0.6rem; justify-content: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .scale-btn {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    border: 2px solid var(--border);
+    background: var(--warm-white);
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--brown-mid);
+    transition: all 0.2s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .scale-btn:hover {
+    border-color: var(--terracotta-light);
+    background: rgba(196,112,79,0.06);
+    transform: translateY(-2px);
+  }
+
+  .scale-btn.selected {
+    background: var(--terracotta);
+    border-color: var(--terracotta);
+    color: white;
+    transform: scale(1.08);
+    box-shadow: 0 4px 16px rgba(196,112,79,0.35);
+  }
+
+  .scale-descriptions {
+    display: flex; justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    padding: 0 0.2rem;
+  }
+
+  /* ── QUESTION NAV ── */
+  .question-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 2rem;
+  }
+
+  .btn-back {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--brown-mid);
+    padding: 0.7rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+
+  .btn-back:hover {
+    border-color: var(--brown-mid);
+    background: var(--cream);
+  }
+
+  .btn-next {
+    background: var(--terracotta);
+    color: white;
+    padding: 0.7rem 1.8rem;
+    border-radius: 50px;
+    border: none; cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 16px rgba(196,112,79,0.3);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .btn-next.enabled {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .btn-next.enabled:hover {
+    background: var(--terracotta-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(196,112,79,0.4);
+  }
+
+  /* ── RESULTS SCREEN ── */
+  .results-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+
+  .results-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(122,155,118,0.12);
+    border: 1px solid rgba(122,155,118,0.3);
+    color: var(--sage);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    margin-bottom: 1.2rem;
+  }
+
+  .results-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+    color: var(--brown-deep);
+    margin-bottom: 0.5rem;
+  }
+
+  .results-subtitle {
+    font-family: 'Lora', serif;
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+
+  /* Score Circle */
+  .score-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 30px rgba(44,24,16,0.06);
+    border: 1px solid var(--border);
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .score-circle {
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--terracotta) calc(var(--score-pct) * 1%),
+      var(--cream) calc(var(--score-pct) * 1%)
+    );
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    position: relative;
+  }
+
+  .score-circle-inner {
+    width: 130px; height: 130px;
+    border-radius: 50%;
+    background: white;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+
+  .score-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--terracotta);
+    line-height: 1;
+  }
+
+  .score-total {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-weight: 500;
+  }
+
+  .score-category {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--brown-deep);
+    margin-bottom: 0.3rem;
+  }
+
+  .score-percentile {
+    font-size: 0.9rem;
+    color: var(--terracotta);
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+  }
+
+  .score-bar-wrap {
+    max-width: 400px;
+    margin: 0 auto;
+  }
+
+  .score-bar-labels {
+    display: flex; justify-content: space-between;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+  }
+
+  .score-bar {
+    width: 100%;
+    height: 10px;
+    background: linear-gradient(90deg, #E8B4B4, #F0D4A8, #A3BDA0);
+    border-radius: 10px;
+    position: relative;
+  }
+
+  .score-marker {
+    position: absolute;
+    top: -4px;
+    width: 18px; height: 18px;
+    background: var(--terracotta);
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(196,112,79,0.4);
+    transform: translateX(-50%);
+    transition: left 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Insight Card */
+  .insight-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    box-shadow: 0 4px 30px rgba(44,24,16,0.06);
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+  }
+
+  .insight-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    color: var(--brown-deep);
+    margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .insight-text {
+    font-family: 'Lora', serif;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--text-muted);
+  }
+
+  .insight-text p { margin-bottom: 0.8rem; }
+  .insight-text p:last-child { margin-bottom: 0; }
+
+  /* Breakdown */
+  .breakdown-list {
+    list-style: none;
+    margin-top: 1rem;
+  }
+
+  .breakdown-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.8rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .breakdown-item:last-child { border-bottom: none; }
+
+  .breakdown-q {
+    font-family: 'Lora', serif;
+    font-size: 0.88rem;
+    color: var(--text-main);
+    flex: 1;
+    padding-right: 1rem;
+  }
+
+  .breakdown-score {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--terracotta);
+    min-width: 32px;
+    text-align: center;
+  }
+
+  /* CTA at bottom of results */
+  .results-cta {
+    background: var(--cream);
+    border-radius: 20px;
+    padding: 2rem 2.5rem;
+    text-align: center;
+  }
+
+  .results-cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--brown-deep);
+    margin-bottom: 0.5rem;
+  }
+
+  .results-cta-text {
+    font-family: 'Lora', serif;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-top: 2rem;
+  }
+
+  .footer a {
+    color: var(--terracotta);
+    text-decoration: none;
+  }
+
+  .footer a:hover { text-decoration: underline; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 600px) {
+    nav { padding: 1rem 1.5rem; }
+    .container { padding: 5.5rem 1.2rem 3rem; }
+    .question-card { padding: 1.8rem 1.4rem; }
+    .scale-buttons { gap: 0.35rem; }
+    .scale-btn { width: 44px; height: 44px; font-size: 0.95rem; border-radius: 12px; }
+    .score-card { padding: 2rem 1.5rem; }
+    .insight-card { padding: 1.5rem; }
+    .results-cta { padding: 1.5rem; }
+    .intro-meta { gap: 1rem; }
+    .question-text { font-size: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">ExperimentMe</a>
+  <a href="index.html" class="nav-back">← Back to Home</a>
+</nav>
+
+<!-- MAIN -->
+<div class="container">
+
+  <!-- ═══ INTRO SCREEN ═══ -->
+  <div class="screen active" id="screen-intro">
+    <div class="intro-badge">Validated Assessment</div>
+    <h1 class="intro-title">Satisfaction With<br>Life <em>Scale</em></h1>
+    <p class="intro-desc">
+      Developed by Dr. Ed Diener, the SWLS is one of the most widely used measures of overall life satisfaction in psychological research. Answer five simple questions and discover where you stand.
+    </p>
+
+    <div class="intro-meta">
+      <div class="meta-item">
+        <div class="meta-icon">📝</div>
+        <span>5 questions</span>
+      </div>
+      <div class="meta-item">
+        <div class="meta-icon">⏱️</div>
+        <span>~2 minutes</span>
+      </div>
+      <div class="meta-item">
+        <div class="meta-icon">📊</div>
+        <span>Instant results</span>
+      </div>
+    </div>
+
+    <div class="intro-note">
+      Your responses are not stored or sent anywhere — everything is calculated right here in your browser. This is for personal insight, not a clinical diagnosis.
+    </div>
+
+    <button class="btn-primary" onclick="startAssessment()">
+      Begin Assessment →
+    </button>
+  </div>
+
+  <!-- ═══ QUESTION SCREENS ═══ -->
+  <div class="screen" id="screen-questions">
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span class="progress-step" id="progress-step">Question 1 of 5</span>
+        <span class="progress-count" id="progress-pct">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <div class="question-number" id="q-label">Question 1</div>
+      <div class="question-text" id="q-text"></div>
+
+      <div class="scale-labels">
+        <span class="scale-label">Strongly Disagree</span>
+        <span class="scale-label">Strongly Agree</span>
+      </div>
+      <div class="scale-buttons" id="scale-buttons">
+        <button class="scale-btn" onclick="selectAnswer(1)">1</button>
+        <button class="scale-btn" onclick="selectAnswer(2)">2</button>
+        <button class="scale-btn" onclick="selectAnswer(3)">3</button>
+        <button class="scale-btn" onclick="selectAnswer(4)">4</button>
+        <button class="scale-btn" onclick="selectAnswer(5)">5</button>
+        <button class="scale-btn" onclick="selectAnswer(6)">6</button>
+        <button class="scale-btn" onclick="selectAnswer(7)">7</button>
+      </div>
+      <div class="scale-descriptions">
+        <span>1 — Strongly Disagree</span>
+        <span>4 — Neutral</span>
+        <span>7 — Strongly Agree</span>
+      </div>
+    </div>
+
+    <div class="question-nav">
+      <button class="btn-back" id="btn-prev" onclick="prevQuestion()" style="visibility: hidden;">
+        ← Back
+      </button>
+      <button class="btn-next" id="btn-next" onclick="nextQuestion()">
+        Next →
+      </button>
+    </div>
+  </div>
+
+  <!-- ═══ RESULTS SCREEN ═══ -->
+  <div class="screen" id="screen-results">
+    <div class="results-header">
+      <div class="results-badge">Your Results</div>
+      <h2 class="results-title">Your Wellbeing Report</h2>
+      <p class="results-subtitle">Based on the Satisfaction With Life Scale (SWLS)</p>
+    </div>
+
+    <!-- Score Card -->
+    <div class="score-card">
+      <div class="score-circle" id="score-circle" style="--score-pct: 0">
+        <div class="score-circle-inner">
+          <div class="score-number" id="score-number">0</div>
+          <div class="score-total">out of 35</div>
+        </div>
+      </div>
+      <div class="score-category" id="score-category"></div>
+      <div class="score-percentile" id="score-percentile"></div>
+
+      <div class="score-bar-wrap">
+        <div class="score-bar-labels">
+          <span>Low</span>
+          <span>Moderate</span>
+          <span>High</span>
+        </div>
+        <div class="score-bar">
+          <div class="score-marker" id="score-marker" style="left: 0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insight -->
+    <div class="insight-card">
+      <div class="insight-heading">🔍 What This Means</div>
+      <div class="insight-text" id="insight-text"></div>
+    </div>
+
+    <!-- Question Breakdown -->
+    <div class="insight-card">
+      <div class="insight-heading">📋 Your Responses</div>
+      <ul class="breakdown-list" id="breakdown-list"></ul>
+    </div>
+
+    <!-- CTA -->
+    <div class="results-cta">
+      <div class="results-cta-title">Want to explore further?</div>
+      <p class="results-cta-text">
+        Experiment Me is building a library of science-backed assessments. Sign up for early access to personality, grit, wellbeing, and more.
+      </p>
+      <a href="index.html#signup" class="btn-primary">Get Early Access →</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>The SWLS was developed by Ed Diener, Robert A. Emmons, Randy J. Larsen, and Sharon Griffin (1985). This tool is for educational and personal insight purposes only.</p>
+  <p style="margin-top: 0.5rem;">© 2026 <a href="index.html">Experiment Me</a></p>
+</div>
+
+<script>
+// ── SWLS QUESTIONS ──
+const questions = [
+  "In most ways my life is close to my ideal.",
+  "The conditions of my life are excellent.",
+  "I am satisfied with my life.",
+  "So far I have gotten the important things I want in life.",
+  "If I could live my life over, I would change almost nothing."
+];
+
+// ── STATE ──
+let currentQ = 0;
+const answers = [0, 0, 0, 0, 0];
+
+// ── SCORING DATA ──
+const categories = [
+  { min: 31, max: 35, label: "Extremely Satisfied", percentile: "Top 9%" },
+  { min: 26, max: 30, label: "Satisfied", percentile: "Top 23%" },
+  { min: 21, max: 25, label: "Slightly Satisfied", percentile: "Top 44%" },
+  { min: 20, max: 20, label: "Neutral", percentile: "Around 50th percentile" },
+  { min: 15, max: 19, label: "Slightly Dissatisfied", percentile: "Bottom 44%" },
+  { min: 10, max: 14, label: "Dissatisfied", percentile: "Bottom 23%" },
+  { min: 5, max: 9, label: "Extremely Dissatisfied", percentile: "Bottom 9%" }
+];
+
+const insights = {
+  "Extremely Satisfied": [
+    "Your score indicates that you feel a deep sense of fulfillment across the key areas of your life. People in this range tend to feel that life is going very well and that they're on the right track.",
+    "This doesn't mean life is perfect — no one's is — but it suggests you have a strong foundation of satisfaction with your circumstances, relationships, and direction."
+  ],
+  "Satisfied": [
+    "You report a solid level of life satisfaction. Most areas of your life seem to be going well, even if there are some you'd like to improve.",
+    "People in this range typically have good relationships, feel reasonably fulfilled, and have a generally positive outlook. There may be one or two areas where you'd like to see growth, which is completely normal and healthy."
+  ],
+  "Slightly Satisfied": [
+    "Your score suggests you're generally satisfied, with some areas where you might want more. This is actually the most common range — most people feel that life is okay but have meaningful room for growth.",
+    "This score often reflects someone who is doing reasonably well but has identified specific areas they'd like to change. That awareness is valuable."
+  ],
+  "Neutral": [
+    "A score of 20 represents a balanced midpoint — neither clearly satisfied nor dissatisfied. This might mean you're in a period of transition, or that satisfaction varies significantly across different areas of your life.",
+    "If some parts of your life feel great while others feel challenging, that mix can average out to this neutral zone."
+  ],
+  "Slightly Dissatisfied": [
+    "Your score indicates you may feel that some important areas of your life aren't quite where you'd like them to be. This is common, and many people move through periods like this.",
+    "Research shows that life satisfaction is influenced by both circumstances and intentional activities. Small, consistent changes in areas you care about can meaningfully shift how you feel over time."
+  ],
+  "Dissatisfied": [
+    "Your score suggests you're experiencing meaningful dissatisfaction with your current life circumstances. This may mean that several important areas — work, relationships, personal goals — feel out of alignment with what you want.",
+    "If this resonates, it might be worth reflecting on which specific areas contribute most to this feeling. Targeted changes, even small ones, tend to have the greatest impact."
+  ],
+  "Extremely Dissatisfied": [
+    "Your score indicates significant dissatisfaction with life overall. This might reflect challenging circumstances, a difficult period, or a feeling that key areas of life are far from where you'd like them to be.",
+    "If you're going through a particularly hard time, please know that life satisfaction is not fixed — it changes with circumstances and choices. Speaking with a counselor or trusted person can help you identify concrete steps forward."
+  ]
+};
+
+// ── FUNCTIONS ──
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => {
+    s.classList.remove('active');
+    s.style.animation = 'none';
+  });
+  const screen = document.getElementById(id);
+  screen.style.animation = 'none';
+  // Trigger reflow for animation restart
+  void screen.offsetWidth;
+  screen.style.animation = 'fadeUp 0.5s ease both';
+  screen.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function startAssessment() {
+  currentQ = 0;
+  showScreen('screen-questions');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  document.getElementById('q-label').textContent = 'Question ' + (currentQ + 1);
+  document.getElementById('q-text').textContent = questions[currentQ];
+  document.getElementById('progress-step').textContent = 'Question ' + (currentQ + 1) + ' of 5';
+
+  const pct = Math.round((currentQ / 5) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+
+  // Show/hide back button
+  document.getElementById('btn-prev').style.visibility = currentQ === 0 ? 'hidden' : 'visible';
+
+  // Update next button text
+  const btnNext = document.getElementById('btn-next');
+  btnNext.textContent = currentQ === 4 ? 'See My Results →' : 'Next →';
+
+  // Update scale buttons
+  const btns = document.querySelectorAll('.scale-btn');
+  btns.forEach((btn, i) => {
+    btn.classList.toggle('selected', answers[currentQ] === i + 1);
+  });
+
+  // Enable/disable next
+  btnNext.classList.toggle('enabled', answers[currentQ] > 0);
+}
+
+function selectAnswer(val) {
+  answers[currentQ] = val;
+  const btns = document.querySelectorAll('.scale-btn');
+  btns.forEach((btn, i) => {
+    btn.classList.toggle('selected', i + 1 === val);
+  });
+  document.getElementById('btn-next').classList.add('enabled');
+}
+
+function nextQuestion() {
+  if (answers[currentQ] === 0) return;
+
+  if (currentQ < 4) {
+    currentQ++;
+    renderQuestion();
+    // Re-trigger card animation
+    const card = document.querySelector('.question-card');
+    card.style.animation = 'none';
+    void card.offsetWidth;
+    card.style.animation = 'fadeUp 0.35s ease both';
+  } else {
+    showResults();
+  }
+}
+
+function prevQuestion() {
+  if (currentQ > 0) {
+    currentQ--;
+    renderQuestion();
+  }
+}
+
+function showResults() {
+  const totalScore = answers.reduce((a, b) => a + b, 0);
+  const scorePct = ((totalScore - 5) / 30) * 100; // 5-35 mapped to 0-100
+
+  // Find category
+  let category = categories.find(c => totalScore >= c.min && totalScore <= c.max);
+  if (!category) category = categories[categories.length - 1];
+
+  // Show results screen
+  showScreen('screen-results');
+
+  // Animate score circle after a beat
+  setTimeout(() => {
+    document.getElementById('score-circle').style.setProperty('--score-pct', scorePct);
+    document.getElementById('score-number').textContent = totalScore;
+    document.getElementById('score-category').textContent = category.label;
+    document.getElementById('score-percentile').textContent = category.percentile;
+    document.getElementById('score-marker').style.left = scorePct + '%';
+  }, 200);
+
+  // Insight text
+  const insightParagraphs = insights[category.label] || [];
+  document.getElementById('insight-text').innerHTML = insightParagraphs
+    .map(p => '<p>' + p + '</p>')
+    .join('');
+
+  // Breakdown
+  const breakdownList = document.getElementById('breakdown-list');
+  breakdownList.innerHTML = questions.map((q, i) =>
+    '<li class="breakdown-item">' +
+      '<span class="breakdown-q">' + q + '</span>' +
+      '<span class="breakdown-score">' + answers[i] + '/7</span>' +
+    '</li>'
+  ).join('');
+
+  // Update progress to complete
+  document.getElementById('progress-fill').style.width = '100%';
+}
+</script>
+
+</body>
+</html>
