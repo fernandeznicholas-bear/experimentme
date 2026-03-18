@@ -1,65 +1,575 @@
-import Image from "next/image";
+'use client'
 
-export default function Home() {
+import Link from 'next/link'
+import { useState, useEffect } from 'react'
+
+const assessments = [
+  {
+    slug: 'swls',
+    name: 'Life Satisfaction',
+    fullName: 'Satisfaction with Life Scale',
+    tag: 'WELLBEING ASSESSMENT',
+    abbr: 'SWLS',
+    description: 'The Satisfaction With Life Scale — measure your overall life satisfaction with 5 validated questions.',
+    sampleQuestion: 'In most ways my life is close to my ideal.',
+    questions: 5,
+    time: '2 min',
+    icon: '☀️',
+    color: 'bg-amber/10 border-amber/20',
+    scaleLabels: ['Strongly Disagree', '', '', '', '', '', 'Strongly Agree'],
+    scaleMax: 7,
+    live: true,
+  },
+  {
+    slug: 'rosenberg',
+    name: 'Self-Esteem',
+    fullName: 'Rosenberg Self-Esteem Scale',
+    tag: 'SELF-WORTH ASSESSMENT',
+    abbr: 'RSE',
+    description: 'The Rosenberg Self-Esteem Scale — the most widely used measure of global self-worth.',
+    sampleQuestion: 'I feel that I am a person of worth, at least on an equal plane with others.',
+    questions: 10,
+    time: '2 min',
+    icon: '🌿',
+    color: 'bg-sage/10 border-sage/20',
+    scaleLabels: ['Strongly Disagree', 'Disagree', 'Agree', 'Strongly Agree'],
+    scaleMax: 4,
+    live: true,
+  },
+  {
+    slug: 'grit',
+    name: 'Grit',
+    fullName: 'Short Grit Scale (Grit-S)',
+    tag: 'PERSEVERANCE ASSESSMENT',
+    abbr: 'GRIT-S',
+    description: 'The Short Grit Scale by Angela Duckworth — measure your perseverance and passion for long-term goals.',
+    sampleQuestion: "Setbacks don't discourage me. I don't give up easily.",
+    questions: 8,
+    time: '3 min',
+    icon: '🔥',
+    color: 'bg-terracotta/10 border-terracotta/20',
+    scaleLabels: ['Not at all like me', '', '', '', 'Very much like me'],
+    scaleMax: 5,
+    live: true,
+  },
+  {
+    slug: 'mindset',
+    name: 'Growth Mindset',
+    fullName: 'Growth Mindset Scale',
+    tag: 'MINDSET ASSESSMENT',
+    abbr: 'GMS',
+    description: "Based on Carol Dweck's research — discover whether you lean toward a growth or fixed mindset.",
+    sampleQuestion: 'You can always substantially change how intelligent you are.',
+    questions: 8,
+    time: '3 min',
+    icon: '🌱',
+    color: 'bg-sage/10 border-sage/20',
+    scaleLabels: ['Strongly Disagree', '', '', '', '', 'Strongly Agree'],
+    scaleMax: 6,
+    live: true,
+  },
+  {
+    slug: 'bigfive',
+    name: 'Big Five Personality',
+    fullName: 'IPIP-20 Big Five Mini',
+    tag: 'PERSONALITY ASSESSMENT',
+    abbr: 'BIG 5',
+    description: 'The IPIP-20 Mini — map your personality across Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism.',
+    sampleQuestion: 'I am the life of the party.',
+    questions: 20,
+    time: '5 min',
+    icon: '🧬',
+    color: 'bg-brown-light/10 border-brown-light/20',
+    scaleLabels: ['Very Inaccurate', '', '', '', 'Very Accurate'],
+    scaleMax: 5,
+    live: true,
+  },
+  {
+    slug: 'perma',
+    name: 'PERMA Wellbeing',
+    fullName: 'PERMA Profiler',
+    tag: 'WELLBEING ASSESSMENT',
+    abbr: 'PERMA',
+    description: "Seligman's five pillars of flourishing — Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment.",
+    sampleQuestion: 'How often do you feel joyful?',
+    questions: 15,
+    time: '4 min',
+    icon: '🌻',
+    color: 'bg-amber/10 border-amber/20',
+    scaleLabels: ['Never', '', '', '', '', '', '', '', '', '', 'Always'],
+    scaleMax: 10,
+    live: true,
+  },
+  {
+    slug: 'happiness',
+    name: 'Subjective Happiness',
+    fullName: 'Subjective Happiness Scale',
+    tag: 'HAPPINESS ASSESSMENT',
+    abbr: 'SHS',
+    description: 'Lyubomirsky\'s 4-item measure — the shortest validated happiness scale in psychology.',
+    sampleQuestion: 'In general, I consider myself a very happy person.',
+    questions: 4,
+    time: '1 min',
+    icon: '✨',
+    color: 'bg-amber/10 border-amber/20',
+    scaleLabels: ['Not at all', '', '', '', '', '', 'A great deal'],
+    scaleMax: 7,
+    live: true,
+  },
+  {
+    slug: 'hope',
+    name: 'Hope',
+    fullName: 'Adult Hope Scale',
+    tag: 'HOPE ASSESSMENT',
+    abbr: 'AHS',
+    description: 'Snyder\'s Adult Hope Scale — measure your goal-directed thinking across agency and pathways.',
+    sampleQuestion: 'I energetically pursue my goals.',
+    questions: 12,
+    time: '3 min',
+    icon: '🌟',
+    color: 'bg-terracotta/10 border-terracotta/20',
+    scaleLabels: ['Definitely False', '', '', '', '', '', '', 'Definitely True'],
+    scaleMax: 8,
+    live: true,
+  },
+  {
+    slug: 'selfcompassion',
+    name: 'Self-Compassion',
+    fullName: 'Self-Compassion Scale (Short Form)',
+    tag: 'SELF-COMPASSION ASSESSMENT',
+    abbr: 'SCS-SF',
+    description: 'Kristin Neff\'s Short Form — how kind vs. critical are you toward yourself during difficult times?',
+    sampleQuestion: 'I try to be understanding and patient toward aspects of my personality I don\'t like.',
+    questions: 12,
+    time: '3 min',
+    icon: '💛',
+    color: 'bg-amber/10 border-amber/20',
+    scaleLabels: ['Almost Never', '', '', '', 'Almost Always'],
+    scaleMax: 5,
+    live: true,
+  },
+]
+
+// Marquee items for the scrolling bar
+const marqueeItems = [
+  'LIFE SATISFACTION (SWLS)',
+  'ROSENBERG SELF-ESTEEM',
+  'PERMA WELLBEING',
+  'GRIT SCALE',
+  'GROWTH MINDSET',
+  'BIG FIVE PERSONALITY',
+  'SUBJECTIVE HAPPINESS',
+  'DASS-21',
+  'HOPE SCALE',
+  'SELF-COMPASSION',
+]
+
+export default function HomePage() {
+  const [randomAssessment, setRandomAssessment] = useState(assessments[0])
+  const [formRole, setFormRole] = useState<'participant' | 'researcher'>('participant')
+  const [formName, setFormName] = useState('')
+  const [formEmail, setFormEmail] = useState('')
+  const [formInterest, setFormInterest] = useState('swls')
+
+  useEffect(() => {
+    const idx = Math.floor(Math.random() * assessments.length)
+    setRandomAssessment(assessments[idx])
+  }, [])
+
+  // Build the scale buttons to show (max 7 visible)
+  const scaleCount = randomAssessment.scaleMax
+  const showScaleLabels = scaleCount <= 7
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className="min-h-screen">
+      {/* Hero — split layout */}
+      <section className="relative pt-28 pb-16 px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-cream to-warm-white" />
+        <div className="relative max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          {/* Left: Text */}
+          <div>
+            <p className="inline-block px-4 py-1.5 rounded-full bg-terracotta/8 text-terracotta text-xs font-semibold tracking-wider uppercase mb-6">
+              Science-Backed Self-Discovery
+            </p>
+            <h1 className="font-[family-name:var(--font-heading)] text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-brown-deep leading-[1.15] mb-6">
+              The{' '}
+              <em className="text-terracotta not-italic font-bold italic">Science</em>{' '}
+              of You
+            </h1>
+            <p className="font-[family-name:var(--font-body)] text-lg text-text-muted max-w-lg mb-8 leading-relaxed">
+              Real psychological research that gives you something back:
+              evidence-based insight into who you are. Not a quiz. Science.
+            </p>
+            <div className="flex items-center gap-4 flex-wrap">
+              <Link
+                href="#assessments"
+                className="px-7 py-3.5 rounded-full bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors no-underline text-base"
+              >
+                Take Your First Assessment &rarr;
+              </Link>
+              <Link
+                href="#researchers"
+                className="text-text-muted font-semibold hover:text-terracotta transition-colors no-underline text-base"
+              >
+                I&apos;m a Researcher &darr;
+              </Link>
+            </div>
+          </div>
+
+          {/* Right: Assessment preview card */}
+          <div className="relative flex justify-center">
+            {/* Floating percentile badge */}
+            <div className="absolute -top-2 right-4 md:right-8 z-10 bg-white rounded-full px-4 py-2 shadow-lg border border-sage/20 flex items-center gap-2">
+              <span className="text-lg">🏆</span>
+              <span className="text-sage font-semibold text-sm">93rd percentile in Life Satisfaction</span>
+            </div>
+
+            {/* Card */}
+            <div className="bg-white rounded-2xl shadow-xl border border-[var(--border)] p-8 max-w-sm w-full">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-5 h-0.5 bg-sage rounded-full" />
+                <span className="text-xs font-semibold tracking-wider text-sage uppercase">
+                  {randomAssessment.tag}
+                </span>
+                <span className="text-xs text-text-muted">&middot;</span>
+                <span className="text-xs font-semibold tracking-wider text-sage uppercase">
+                  {randomAssessment.abbr}
+                </span>
+              </div>
+
+              <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-3">
+                {randomAssessment.fullName}
+              </h3>
+
+              <p className="font-[family-name:var(--font-body)] text-text-muted italic text-sm mb-5 leading-relaxed">
+                &ldquo;{randomAssessment.sampleQuestion}&rdquo;
+              </p>
+
+              {/* Scale buttons */}
+              <div className="flex gap-1.5 mb-2">
+                {Array.from({ length: scaleCount }, (_, i) => (
+                  <button
+                    key={i}
+                    className="flex-1 h-12 rounded-lg border border-[var(--border)] bg-cream/40 hover:bg-terracotta/10 hover:border-terracotta/30 transition-colors flex flex-col items-center justify-center cursor-default"
+                  >
+                    <span className="text-sm font-semibold text-brown-deep">{i + 1}</span>
+                  </button>
+                ))}
+              </div>
+              {showScaleLabels && (
+                <div className="flex justify-between text-[10px] text-text-muted mb-4 px-0.5">
+                  <span>{randomAssessment.scaleLabels[0]}</span>
+                  <span>{randomAssessment.scaleLabels[randomAssessment.scaleLabels.length - 1]}</span>
+                </div>
+              )}
+
+              {/* Progress bar */}
+              <div className="w-full bg-cream rounded-full h-1.5 mb-2 overflow-hidden">
+                <div className="h-full rounded-full bg-gradient-to-r from-sage to-amber" style={{ width: '15%' }} />
+              </div>
+              <p className="text-xs text-text-muted text-right mb-5">
+                Question 1 of {randomAssessment.questions}
+              </p>
+
+              <Link
+                href={`/assess/${randomAssessment.slug}`}
+                className="block w-full text-center px-6 py-3 rounded-full bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors no-underline text-sm"
+              >
+                Take the full assessment &rarr;
+              </Link>
+              <p className="text-center text-xs text-text-muted mt-2 flex items-center justify-center gap-1.5">
+                <span>📊</span> See your percentile instantly
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Scrolling Marquee Bar */}
+      <section className="bg-brown-deep overflow-hidden py-4">
+        <div className="marquee-track flex whitespace-nowrap">
+          {/* Duplicate for seamless loop */}
+          {[...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, i) => (
+            <span key={i} className="inline-flex items-center gap-4 mx-4">
+              <span className="text-cream/90 text-sm font-semibold tracking-widest uppercase font-[family-name:var(--font-ui)]">
+                {item}
+              </span>
+              <span className="text-amber text-xs">✦</span>
+            </span>
+          ))}
+        </div>
+      </section>
+
+      {/* How It Works */}
+      <section className="py-20 px-4 bg-warm-white">
+        <div className="max-w-4xl mx-auto mb-14">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="w-8 h-0.5 bg-terracotta rounded-full" />
+            <span className="text-xs font-semibold tracking-wider text-terracotta uppercase">How It Works</span>
+          </div>
+          <h2 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl font-bold text-brown-deep mb-4">
+            Research that finally gives something back.
+          </h2>
+          <p className="font-[family-name:var(--font-body)] text-text-muted max-w-lg">
+            Every assessment gives you something real in return. No data harvesting, no empty promises.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+        <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
+          {[
+            { step: '01', title: 'Choose an Assessment', desc: 'Browse validated, peer-reviewed instruments. Not invented for clicks — published in journals.' },
+            { step: '02', title: 'Answer Honestly', desc: 'Each assessment takes 2–10 minutes. Your responses are private and never shared individually.' },
+            { step: '03', title: 'See Yourself Clearly', desc: 'Get your score, what it means, and what the science says about people who score like you.' },
+          ].map((item) => (
+            <div key={item.step} className="text-left px-4">
+              <div className="w-12 h-12 rounded-full bg-terracotta/10 text-terracotta font-bold text-sm flex items-center justify-center mb-4">
+                {item.step}
+              </div>
+              <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-2">
+                {item.title}
+              </h3>
+              <p className="font-[family-name:var(--font-body)] text-text-muted text-sm leading-relaxed">
+                {item.desc}
+              </p>
+            </div>
+          ))}
         </div>
-      </main>
-    </div>
-  );
+      </section>
+
+      {/* Assessments */}
+      <section id="assessments" className="py-20 px-4 scroll-mt-20">
+        <div className="max-w-4xl mx-auto text-center mb-14">
+          <h2 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-brown-deep mb-4">
+            Assessments
+          </h2>
+          <p className="font-[family-name:var(--font-body)] text-text-muted max-w-lg mx-auto">
+            Every instrument is validated, peer-reviewed, and properly attributed to its original authors.
+          </p>
+        </div>
+        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
+          {assessments.map((a) =>
+            a.live ? (
+              <Link
+                key={a.slug}
+                href={`/assess/${a.slug}`}
+                className={`relative block rounded-2xl border p-6 ${a.color} hover:shadow-md transition-all no-underline group`}
+              >
+                <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-sage text-white text-[10px] font-bold uppercase tracking-wider">
+                  Take It Now
+                </span>
+                <div className="text-3xl mb-3">{a.icon}</div>
+                <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-1 group-hover:text-terracotta transition-colors">
+                  {a.name}
+                </h3>
+                <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mb-3 leading-relaxed">
+                  {a.description}
+                </p>
+                <div className="flex items-center gap-4 text-xs text-text-muted">
+                  <span>{a.questions} questions</span>
+                  <span>~{a.time}</span>
+                  <span>English</span>
+                </div>
+              </Link>
+            ) : (
+              <div
+                key={a.slug}
+                className={`relative rounded-2xl border p-6 ${a.color} opacity-60`}
+              >
+                <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-brown-light/50 text-white text-[10px] font-bold uppercase tracking-wider">
+                  Coming Soon
+                </span>
+                <div className="text-3xl mb-3">{a.icon}</div>
+                <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-1">
+                  {a.name}
+                </h3>
+                <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mb-3 leading-relaxed">
+                  {a.description}
+                </p>
+                <div className="flex items-center gap-4 text-xs text-text-muted">
+                  <span>{a.questions} questions</span>
+                  <span>~{a.time}</span>
+                </div>
+              </div>
+            )
+          )}
+        </div>
+      </section>
+
+      {/* For Researchers — Dark Brown */}
+      <section id="researchers" className="py-20 px-4 bg-brown-deep scroll-mt-20">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-8 h-0.5 bg-terracotta rounded-full" />
+              <span className="text-xs font-semibold tracking-wider text-terracotta-light uppercase">For Researchers</span>
+            </div>
+            <h2 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl font-bold text-cream leading-tight mb-4">
+              Your best participant pool — already pre-screened.
+            </h2>
+            <p className="font-[family-name:var(--font-body)] text-cream/70 max-w-lg mb-8 leading-relaxed">
+              Experiment Me is building a participant pool of motivated, engaged people already profiled on validated instruments.
+              Get in early and help shape the platform.
+            </p>
+            <a
+              href="mailto:fernandez.nicholas@gmail.com?subject=Researcher%20Interest%20-%20Experiment%20Me"
+              className="inline-block px-7 py-3.5 rounded-full bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors no-underline"
+            >
+              Get Early Access &rarr;
+            </a>
+          </div>
+
+          {/* Stats cards */}
+          <div className="grid grid-cols-2 gap-4">
+            {[
+              { value: '10', label: 'Validated assessments live now' },
+              { value: '100%', label: 'Open instruments — no paywalls' },
+              { value: 'IRB', label: 'Friendly design from day one' },
+              { value: 'Free', label: 'For participants, always' },
+            ].map((stat) => (
+              <div key={stat.label} className="bg-cream/8 backdrop-blur-sm rounded-xl p-5 border border-cream/10">
+                <div className="font-[family-name:var(--font-heading)] text-3xl font-bold text-terracotta-light">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-cream/60 mt-1.5">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Waitlist / Join Form */}
+      <section className="py-20 px-4 bg-warm-white">
+        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="flex items-center gap-3 mb-4">
+              <span className="w-8 h-0.5 bg-terracotta rounded-full" />
+              <span className="text-xs font-semibold tracking-wider text-terracotta uppercase">Join the Waitlist</span>
+            </div>
+            <h2 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl font-bold text-brown-deep leading-tight mb-4">
+              Be the first to discover yourself through science.
+            </h2>
+            <p className="font-[family-name:var(--font-body)] text-text-muted max-w-md leading-relaxed">
+              Experiment Me is launching soon. Be among the first curious people —
+              and researchers who are ready to do something different.
+            </p>
+          </div>
+
+          {/* Form card */}
+          <div className="bg-white rounded-2xl shadow-lg border border-[var(--border)] p-8">
+            {/* Role toggle */}
+            <div className="flex rounded-full bg-cream/60 p-1 mb-6">
+              <button
+                onClick={() => setFormRole('participant')}
+                className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                  formRole === 'participant'
+                    ? 'bg-white text-terracotta shadow-sm'
+                    : 'text-text-muted hover:text-brown-deep'
+                }`}
+              >
+                I&apos;m a Participant
+              </button>
+              <button
+                onClick={() => setFormRole('researcher')}
+                className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all ${
+                  formRole === 'researcher'
+                    ? 'bg-white text-terracotta shadow-sm'
+                    : 'text-text-muted hover:text-brown-deep'
+                }`}
+              >
+                I&apos;m a Researcher
+              </button>
+            </div>
+
+            <form
+              action="https://formsubmit.co/fernandez.nicholas@gmail.com"
+              method="POST"
+              className="space-y-4"
+            >
+              <input type="hidden" name="_subject" value={`Experiment Me Waitlist — ${formRole}`} />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="role" value={formRole} />
+
+              <div>
+                <label className="block text-sm font-semibold text-brown-deep mb-1.5">First Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="e.g. Maria"
+                  value={formName}
+                  onChange={(e) => setFormName(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-cream/20 text-brown-deep placeholder:text-text-muted/50 focus:outline-none focus:border-terracotta/40 focus:ring-2 focus:ring-terracotta/10 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-brown-deep mb-1.5">Email Address</label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="you@email.com"
+                  value={formEmail}
+                  onChange={(e) => setFormEmail(e.target.value)}
+                  required
+                  className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-cream/20 text-brown-deep placeholder:text-text-muted/50 focus:outline-none focus:border-terracotta/40 focus:ring-2 focus:ring-terracotta/10 transition-all"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-brown-deep mb-1.5">
+                  Which assessment interests you most?
+                </label>
+                <select
+                  name="interest"
+                  value={formInterest}
+                  onChange={(e) => setFormInterest(e.target.value)}
+                  className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-cream/20 text-brown-deep focus:outline-none focus:border-terracotta/40 focus:ring-2 focus:ring-terracotta/10 transition-all appearance-none"
+                >
+                  <option value="swls">Life Satisfaction (SWLS)</option>
+                  <option value="rosenberg">Self-Esteem (Rosenberg)</option>
+                  <option value="grit">Grit Scale</option>
+                  <option value="mindset">Growth Mindset</option>
+                  <option value="bigfive">Big Five Personality</option>
+                  <option value="perma">PERMA Wellbeing</option>
+                  <option value="happiness">Subjective Happiness</option>
+                  <option value="dass21">Depression, Anxiety & Stress (DASS-21)</option>
+                  <option value="hope">Hope Scale</option>
+                  <option value="selfcompassion">Self-Compassion</option>
+                </select>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3.5 rounded-full bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors text-base"
+              >
+                Get Early Access &rarr;
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer — Dark Brown */}
+      <footer className="bg-brown-deep py-12 px-4">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center md:items-start justify-between gap-8">
+          <div>
+            <p className="font-[family-name:var(--font-heading)] text-xl font-bold text-cream mb-1">
+              Experiment Me
+            </p>
+            <p className="text-cream/50 text-sm font-[family-name:var(--font-body)] italic">
+              The science of you.
+            </p>
+          </div>
+          <nav className="flex items-center gap-6 text-sm text-cream/60">
+            <Link href="#" className="hover:text-cream transition-colors no-underline">How It Works</Link>
+            <Link href="#assessments" className="hover:text-cream transition-colors no-underline">Assessments</Link>
+            <Link href="#researchers" className="hover:text-cream transition-colors no-underline">For Researchers</Link>
+            <Link href="/about" className="hover:text-cream transition-colors no-underline">About</Link>
+          </nav>
+          <p className="text-cream/40 text-xs">
+            &copy; {new Date().getFullYear()} Experiment Me. All rights reserved.
+          </p>
+        </div>
+      </footer>
+    </main>
+  )
 }

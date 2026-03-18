@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --cream: #F7F0E8;
+  --warm-white: #FFFFFF;
+  --terracotta: #C4704F;
+  --terracotta-light: #D98B6A;
+  --terracotta-dark: #A05535;
+  --sage: #7A9B76;
+  --sage-light: #A3BDA0;
+  --amber: #D4A853;
+  --brown-deep: #2C1810;
+  --brown-mid: #5C3D2E;
+  --brown-light: #8B6355;
+  --text-main: #3A2318;
+  --text-muted: #7A5C4E;
+  --border: rgba(92,61,46,0.12);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-cream: var(--cream);
+  --color-warm-white: var(--warm-white);
+  --color-terracotta: var(--terracotta);
+  --color-terracotta-light: var(--terracotta-light);
+  --color-terracotta-dark: var(--terracotta-dark);
+  --color-sage: var(--sage);
+  --color-sage-light: var(--sage-light);
+  --color-amber: var(--amber);
+  --color-brown-deep: var(--brown-deep);
+  --color-brown-mid: var(--brown-mid);
+  --color-brown-light: var(--brown-light);
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Lora', serif;
+  --font-ui: 'Nunito', sans-serif;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--warm-white);
+  color: var(--text-main);
+  font-family: var(--font-ui);
+}
+
+/* Smooth scroll for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Assessment question animations */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeUp 0.5s ease both;
+}
+
+/* Splash shimmer effect — ray of light from center bottom */
+@keyframes shimmer {
+  0% {
+    background-size: 100% 0%;
+    background-position: center bottom;
+  }
+  50% {
+    background-size: 300% 300%;
+    background-position: center bottom;
+  }
+  100% {
+    background-size: 100% 0%;
+    background-position: center bottom;
+  }
+}
+
+/* Scrolling marquee animation */
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33%); }
+}
+
+.marquee-track {
+  animation: marquee-scroll 30s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+.splash-shimmer {
+  background: radial-gradient(
+    ellipse at center bottom,
+    #fff5e6 0%,
+    #f0c8a0 20%,
+    var(--terracotta) 50%
+  );
+  background-size: 100% 0%;
+  background-position: center bottom;
+  background-repeat: no-repeat;
+  background-color: var(--terracotta);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shimmer 6s ease-in-out 1s 1;
 }

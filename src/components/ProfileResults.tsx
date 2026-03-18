@@ -1,0 +1,376 @@
+'use client'
+
+import { useState } from 'react'
+import { getAssessmentConfig } from '@/lib/assessments'
+
+interface AssessmentResult {
+  id: string
+  assessment_type: string
+  score: number
+  max_score: number
+  category: string
+  details: Record<string, unknown>
+  completed_at: string
+}
+
+const assessmentMeta: Record<string, { name: string; icon: string; maxScore: number; scoreType: 'sum' | 'average' }> = {
+  swls: { name: 'Life Satisfaction', icon: '☀️', maxScore: 35, scoreType: 'sum' },
+  rosenberg: { name: 'Self-Esteem', icon: '🌿', maxScore: 30, scoreType: 'sum' },
+  grit: { name: 'Grit', icon: '🔥', maxScore: 5, scoreType: 'average' },
+  mindset: { name: 'Growth Mindset', icon: '🌱', maxScore: 6, scoreType: 'average' },
+  bigfive: { name: 'Big Five Personality', icon: '🧬', maxScore: 5, scoreType: 'average' },
+  perma: { name: 'PERMA Well-Being', icon: '🌻', maxScore: 10, scoreType: 'average' },
+  happiness: { name: 'Subjective Happiness', icon: '✨', maxScore: 7, scoreType: 'average' },
+  dass21: { name: 'Depression, Anxiety & Stress', icon: '🌊', maxScore: 63, scoreType: 'sum' },
+  hope: { name: 'Hope', icon: '🌟', maxScore: 8, scoreType: 'average' },
+  selfcompassion: { name: 'Self-Compassion', icon: '💛', maxScore: 5, scoreType: 'average' },
+}
+
+function ScoreBar({ score, maxScore, label }: { score: number; maxScore: number; label?: string }) {
+  const pct = Math.min((score / maxScore) * 100, 100)
+  return (
+    <div>
+      {label && (
+        <div className="flex justify-between text-xs text-text-muted mb-1">
+          <span>{label}</span>
+          <span className="font-semibold text-terracotta">{score}/{maxScore}</span>
+        </div>
+      )}
+      <div className="h-3 bg-cream rounded-full overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-terracotta to-amber rounded-full transition-all duration-700 ease-out"
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+    </div>
+  )
+}
+
+function ScoreLevelExplorer({ assessmentType }: { assessmentType: string }) {
+  const config = getAssessmentConfig(assessmentType)
+  if (!config) return null
+
+  return (
+    <div className="mt-4 space-y-2">
+      <h4 className="text-sm font-semibold text-brown-deep">All Score Levels</h4>
+      {config.categories.map((cat) => (
+        <div key={cat.label} className="bg-cream/50 rounded-xl p-3 border border-[var(--border)]">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-lg">{cat.emoji}</span>
+            <span className="text-sm font-bold text-brown-deep">{cat.label}</span>
+            <span className="text-xs text-text-muted ml-auto">
+              {cat.min}–{cat.max}
+            </span>
+          </div>
+          <p className="text-sm text-text-muted leading-relaxed mb-1">{cat.description}</p>
+          <p className="text-xs text-text-muted/80 leading-relaxed font-[family-name:var(--font-body)]">{cat.insight}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function ResultCard({ result }: { result: AssessmentResult }) {
+  const [expanded, setExpanded] = useState(false)
+  const [showLevels, setShowLevels] = useState(false)
+
+  const meta = assessmentMeta[result.assessment_type] || {
+    name: result.assessment_type,
+    icon: '📊',
+    maxScore: result.max_score,
+    scoreType: 'sum' as const,
+  }
+
+  const config = getAssessmentConfig(result.assessment_type)
+  const category = config?.categories.find(c => c.label === result.category)
+
+  const date = new Date(result.completed_at).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
+  const pct = Math.round((result.score / meta.maxScore) * 100)
+
+  // Get subscale data if present
+  const subscales = (result.details as { subscales?: { name: string; score: number; description: string }[] })?.subscales
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden transition-all">
+      {/* Main card — always visible */}
+      <button
+        onClick={() => setExpanded(!expanded)}
+        className="w-full p-6 text-left cursor-pointer hover:bg-cream/30 transition-colors"
+      >
+        <div className="flex items-center gap-4">
+          <div className="text-3xl flex-shrink-0">{meta.icon}</div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 mb-1">
+              <h3 className="font-[family-name:var(--font-heading)] text-lg font-bold text-brown-deep truncate">
+                {meta.name}
+              </h3>
+              <span className="text-xs text-text-muted flex-shrink-0">{date}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-sm font-semibold text-terracotta">
+                {category?.emoji} {result.category}
+              </span>
+            </div>
+            {/* Score bar */}
+            <div className="mt-3">
+              <ScoreBar score={result.score} maxScore={meta.maxScore} />
+            </div>
+          </div>
+          <div className="flex-shrink-0 text-right">
+            <div className="font-[family-name:var(--font-heading)] text-3xl font-bold text-terracotta">
+              {result.score}
+            </div>
+            <div className="text-xs text-text-muted">
+              of {meta.maxScore}
+              {meta.scoreType === 'average' ? '' : ' pts'}
+            </div>
+            <div className="text-xs text-text-muted mt-1">
+              {expanded ? '▲' : '▼'}
+            </div>
+          </div>
+        </div>
+      </button>
+
+      {/* Expanded details */}
+      {expanded && (
+        <div className="px-6 pb-6 border-t border-[var(--border)] pt-4 animate-fade-up">
+          {/* Insight */}
+          {category && (
+            <div className="bg-cream/50 rounded-xl p-4 mb-4">
+              <h4 className="font-[family-name:var(--font-heading)] text-base font-bold text-brown-deep mb-2">
+                What This Means
+              </h4>
+              <p className="font-[family-name:var(--font-body)] text-sm text-text-main leading-relaxed">
+                {category.insight}
+              </p>
+            </div>
+          )}
+
+          {/* Subscales */}
+          {subscales && subscales.length > 0 && (
+            <div className="mb-4">
+              <h4 className="text-sm font-semibold text-brown-deep mb-3">Your Subscales</h4>
+              <div className="space-y-3">
+                {subscales.map((sub: { name: string; score: number; description: string }) => (
+                  <div key={sub.name}>
+                    <ScoreBar
+                      score={sub.score}
+                      maxScore={meta.maxScore}
+                      label={sub.name}
+                    />
+                    <p className="text-xs text-text-muted mt-1">{sub.description}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Score Level Explorer Toggle */}
+          <button
+            onClick={() => setShowLevels(!showLevels)}
+            className="text-sm text-terracotta font-semibold hover:underline cursor-pointer"
+          >
+            {showLevels ? 'Hide all score levels ▲' : 'See what other score levels mean ▼'}
+          </button>
+
+          {showLevels && <ScoreLevelExplorer assessmentType={result.assessment_type} />}
+
+          {/* Citation */}
+          {config && (
+            <p className="text-xs text-text-muted mt-4 leading-relaxed italic">
+              {config.citation}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// Simple radar chart built with SVG — no dependencies
+function RadarChart({ results }: { results: AssessmentResult[] }) {
+  // Only show assessments that make sense on a radar (skip DASS-21 since higher = worse)
+  const radarAssessments = ['swls', 'rosenberg', 'grit', 'mindset', 'happiness', 'hope', 'selfcompassion', 'perma']
+
+  // Get the latest result for each assessment type
+  const latestByType = new Map<string, AssessmentResult>()
+  results.forEach(r => {
+    if (radarAssessments.includes(r.assessment_type) && !latestByType.has(r.assessment_type)) {
+      latestByType.set(r.assessment_type, r)
+    }
+  })
+
+  const entries = Array.from(latestByType.entries())
+  if (entries.length < 3) return null // Need at least 3 points for a useful radar
+
+  const size = 280
+  const center = size / 2
+  const maxRadius = center - 40
+
+  const angleStep = (2 * Math.PI) / entries.length
+  const startAngle = -Math.PI / 2 // Start from top
+
+  // Calculate points
+  const points = entries.map(([type, result], i) => {
+    const meta = assessmentMeta[type]
+    const pct = Math.min(result.score / meta.maxScore, 1)
+    const angle = startAngle + i * angleStep
+    const r = pct * maxRadius
+    return {
+      x: center + r * Math.cos(angle),
+      y: center + r * Math.sin(angle),
+      labelX: center + (maxRadius + 24) * Math.cos(angle),
+      labelY: center + (maxRadius + 24) * Math.sin(angle),
+      name: meta.name,
+      icon: meta.icon,
+      pct: Math.round(pct * 100),
+    }
+  })
+
+  // Grid rings
+  const rings = [0.25, 0.5, 0.75, 1.0]
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] p-6 mb-6">
+      <h2 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-4 text-center">
+        Your Psychological Profile
+      </h2>
+      <div className="flex justify-center overflow-visible">
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="overflow-visible">
+          {/* Grid rings */}
+          {rings.map(pct => {
+            const r = pct * maxRadius
+            const ringPoints = entries.map((_, i) => {
+              const angle = startAngle + i * angleStep
+              return `${center + r * Math.cos(angle)},${center + r * Math.sin(angle)}`
+            }).join(' ')
+            return (
+              <polygon
+                key={pct}
+                points={ringPoints}
+                fill="none"
+                stroke="var(--border)"
+                strokeWidth="1"
+              />
+            )
+          })}
+
+          {/* Axis lines */}
+          {entries.map((_, i) => {
+            const angle = startAngle + i * angleStep
+            return (
+              <line
+                key={i}
+                x1={center}
+                y1={center}
+                x2={center + maxRadius * Math.cos(angle)}
+                y2={center + maxRadius * Math.sin(angle)}
+                stroke="var(--border)"
+                strokeWidth="1"
+              />
+            )
+          })}
+
+          {/* Data polygon */}
+          <polygon
+            points={points.map(p => `${p.x},${p.y}`).join(' ')}
+            fill="rgba(196, 112, 79, 0.15)"
+            stroke="var(--terracotta)"
+            strokeWidth="2.5"
+          />
+
+          {/* Data points */}
+          {points.map((p, i) => (
+            <circle
+              key={i}
+              cx={p.x}
+              cy={p.y}
+              r="4"
+              fill="var(--terracotta)"
+              stroke="white"
+              strokeWidth="2"
+            />
+          ))}
+
+          {/* Labels */}
+          {points.map((p, i) => (
+            <text
+              key={i}
+              x={p.labelX}
+              y={p.labelY}
+              textAnchor="middle"
+              dominantBaseline="central"
+              className="text-[10px] fill-text-muted"
+              style={{ fontFamily: 'var(--font-ui)' }}
+            >
+              {p.icon} {p.pct}%
+            </text>
+          ))}
+        </svg>
+      </div>
+      <div className="flex flex-wrap justify-center gap-3 mt-4">
+        {points.map((p, i) => (
+          <span key={i} className="text-xs text-text-muted">
+            {p.icon} {p.name}
+          </span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Stats summary card
+function ProfileStats({ results }: { results: AssessmentResult[] }) {
+  const uniqueAssessments = new Set(results.map(r => r.assessment_type)).size
+  const totalCompleted = results.length
+
+  return (
+    <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="bg-white rounded-xl shadow-sm border border-[var(--border)] p-4 text-center">
+        <div className="font-[family-name:var(--font-heading)] text-2xl font-bold text-terracotta">
+          {uniqueAssessments}
+        </div>
+        <div className="text-xs text-text-muted mt-1">Assessments</div>
+      </div>
+      <div className="bg-white rounded-xl shadow-sm border border-[var(--border)] p-4 text-center">
+        <div className="font-[family-name:var(--font-heading)] text-2xl font-bold text-terracotta">
+          {totalCompleted}
+        </div>
+        <div className="text-xs text-text-muted mt-1">Completed</div>
+      </div>
+      <div className="bg-white rounded-xl shadow-sm border border-[var(--border)] p-4 text-center">
+        <div className="font-[family-name:var(--font-heading)] text-2xl font-bold text-terracotta">
+          {10 - uniqueAssessments}
+        </div>
+        <div className="text-xs text-text-muted mt-1">Remaining</div>
+      </div>
+    </div>
+  )
+}
+
+export function ProfileResults({ results }: { results: AssessmentResult[] }) {
+  return (
+    <div>
+      {/* Stats bar */}
+      <ProfileStats results={results} />
+
+      {/* Radar chart */}
+      <RadarChart results={results} />
+
+      {/* Individual results */}
+      <h2 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-brown-deep mb-4">
+        Your Results
+      </h2>
+      <div className="space-y-4">
+        {results.map((result) => (
+          <ResultCard key={result.id} result={result} />
+        ))}
+      </div>
+    </div>
+  )
+}
