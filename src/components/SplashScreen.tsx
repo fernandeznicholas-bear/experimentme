@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 
-type Phase = 'blank' | 'science' | 'both' | 'scienceOut' | 'allOut' | 'name' | 'fadeout' | 'done'
+type Phase = 'blank' | 'science' | 'both' | 'allOut' | 'name' | 'nameOut' | 'fadeout' | 'done'
 
 export function SplashScreen() {
   const [phase, setPhase] = useState<Phase>('blank')
@@ -30,12 +30,12 @@ export function SplashScreen() {
     }
 
     schedule(() => setPhase('science'), 400)
-    schedule(() => setPhase('both'), 2800)
-    schedule(() => setPhase('scienceOut'), 5500)
-    schedule(() => setPhase('allOut'), 7000)
-    schedule(() => setPhase('name'), 8500)
-    schedule(() => setPhase('fadeout'), 12800)
-    schedule(() => setPhase('done'), 15800)
+    schedule(() => setPhase('both'), 2400)
+    schedule(() => setPhase('allOut'), 5000)
+    schedule(() => setPhase('name'), 7000)
+    schedule(() => setPhase('nameOut'), 10500)
+    schedule(() => setPhase('fadeout'), 12500)
+    schedule(() => setPhase('done'), 15000)
 
     return () => {
       timers.current.forEach(clearTimeout)
@@ -46,7 +46,7 @@ export function SplashScreen() {
   if (phase === 'done') return null
 
   const showScience = phase === 'science' || phase === 'both'
-  const showDiscovery = phase === 'both' || phase === 'scienceOut'
+  const showDiscovery = phase === 'both'
 
   return (
     <div
@@ -56,14 +56,14 @@ export function SplashScreen() {
         transition: 'opacity 3s ease-in-out',
       }}
     >
-      {/* Phase 1: Science-Based · Self-Discovery */}
-      <p
-        className="absolute font-[family-name:var(--font-logo)] text-lg md:text-2xl text-text-muted tracking-[0.25em] uppercase flex items-center gap-4"
+      {/* Phase 1: Science-Based / Self-Discovery — stacked on mobile */}
+      <div
+        className="absolute font-[family-name:var(--font-logo)] text-base md:text-2xl text-text-muted tracking-[0.15em] md:tracking-[0.25em] uppercase flex flex-col items-center gap-1 md:gap-2 whitespace-nowrap"
       >
         <span
           style={{
             opacity: showScience ? 1 : 0,
-            transition: 'opacity 2s ease-in-out',
+            transition: 'opacity 1.8s ease-in-out',
           }}
         >
           Science-Based
@@ -71,26 +71,18 @@ export function SplashScreen() {
         <span
           style={{
             opacity: showDiscovery ? 1 : 0,
-            transition: 'opacity 2s ease-in-out',
-          }}
-        >
-          ·
-        </span>
-        <span
-          style={{
-            opacity: showDiscovery ? 1 : 0,
-            transition: 'opacity 2s ease-in-out',
+            transition: 'opacity 1.8s ease-in-out',
           }}
         >
           Self-Discovery
         </span>
-      </p>
+      </div>
 
       {/* Phase 2: Experiment Me with shimmer */}
       <h1
-        className={`absolute font-[family-name:var(--font-logo)] text-5xl md:text-7xl font-light tracking-tight ${phase === 'name' ? 'splash-shimmer' : 'text-terracotta'}`}
+        className={`absolute font-[family-name:var(--font-logo)] text-5xl md:text-7xl font-light tracking-tight ${phase === 'name' || phase === 'nameOut' ? 'splash-shimmer' : 'text-terracotta'}`}
         style={{
-          opacity: phase === 'name' || phase === 'fadeout' ? 1 : 0,
+          opacity: phase === 'name' ? 1 : 0,
           transition: 'opacity 2s ease-in-out',
         }}
       >

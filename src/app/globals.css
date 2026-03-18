@@ -63,12 +63,8 @@ html {
     background-size: 100% 0%;
     background-position: center bottom;
   }
-  50% {
-    background-size: 300% 300%;
-    background-position: center bottom;
-  }
   100% {
-    background-size: 100% 0%;
+    background-size: 300% 300%;
     background-position: center bottom;
   }
 }
@@ -101,5 +97,5 @@ html {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: shimmer 6s ease-in-out 1s 1;
+  animation: shimmer 3s ease-in-out forwards;
 }
