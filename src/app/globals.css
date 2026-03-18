@@ -76,7 +76,13 @@ html {
 }
 
 .marquee-track {
-  animation: marquee-scroll 30s linear infinite;
+  animation: marquee-scroll 12s linear infinite;
+}
+
+@media (min-width: 768px) {
+  .marquee-track {
+    animation: marquee-scroll 30s linear infinite;
+  }
 }
 
 .marquee-track:hover {
