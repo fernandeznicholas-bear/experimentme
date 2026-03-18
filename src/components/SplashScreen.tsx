@@ -30,9 +30,9 @@ export function SplashScreen() {
     }
 
     schedule(() => setPhase('science'), 400)
-    schedule(() => setPhase('both'), 2400)
-    schedule(() => setPhase('allOut'), 5000)
-    schedule(() => setPhase('name'), 7000)
+    schedule(() => setPhase('both'), 2000)
+    schedule(() => setPhase('allOut'), 5200)
+    schedule(() => setPhase('name'), 7200)
     schedule(() => setPhase('nameOut'), 10500)
     schedule(() => setPhase('fadeout'), 12500)
     schedule(() => setPhase('done'), 15000)
@@ -64,6 +64,7 @@ export function SplashScreen() {
           style={{
             opacity: showScience ? 1 : 0,
             transition: 'opacity 1.8s ease-in-out',
+            willChange: 'opacity',
           }}
         >
           Science-Based
@@ -72,6 +73,7 @@ export function SplashScreen() {
           style={{
             opacity: showDiscovery ? 1 : 0,
             transition: 'opacity 1.8s ease-in-out',
+            willChange: 'opacity',
           }}
         >
           Self-Discovery
