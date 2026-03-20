@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase-browser'
 import { assessmentTagLabels, assessmentTagColors, type AssessmentTag } from '@/lib/assessments'
@@ -203,6 +204,7 @@ const marqueeItems = [
 ]
 
 export default function HomePage() {
+  const router = useRouter()
   const [randomAssessment, setRandomAssessment] = useState(assessments[0])
   const [formRole, setFormRole] = useState<'participant' | 'researcher'>('participant')
   const [formName, setFormName] = useState('')
@@ -469,6 +471,12 @@ export default function HomePage() {
                   <span>{a.questions} questions</span>
                   <span>~{a.time}</span>
                   {isDone && <span className="text-sage font-semibold">Retake anytime</span>}
+                  <button
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push(`/learn/${a.slug}`) }}
+                    className="text-terracotta font-semibold hover:underline ml-auto cursor-pointer"
+                  >
+                    Learn More
+                  </button>
                 </div>
               </Link>
             ) : (

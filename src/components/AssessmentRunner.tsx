@@ -348,6 +348,17 @@ export function AssessmentRunner({ config }: Props) {
           {/* Share */}
           <ShareButtons config={config} result={result} />
 
+          {/* Learn More */}
+          <div className="bg-cream/50 rounded-2xl border border-[var(--border)] p-5 mb-6 text-center">
+            <p className="text-sm text-text-muted mb-2">Want to understand the science behind this assessment?</p>
+            <Link
+              href={`/learn/${config.id}`}
+              className="text-terracotta font-semibold text-sm hover:underline no-underline"
+            >
+              Deep Dive: History, Validation & Research &rarr;
+            </Link>
+          </div>
+
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
