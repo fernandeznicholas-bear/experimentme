@@ -83,3 +83,38 @@ create policy "Users can insert own demographics"
 create policy "Users can update own demographics"
   on public.user_demographics for update
   using (auth.uid() = user_id);
+
+-- ─── Research Consent ───────────────────────────────────────
+-- Tracks user consent for anonymous data sharing with researchers
+-- Consent is explicit opt-in, granular (per-assessment or global), and revocable
+
+create table if not exists public.research_consent (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null,
+  assessment_type text,          -- null = global consent for all assessments; 'swls', 'grit', etc. = per-assessment
+  consented boolean not null default false,
+  consented_at timestamptz,      -- when they opted in
+  revoked_at timestamptz,        -- when they opted out (null if still active)
+  created_at timestamptz default now() not null,
+  updated_at timestamptz default now() not null,
+
+  -- One consent record per user per scope (global or specific assessment)
+  unique(user_id, assessment_type)
+);
+
+create index if not exists idx_research_consent_user_id
+  on public.research_consent(user_id);
+
+alter table public.research_consent enable row level security;
+
+create policy "Users can read own consent"
+  on public.research_consent for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own consent"
+  on public.research_consent for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own consent"
+  on public.research_consent for update
+  using (auth.uid() = user_id);

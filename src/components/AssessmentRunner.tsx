@@ -7,6 +7,7 @@ import { createClient } from '@/lib/supabase-browser'
 import { buildShareUrl, type ShareData } from '@/lib/share'
 import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
 import { DemographicQuickAsk } from '@/components/DemographicQuickAsk'
+import { ResearchConsentPrompt } from '@/components/ResearchConsentPrompt'
 
 interface Props {
   config: AssessmentConfig
@@ -29,6 +30,7 @@ export function AssessmentRunner({ config }: Props) {
   const [userChecked, setUserChecked] = useState(false)
   const [showDemoAsk, setShowDemoAsk] = useState(false)
   const [demoAskDismissed, setDemoAskDismissed] = useState(false)
+  const [consentDismissed, setConsentDismissed] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -367,6 +369,16 @@ export function AssessmentRunner({ config }: Props) {
               userId={user.id}
               onComplete={() => setDemoAskDismissed(true)}
               onSkip={() => setDemoAskDismissed(true)}
+            />
+          )}
+
+          {/* Research Consent — after demo ask is done or not needed */}
+          {saved && !consentDismissed && user && (!showDemoAsk || demoAskDismissed) && (
+            <ResearchConsentPrompt
+              userId={user.id}
+              assessmentType={config.id}
+              onComplete={() => setConsentDismissed(true)}
+              onDismiss={() => setConsentDismissed(true)}
             />
           )}
 

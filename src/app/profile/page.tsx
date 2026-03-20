@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { ProfileResults } from '@/components/ProfileResults'
 import { PendingResultSaver } from '@/components/PendingResultSaver'
 import { ExtendedDemographics } from '@/components/ExtendedDemographics'
+import { ResearchConsentManager } from '@/components/ResearchConsentManager'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -21,6 +22,8 @@ export default async function ProfilePage() {
     .order('completed_at', { ascending: false })
 
   const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Explorer'
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const assessmentTypes = Array.from(new Set(((results || []) as any[]).map((r) => String(r.assessment_type))))
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
@@ -47,6 +50,12 @@ export default async function ProfilePage() {
 
         {/* Demographic Profile */}
         <ExtendedDemographics userId={user.id} />
+
+        {/* Research Data Sharing */}
+        <ResearchConsentManager
+          userId={user.id}
+          assessmentTypes={assessmentTypes}
+        />
 
         {/* Results */}
         {results && results.length > 0 ? (

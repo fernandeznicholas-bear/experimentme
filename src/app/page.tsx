@@ -690,11 +690,12 @@ export default function HomePage() {
               The science of you.
             </p>
           </div>
-          <nav className="flex items-center gap-6 text-sm text-cream/60">
-            <Link href="#" className="hover:text-cream transition-colors no-underline">How It Works</Link>
+          <nav className="flex items-center gap-6 text-sm text-cream/60 flex-wrap justify-center">
             <Link href="#assessments" className="hover:text-cream transition-colors no-underline">Assessments</Link>
             <Link href="#researchers" className="hover:text-cream transition-colors no-underline">For Researchers</Link>
             <Link href="/about" className="hover:text-cream transition-colors no-underline">About</Link>
+            <Link href="/privacy" className="hover:text-cream transition-colors no-underline">Privacy</Link>
+            <Link href="/terms" className="hover:text-cream transition-colors no-underline">Terms</Link>
           </nav>
           <p className="text-cream/40 text-xs">
             &copy; {new Date().getFullYear()} Experiment Me. All rights reserved.
