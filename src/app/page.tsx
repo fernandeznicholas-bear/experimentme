@@ -248,9 +248,14 @@ export default function HomePage() {
     }
     document.addEventListener('visibilitychange', handleVisibility)
     window.addEventListener('focus', fetchCompleted)
+
+    // Poll every 30s for cross-device sync (e.g. deleted on phone, viewing on desktop)
+    const interval = setInterval(fetchCompleted, 30000)
+
     return () => {
       document.removeEventListener('visibilitychange', handleVisibility)
       window.removeEventListener('focus', fetchCompleted)
+      clearInterval(interval)
     }
   }, [])
 
