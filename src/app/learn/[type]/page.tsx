@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { getAssessmentConfig, calculateScore } from '@/lib/assessments'
 import { getDeepDiveContent } from '@/lib/deep-dive-content'
+import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
 import { createClient } from '@/lib/supabase-browser'
 
 interface StoredResult {
@@ -263,6 +264,9 @@ export default function LearnPage() {
               </Section>
             )}
 
+            {/* Population Norms */}
+            <NormsSection assessmentId={type} userScore={latestResult?.score ?? null} />
+
             {/* Key Findings */}
             <Section title="Key Research Findings">
               <div className="space-y-4">
@@ -422,5 +426,93 @@ function ValidationStat({ label, value }: { label: string; value: string }) {
       <p className="text-xs font-semibold text-terracotta uppercase tracking-wider mb-1">{label}</p>
       <p className="font-[family-name:var(--font-body)] text-text-main text-sm leading-relaxed">{value}</p>
     </div>
+  )
+}
+
+function NormsSection({ assessmentId, userScore }: { assessmentId: string; userScore: number | null }) {
+  const norms = getAssessmentNorms(assessmentId)
+  if (!norms) return null
+
+  const norm = norms.overall
+  const userPercentile = userScore !== null ? calculatePercentile(userScore, norm) : null
+
+  return (
+    <Section title="Population Norms">
+      <div className="bg-cream/50 rounded-xl border border-[var(--border)] p-5 mb-4">
+        <div className="grid grid-cols-2 gap-4 mb-4">
+          <div>
+            <p className="text-xs font-semibold text-terracotta uppercase tracking-wider mb-1">Mean Score</p>
+            <p className="font-[family-name:var(--font-heading)] text-2xl font-bold text-brown-deep">{norm.mean}</p>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-terracotta uppercase tracking-wider mb-1">Standard Deviation</p>
+            <p className="font-[family-name:var(--font-heading)] text-2xl font-bold text-brown-deep">{norm.sd}</p>
+          </div>
+        </div>
+        <p className="text-xs text-text-muted">
+          Reference: {norm.sampleDescription} (N={norm.sampleSize.toLocaleString()}) &middot; {norm.source}
+        </p>
+      </div>
+
+      {userPercentile !== null && (
+        <div className="bg-terracotta/5 rounded-xl border border-terracotta/20 p-5 mb-4">
+          <div className="flex items-center gap-3 mb-3">
+            <span className="font-[family-name:var(--font-heading)] text-3xl font-bold text-terracotta">
+              {userPercentile}<span className="text-base text-text-muted font-normal">th</span>
+            </span>
+            <span className="text-sm text-text-muted">percentile</span>
+          </div>
+          {/* Percentile bar */}
+          <div className="relative mb-2">
+            <div className="h-3 bg-cream rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-sage/60 via-sage to-terracotta rounded-full"
+                style={{ width: `${userPercentile}%` }}
+              />
+            </div>
+            <div
+              className="absolute top-0 -translate-x-1/2"
+              style={{ left: `${userPercentile}%` }}
+            >
+              <div className="w-3 h-3 bg-terracotta rounded-full border-2 border-white shadow-sm" />
+            </div>
+          </div>
+          <div className="flex justify-between text-[10px] text-text-muted mb-2">
+            <span>0th</span>
+            <span>25th</span>
+            <span>50th</span>
+            <span>75th</span>
+            <span>99th</span>
+          </div>
+          <p className="text-sm text-text-muted font-[family-name:var(--font-body)]">
+            {norm.higherIsBetter
+              ? `Your score of ${userScore} is higher than approximately ${userPercentile}% of the reference population.`
+              : `${100 - userPercentile}% of the reference population scored lower than you (closer to symptom-free).`
+            }
+          </p>
+        </div>
+      )}
+
+      {/* Subscale norms */}
+      {norms.subscales && norms.subscales.length > 0 && (
+        <div>
+          <h4 className="text-sm font-semibold text-brown-deep mb-2">Subscale Norms</h4>
+          <div className="space-y-2">
+            {norms.subscales.map((sub) => (
+              <div key={sub.name} className="flex items-center justify-between bg-cream/50 rounded-lg border border-[var(--border)] px-4 py-2.5">
+                <span className="text-sm text-text-main">{sub.name}</span>
+                <span className="text-sm text-text-muted">
+                  M={sub.mean}, SD={sub.sd}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p className="text-xs text-text-muted/70 mt-4 italic leading-relaxed">
+        Percentiles are estimated using a normal distribution approximation based on published means and standard deviations. Individual studies may vary.
+      </p>
+    </Section>
   )
 }

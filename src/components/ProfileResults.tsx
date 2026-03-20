@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { getAssessmentConfig } from '@/lib/assessments'
 import { buildShareUrl, type ShareData } from '@/lib/share'
+import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
 
 interface AssessmentResult {
   id: string
@@ -258,6 +259,16 @@ function ResultCard({ results }: { results: AssessmentResult[] }) {
               <span className="text-sm font-semibold text-terracotta">
                 {category?.emoji} {result.category}
               </span>
+              {(() => {
+                const norms = getAssessmentNorms(result.assessment_type)
+                if (!norms) return null
+                const pct = calculatePercentile(result.score, norms.overall)
+                return (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-sage/15 text-sage font-bold">
+                    {pct}th percentile
+                  </span>
+                )
+              })()}
               {scoreChange !== null && scoreChange !== 0 && (
                 <span className={`text-xs font-semibold ${scoreChange > 0 ? 'text-sage' : 'text-terracotta'}`}>
                   {scoreChange > 0 ? '▲' : '▼'} {Math.abs(scoreChange)} from last

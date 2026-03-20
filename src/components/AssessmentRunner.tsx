@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { AssessmentConfig, calculateScore, ScoreCategory } from '@/lib/assessments'
 import { createClient } from '@/lib/supabase-browser'
 import { buildShareUrl, type ShareData } from '@/lib/share'
+import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
 
 interface Props {
   config: AssessmentConfig
@@ -243,6 +244,9 @@ export function AssessmentRunner({ config }: Props) {
               {result.category.insight}
             </p>
           </div>
+
+          {/* How You Compare — Percentile */}
+          <PercentileSection assessmentId={config.id} score={result.score} />
 
           {/* Subscales */}
           {result.subscaleScores && result.subscaleScores.length > 0 && (
@@ -485,6 +489,72 @@ function ShareButtons({ config, result }: {
           {igCopied ? 'Copied! Paste on IG' : 'Instagram'}
         </button>
       </div>
+    </div>
+  )
+}
+
+function PercentileSection({ assessmentId, score }: { assessmentId: string; score: number }) {
+  const norms = getAssessmentNorms(assessmentId)
+  if (!norms) return null
+
+  const norm = norms.overall
+  const percentile = calculatePercentile(score, norm)
+
+  // Position on the bell curve (0-100 as percentage)
+  const curvePosition = percentile
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] p-6 mb-6">
+      <h3 className="font-[family-name:var(--font-heading)] text-lg font-bold text-brown-deep mb-1">
+        How You Compare
+      </h3>
+      <p className="text-xs text-text-muted mb-4">
+        Based on published norms: {norm.sampleDescription} (N={norm.sampleSize.toLocaleString()})
+      </p>
+
+      {/* Percentile bar */}
+      <div className="relative mb-2">
+        <div className="h-3 bg-cream rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-sage/60 via-sage to-terracotta rounded-full transition-all duration-700 ease-out"
+            style={{ width: `${curvePosition}%` }}
+          />
+        </div>
+        {/* Marker */}
+        <div
+          className="absolute top-0 -translate-x-1/2 flex flex-col items-center"
+          style={{ left: `${curvePosition}%` }}
+        >
+          <div className="w-3 h-3 bg-terracotta rounded-full border-2 border-white shadow-sm" />
+        </div>
+      </div>
+      <div className="flex justify-between text-[10px] text-text-muted mb-4">
+        <span>0th</span>
+        <span>25th</span>
+        <span>50th</span>
+        <span>75th</span>
+        <span>99th</span>
+      </div>
+
+      {/* Percentile text */}
+      <div className="text-center">
+        <span className="font-[family-name:var(--font-heading)] text-3xl font-bold text-terracotta">
+          {percentile}
+          <span className="text-base text-text-muted font-normal">th</span>
+        </span>
+        <span className="text-sm text-text-muted ml-1">percentile</span>
+      </div>
+      <p className="text-sm text-text-muted text-center mt-2 font-[family-name:var(--font-body)] leading-relaxed">
+        {norm.higherIsBetter
+          ? `Your score is higher than approximately ${percentile}% of the reference population.`
+          : `${100 - percentile}% of the reference population scored lower than you (closer to symptom-free).`
+        }
+      </p>
+
+      {/* Source */}
+      <p className="text-[10px] text-text-muted/70 text-center mt-3 italic">
+        Reference: {norm.source} &middot; Mean: {norm.mean}, SD: {norm.sd}
+      </p>
     </div>
   )
 }
