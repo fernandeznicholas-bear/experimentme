@@ -88,9 +88,17 @@ function HistoryEntry({ result, meta, isFirst, onDelete }: { result: AssessmentR
   const handleDelete = async () => {
     setDeleting(true)
     const supabase = createClient()
-    const { error } = await supabase.from('assessment_results').delete().eq('id', result.id)
+    const { data, error } = await supabase.from('assessment_results').delete().eq('id', result.id).select()
     setDeleting(false)
-    if (!error) onDelete(result.id)
+    if (error) {
+      alert('Failed to delete result. Please try again.')
+      return
+    }
+    if (!data || data.length === 0) {
+      alert('Unable to delete — please sign out and sign back in, then try again.')
+      return
+    }
+    onDelete(result.id)
   }
 
   return (
@@ -241,24 +249,36 @@ function ResultCard({ results, onDelete }: { results: AssessmentResult[]; onDele
   const handleDelete = async (id: string) => {
     setDeleting(true)
     const supabase = createClient()
-    const { error } = await supabase.from('assessment_results').delete().eq('id', id)
+    const { data, error } = await supabase.from('assessment_results').delete().eq('id', id).select()
     setDeleting(false)
-    if (!error) {
-      setConfirmDelete(null)
-      onDelete(id)
+    if (error) {
+      alert('Failed to delete result. Please try again.')
+      return
     }
+    if (!data || data.length === 0) {
+      alert('Unable to delete — please sign out and sign back in, then try again.')
+      return
+    }
+    setConfirmDelete(null)
+    onDelete(id)
   }
 
   const handleDeleteAll = async () => {
     setDeleting(true)
     const supabase = createClient()
     const ids = results.map(r => r.id)
-    const { error } = await supabase.from('assessment_results').delete().in('id', ids)
+    const { data, error } = await supabase.from('assessment_results').delete().in('id', ids).select()
     setDeleting(false)
-    if (!error) {
-      setConfirmDelete(null)
-      ids.forEach(id => onDelete(id))
+    if (error) {
+      alert('Failed to delete results. Please try again.')
+      return
     }
+    if (!data || data.length === 0) {
+      alert('Unable to delete — please sign out and sign back in, then try again.')
+      return
+    }
+    setConfirmDelete(null)
+    data.forEach((row: { id: string }) => onDelete(row.id))
   }
 
   const result = results[0] // Latest result
