@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase-server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ProfileResults } from '@/components/ProfileResults'
+import { PendingResultSaver } from '@/components/PendingResultSaver'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -22,6 +23,7 @@ export default async function ProfilePage() {
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
+      <PendingResultSaver userId={user.id} />
       <div className="max-w-3xl mx-auto">
         {/* Profile Header */}
         <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] p-8 mb-8">

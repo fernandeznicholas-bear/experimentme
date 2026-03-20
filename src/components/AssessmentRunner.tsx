@@ -61,6 +61,20 @@ export function AssessmentRunner({ config }: Props) {
         if (authUser) {
           setUser({ id: authUser.id })
           saveResult(authUser.id, result, newAnswers)
+        } else {
+          // Not logged in — store result in localStorage so it can be saved after login
+          const pendingResult = {
+            assessment_type: config.id,
+            score: result.score,
+            max_score: config.scoreType === 'average' ? config.scaleMax : config.questions.length * config.scaleMax,
+            category: result.category.label,
+            details: {
+              subscales: result.subscaleScores || [],
+              answers: newAnswers,
+            },
+            completed_at: new Date().toISOString(),
+          }
+          localStorage.setItem('pendingAssessmentResult', JSON.stringify(pendingResult))
         }
       })
     } else {
@@ -299,14 +313,22 @@ export function AssessmentRunner({ config }: Props) {
                 Save Your Results
               </h3>
               <p className="text-sm text-text-muted mb-4 font-[family-name:var(--font-body)]">
-                Create a free account to save this result and build your psychological profile over time.
+                Save this result and build your psychological profile over time.
               </p>
-              <Link
-                href="/auth/signup"
-                className="inline-block px-6 py-2.5 rounded-full bg-sage text-white font-semibold text-sm hover:bg-sage/80 transition-colors no-underline"
-              >
-                Create Free Account
-              </Link>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link
+                  href="/auth/login"
+                  className="inline-block px-6 py-2.5 rounded-full bg-terracotta text-white font-semibold text-sm hover:bg-terracotta-dark transition-colors no-underline"
+                >
+                  Log In to Save
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="inline-block px-6 py-2.5 rounded-full bg-sage text-white font-semibold text-sm hover:bg-sage/80 transition-colors no-underline"
+                >
+                  Create Free Account
+                </Link>
+              </div>
             </div>
           )}
 

@@ -5,6 +5,27 @@ import { createClient } from '@/lib/supabase-browser'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function savePendingResult(supabase: any) {
+  try {
+    const pending = localStorage.getItem('pendingAssessmentResult')
+    if (!pending) return
+
+    const pendingResult = JSON.parse(pending)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data: { user } }: any = await supabase.auth.getUser()
+    if (!user) return
+
+    await supabase.from('assessment_results').insert({
+      ...pendingResult,
+      user_id: user.id,
+    })
+    localStorage.removeItem('pendingAssessmentResult')
+  } catch {
+    // Silently fail — don't block login
+  }
+}
+
 function LoginForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -32,6 +53,8 @@ function LoginForm() {
       setError(result.error.message)
       setLoading(false)
     } else {
+      // Check for pending assessment result from before login
+      await savePendingResult(supabase)
       router.push('/profile')
       router.refresh()
     }
