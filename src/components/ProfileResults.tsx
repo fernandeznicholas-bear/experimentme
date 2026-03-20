@@ -149,12 +149,42 @@ function ShareButtons({ assessmentType, score, subscales }: {
         </button>
       )}
       <a
+        href={`mailto:?subject=${encodeURIComponent(`My ${config.title} Result — Experiment Me`)}&body=${encodeURIComponent(`${shareText}\n\nSee my result:\n${buildShareUrl({ a: config.id, s: score })}\n\nTake the assessment yourself at experimentme.com`)}`}
+        className="px-4 py-2 rounded-full border border-brown-mid/30 text-brown-mid font-semibold text-xs hover:bg-brown-mid/5 transition-colors no-underline"
+      >
+        ✉️ Email
+      </a>
+      <a
+        href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-4 py-2 rounded-full border border-[#1877F2]/30 text-[#1877F2] font-semibold text-xs hover:bg-[#1877F2]/5 transition-colors no-underline"
+      >
+        Facebook
+      </a>
+      <a
+        href={`https://wa.me/?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-4 py-2 rounded-full border border-[#25D366]/30 text-[#25D366] font-semibold text-xs hover:bg-[#25D366]/5 transition-colors no-underline"
+      >
+        WhatsApp
+      </a>
+      <a
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-4 py-2 rounded-full border border-[#0A66C2]/30 text-[#0A66C2] font-semibold text-xs hover:bg-[#0A66C2]/5 transition-colors no-underline"
+      >
+        LinkedIn
+      </a>
+      <a
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
         target="_blank"
         rel="noopener noreferrer"
         className="px-4 py-2 rounded-full border border-[#1DA1F2]/30 text-[#1DA1F2] font-semibold text-xs hover:bg-[#1DA1F2]/5 transition-colors no-underline"
       >
-        Post on X
+        X
       </a>
     </div>
   )
