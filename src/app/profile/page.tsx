@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { ProfileResults } from '@/components/ProfileResults'
 import { PendingResultSaver } from '@/components/PendingResultSaver'
+import { ExtendedDemographics } from '@/components/ExtendedDemographics'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -43,6 +44,9 @@ export default async function ProfilePage() {
             Each result is backed by validated, peer-reviewed science.
           </p>
         </div>
+
+        {/* Demographic Profile */}
+        <ExtendedDemographics userId={user.id} />
 
         {/* Results */}
         {results && results.length > 0 ? (

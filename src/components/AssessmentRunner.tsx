@@ -6,6 +6,7 @@ import { AssessmentConfig, calculateScore, ScoreCategory } from '@/lib/assessmen
 import { createClient } from '@/lib/supabase-browser'
 import { buildShareUrl, type ShareData } from '@/lib/share'
 import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
+import { DemographicQuickAsk } from '@/components/DemographicQuickAsk'
 
 interface Props {
   config: AssessmentConfig
@@ -26,6 +27,8 @@ export function AssessmentRunner({ config }: Props) {
   const [user, setUser] = useState<{ id: string } | null>(null)
   const [showAllLevels, setShowAllLevels] = useState(false)
   const [userChecked, setUserChecked] = useState(false)
+  const [showDemoAsk, setShowDemoAsk] = useState(false)
+  const [demoAskDismissed, setDemoAskDismissed] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -104,7 +107,16 @@ export function AssessmentRunner({ config }: Props) {
       completed_at: new Date().toISOString(),
     })
 
-    if (!error) setSaved(true)
+    if (!error) {
+      setSaved(true)
+      // Check if user needs demographic quick ask
+      const { data: demoRows } = await supabase
+        .from('user_demographics')
+        .select('quick_completed')
+        .eq('user_id', userId)
+      const needsDemo = !demoRows || demoRows.length === 0 || !demoRows[0].quick_completed
+      if (needsDemo) setShowDemoAsk(true)
+    }
   }
 
   const maxScore = config.scoreType === 'average' ? config.scaleMax : config.questions.length * config.scaleMax
@@ -347,6 +359,15 @@ export function AssessmentRunner({ config }: Props) {
                 ✓ Result saved to your profile
               </p>
             </div>
+          )}
+
+          {/* Demographic Quick Ask — after first assessment */}
+          {showDemoAsk && !demoAskDismissed && user && (
+            <DemographicQuickAsk
+              userId={user.id}
+              onComplete={() => setDemoAskDismissed(true)}
+              onSkip={() => setDemoAskDismissed(true)}
+            />
           )}
 
           {/* Share */}

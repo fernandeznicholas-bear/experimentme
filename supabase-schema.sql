@@ -37,3 +37,49 @@ create policy "Users can insert own results"
 create policy "Users can delete own results"
   on public.assessment_results for delete
   using (auth.uid() = user_id);
+
+-- ─── User Demographics ────────────────────────────────────────
+-- Stores demographic info for research context and population norms
+
+create table if not exists public.user_demographics (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade not null unique,
+
+  -- Quick demographics (3 questions asked after first assessment)
+  age_range text,             -- '18-24', '25-34', '35-44', '45-54', '55-64', '65+'
+  gender text,                -- 'male', 'female', 'non-binary', 'prefer-not-to-say', 'self-describe'
+  gender_self_describe text,  -- free text if gender = 'self-describe'
+  education text,             -- 'high-school', 'some-college', 'bachelors', 'masters', 'doctorate', 'other'
+
+  -- Extended demographics (optional, in profile settings)
+  ethnicity text,             -- 'white', 'black', 'hispanic-latino', 'asian', 'native-american', 'pacific-islander', 'multiracial', 'other', 'prefer-not-to-say'
+  country text,               -- ISO 3166-1 alpha-2 code (e.g., 'US', 'GB', 'AU')
+  employment_status text,     -- 'employed-full', 'employed-part', 'self-employed', 'student', 'retired', 'unemployed', 'other'
+  relationship_status text,   -- 'single', 'in-relationship', 'married', 'divorced', 'widowed', 'prefer-not-to-say'
+  household_income text,      -- 'under-25k', '25k-50k', '50k-75k', '75k-100k', '100k-150k', '150k+', 'prefer-not-to-say'
+
+  quick_completed boolean default false,    -- true after 3-question quick ask
+  extended_completed boolean default false,  -- true after extended demographics
+
+  created_at timestamptz default now() not null,
+  updated_at timestamptz default now() not null
+);
+
+-- Index for fast lookups
+create index if not exists idx_user_demographics_user_id
+  on public.user_demographics(user_id);
+
+-- Row Level Security
+alter table public.user_demographics enable row level security;
+
+create policy "Users can read own demographics"
+  on public.user_demographics for select
+  using (auth.uid() = user_id);
+
+create policy "Users can insert own demographics"
+  on public.user_demographics for insert
+  with check (auth.uid() = user_id);
+
+create policy "Users can update own demographics"
+  on public.user_demographics for update
+  using (auth.uid() = user_id);
