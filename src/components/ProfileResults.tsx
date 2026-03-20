@@ -249,6 +249,18 @@ function ResultCard({ results, onDelete }: { results: AssessmentResult[]; onDele
     }
   }
 
+  const handleDeleteAll = async () => {
+    setDeleting(true)
+    const supabase = createClient()
+    const ids = results.map(r => r.id)
+    const { error } = await supabase.from('assessment_results').delete().in('id', ids)
+    setDeleting(false)
+    if (!error) {
+      setConfirmDelete(null)
+      ids.forEach(id => onDelete(id))
+    }
+  }
+
   const result = results[0] // Latest result
   const previousResults = results.slice(1) // Older results
   const hasHistory = previousResults.length > 0
@@ -423,7 +435,24 @@ function ResultCard({ results, onDelete }: { results: AssessmentResult[]; onDele
 
           {/* Delete */}
           <div className="mt-4 pt-4 border-t border-[var(--border)]">
-            {confirmDelete === result.id ? (
+            {confirmDelete === 'all' ? (
+              <div className="flex items-center gap-3 flex-wrap">
+                <span className="text-xs text-text-muted">Delete all {results.length} results for {meta.name}? This can&apos;t be undone.</span>
+                <button
+                  onClick={handleDeleteAll}
+                  disabled={deleting}
+                  className="text-xs font-semibold text-red-600 hover:text-red-700 cursor-pointer disabled:opacity-50"
+                >
+                  {deleting ? 'Deleting...' : 'Yes, delete all'}
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(null)}
+                  className="text-xs text-text-muted hover:text-brown-deep cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : confirmDelete === result.id ? (
               <div className="flex items-center gap-3">
                 <span className="text-xs text-text-muted">Delete this result? This can&apos;t be undone.</span>
                 <button
@@ -441,12 +470,22 @@ function ResultCard({ results, onDelete }: { results: AssessmentResult[]; onDele
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => setConfirmDelete(result.id)}
-                className="text-xs text-text-muted hover:text-red-600 transition-colors cursor-pointer"
-              >
-                Delete this result
-              </button>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={() => setConfirmDelete(result.id)}
+                  className="text-xs text-text-muted hover:text-red-600 transition-colors cursor-pointer"
+                >
+                  Delete this result
+                </button>
+                {hasHistory && (
+                  <button
+                    onClick={() => setConfirmDelete('all')}
+                    className="text-xs text-text-muted hover:text-red-600 transition-colors cursor-pointer"
+                  >
+                    Delete all {results.length} results
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>
