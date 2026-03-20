@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { getAssessmentConfig } from '@/lib/assessments'
+import { buildShareUrl, type ShareData } from '@/lib/share'
 
 interface AssessmentResult {
   id: string
@@ -97,6 +98,64 @@ function HistoryEntry({ result, meta, isFirst }: { result: AssessmentResult; met
         </span>
         <span className="text-xs text-text-muted">/{meta.maxScore}</span>
       </div>
+    </div>
+  )
+}
+
+function ShareButtons({ assessmentType, score, subscales }: {
+  assessmentType: string
+  score: number
+  subscales?: { name: string; score: number; maxScore?: number; description: string }[]
+}) {
+  const [copied, setCopied] = useState(false)
+  const config = getAssessmentConfig(assessmentType)
+  if (!config) return null
+
+  const shareData: ShareData = {
+    a: config.id,
+    s: score,
+    ss: subscales?.map(s => ({ n: s.name, s: s.score })),
+  }
+  const shareUrl = buildShareUrl(shareData)
+  const category = config.categories.find(c => score >= c.min && score <= c.max)
+  const shareText = `I scored ${score} on the ${config.title}${category ? ` — ${category.label}` : ''}. See where you stand:`
+
+  const handleCopyLink = async () => {
+    await navigator.clipboard.writeText(shareUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      await navigator.share({ title: `My ${config.title} Result`, text: shareText, url: shareUrl })
+    }
+  }
+
+  return (
+    <div className="flex flex-wrap gap-2 mb-4">
+      <button
+        onClick={handleCopyLink}
+        className="px-4 py-2 rounded-full border border-terracotta/30 text-terracotta font-semibold text-xs hover:bg-terracotta/5 transition-colors cursor-pointer"
+      >
+        {copied ? 'Copied!' : '🔗 Copy Link'}
+      </button>
+      {typeof navigator !== 'undefined' && 'share' in navigator && (
+        <button
+          onClick={handleNativeShare}
+          className="px-4 py-2 rounded-full border border-sage/30 text-sage font-semibold text-xs hover:bg-sage/5 transition-colors cursor-pointer"
+        >
+          📤 Share
+        </button>
+      )}
+      <a
+        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="px-4 py-2 rounded-full border border-[#1DA1F2]/30 text-[#1DA1F2] font-semibold text-xs hover:bg-[#1DA1F2]/5 transition-colors no-underline"
+      >
+        Post on X
+      </a>
     </div>
   )
 }
@@ -197,6 +256,13 @@ function ResultCard({ results }: { results: AssessmentResult[] }) {
               </p>
             </div>
           )}
+
+          {/* Share */}
+          <ShareButtons
+            assessmentType={result.assessment_type}
+            score={result.score}
+            subscales={subscales}
+          />
 
           {/* Subscales */}
           {subscales && subscales.length > 0 && (
