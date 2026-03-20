@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
+import { createClient } from '@/lib/supabase-browser'
 
 const assessments = [
   {
@@ -170,10 +171,31 @@ export default function HomePage() {
   const [formName, setFormName] = useState('')
   const [formEmail, setFormEmail] = useState('')
   const [formInterest, setFormInterest] = useState('swls')
+  const [completedAssessments, setCompletedAssessments] = useState<Set<string>>(new Set())
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
 
   useEffect(() => {
     const idx = Math.floor(Math.random() * assessments.length)
     setRandomAssessment(assessments[idx])
+
+    // Check auth and fetch completed assessments
+    const supabase = createClient()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    supabase.auth.getUser().then((result: any) => {
+      const user = result?.data?.user
+      if (user) {
+        setIsLoggedIn(true)
+        supabase
+          .from('assessment_results')
+          .select('assessment_type')
+          .eq('user_id', user.id)
+          .then(({ data }: { data: { assessment_type: string }[] | null }) => {
+            if (data) {
+              setCompletedAssessments(new Set(data.map((r: { assessment_type: string }) => r.assessment_type)))
+            }
+          })
+      }
+    })
   }, [])
 
   // Build the scale buttons to show (max 7 visible)
@@ -344,18 +366,30 @@ export default function HomePage() {
           <p className="font-[family-name:var(--font-body)] text-text-muted max-w-lg mx-auto">
             Every instrument is validated, peer-reviewed, and properly attributed to its original authors.
           </p>
+          {isLoggedIn && completedAssessments.size > 0 && (
+            <p className="mt-4 text-sm text-sage font-semibold">
+              ✓ {completedAssessments.size} of {assessments.length} completed — {assessments.length - completedAssessments.size} remaining
+            </p>
+          )}
         </div>
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-          {assessments.map((a) =>
-            a.live ? (
+          {assessments.map((a) => {
+            const isDone = completedAssessments.has(a.slug)
+            return a.live ? (
               <Link
                 key={a.slug}
                 href={`/assess/${a.slug}`}
                 className={`relative block rounded-2xl border p-6 ${a.color} hover:shadow-md transition-all no-underline group`}
               >
-                <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-sage text-white text-[10px] font-bold uppercase tracking-wider">
-                  Take It Now
-                </span>
+                {isDone ? (
+                  <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-sage/20 text-sage text-[10px] font-bold uppercase tracking-wider border border-sage/30">
+                    ✓ Completed
+                  </span>
+                ) : (
+                  <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-sage text-white text-[10px] font-bold uppercase tracking-wider">
+                    Take It Now
+                  </span>
+                )}
                 <div className="text-3xl mb-3">{a.icon}</div>
                 <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-1 group-hover:text-terracotta transition-colors">
                   {a.name}
@@ -367,6 +401,7 @@ export default function HomePage() {
                   <span>{a.questions} questions</span>
                   <span>~{a.time}</span>
                   <span>English</span>
+                  {isDone && <span className="text-sage font-semibold">Retake anytime</span>}
                 </div>
               </Link>
             ) : (
@@ -390,7 +425,7 @@ export default function HomePage() {
                 </div>
               </div>
             )
-          )}
+          })}
         </div>
       </section>
 
