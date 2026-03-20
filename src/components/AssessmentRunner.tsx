@@ -394,6 +394,7 @@ function ShareButtons({ config, result }: {
   result: { score: number; category: ScoreCategory; subscaleScores?: { name: string; score: number; maxScore: number; description: string }[] }
 }) {
   const [copied, setCopied] = useState(false)
+  const [igCopied, setIgCopied] = useState(false)
 
   const shareData: ShareData = {
     a: config.id,
@@ -473,6 +474,16 @@ function ShareButtons({ config, result }: {
         >
           X
         </a>
+        <button
+          onClick={async () => {
+            await navigator.clipboard.writeText(`${shareText} ${shareUrl}`)
+            setIgCopied(true)
+            setTimeout(() => setIgCopied(false), 3000)
+          }}
+          className="px-5 py-2.5 rounded-full border-2 border-[#E4405F]/30 text-[#E4405F] font-semibold text-sm hover:bg-[#E4405F]/5 transition-colors cursor-pointer"
+        >
+          {igCopied ? 'Copied! Paste on IG' : 'Instagram'}
+        </button>
       </div>
     </div>
   )

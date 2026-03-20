@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { getAssessmentConfig } from '@/lib/assessments'
 import { buildShareUrl, type ShareData } from '@/lib/share'
 
@@ -108,6 +109,7 @@ function ShareButtons({ assessmentType, score, subscales }: {
   subscales?: { name: string; score: number; maxScore?: number; description: string }[]
 }) {
   const [copied, setCopied] = useState(false)
+  const [igCopied, setIgCopied] = useState(false)
   const config = getAssessmentConfig(assessmentType)
   if (!config) return null
 
@@ -186,6 +188,16 @@ function ShareButtons({ assessmentType, score, subscales }: {
       >
         X
       </a>
+      <button
+        onClick={async () => {
+          await navigator.clipboard.writeText(`${shareText} ${shareUrl}`)
+          setIgCopied(true)
+          setTimeout(() => setIgCopied(false), 3000)
+        }}
+        className="px-4 py-2 rounded-full border border-[#E4405F]/30 text-[#E4405F] font-semibold text-xs hover:bg-[#E4405F]/5 transition-colors cursor-pointer"
+      >
+        {igCopied ? 'Copied! Paste on IG' : 'Instagram'}
+      </button>
     </div>
   )
 }
@@ -286,6 +298,14 @@ function ResultCard({ results }: { results: AssessmentResult[] }) {
               </p>
             </div>
           )}
+
+          {/* Deep Dive link */}
+          <Link
+            href={`/learn/${result.assessment_type}`}
+            className="inline-block text-sm text-terracotta font-semibold hover:underline no-underline mb-4"
+          >
+            Deep Dive: History, Validation & Research &rarr;
+          </Link>
 
           {/* Share */}
           <ShareButtons

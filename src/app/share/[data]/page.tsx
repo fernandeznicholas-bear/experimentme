@@ -80,6 +80,16 @@ export default function SharePage({ params }: { params: Promise<{ data: string }
           </p>
         </div>
 
+        {/* Deep Dive link */}
+        <div className="text-center mb-6">
+          <Link
+            href={`/learn/${config.id}`}
+            className="text-sm text-terracotta font-semibold hover:underline no-underline"
+          >
+            Deep Dive: History, Validation & Research &rarr;
+          </Link>
+        </div>
+
         {/* CTA */}
         <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] p-8 text-center mb-6">
           <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-2">
