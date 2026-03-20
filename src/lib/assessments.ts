@@ -14,18 +14,38 @@ export interface ScoreCategory {
   insight: string
 }
 
+export type AssessmentTag = 'well-being' | 'resilience-growth' | 'self-perception' | 'mental-health'
+
+export const assessmentTagLabels: Record<AssessmentTag, string> = {
+  'well-being': 'Well-Being',
+  'resilience-growth': 'Resilience & Growth',
+  'self-perception': 'Self-Perception',
+  'mental-health': 'Mental Health',
+}
+
+export const assessmentTagColors: Record<AssessmentTag, string> = {
+  'well-being': 'bg-amber/20 text-amber',
+  'resilience-growth': 'bg-sage/20 text-sage',
+  'self-perception': 'bg-terracotta/20 text-terracotta',
+  'mental-health': 'bg-[#6B7FBF]/20 text-[#6B7FBF]',
+}
+
 export interface AssessmentConfig {
   id: string
   title: string
   subtitle: string
   description: string
+  disclaimer: string
   citation: string
+  tags: AssessmentTag[]
   questions: AssessmentQuestion[]
   scaleLabels: string[]
   scaleMin: number
   scaleMax: number
   scoreType: 'sum' | 'average'
   categories: ScoreCategory[]
+  scoredQuestionIndices?: number[] // If set, only these indices count toward the overall score (e.g., Hope Scale excludes filler items)
+  subscaleMultiplier?: number // Multiplier applied to subscale scores (e.g., DASS-21 uses x2 to map onto full DASS-42 norms)
   subscales?: {
     name: string
     questionIndices: number[] // 0-indexed
@@ -39,6 +59,8 @@ export const swlsConfig: AssessmentConfig = {
   title: 'Satisfaction With Life Scale',
   subtitle: 'How satisfied are you with your life as a whole?',
   description: 'The SWLS is a 5-item measure of global life satisfaction developed by Ed Diener and colleagues. It has been used in hundreds of studies worldwide.',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['well-being'],
   citation: 'Diener, E., Emmons, R. A., Larsen, R. J., & Griffin, S. (1985). The Satisfaction With Life Scale. Journal of Personality Assessment, 49(1), 71–75.',
   questions: [
     { text: 'In most ways my life is close to my ideal.' },
@@ -68,6 +90,8 @@ export const rosenbergConfig: AssessmentConfig = {
   title: 'Rosenberg Self-Esteem Scale',
   subtitle: 'How do you feel about yourself?',
   description: 'The Rosenberg Self-Esteem Scale is the most widely used measure of global self-worth, developed by Morris Rosenberg in 1965.',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['self-perception'],
   citation: 'Rosenberg, M. (1965). Society and the Adolescent Self-Image. Princeton University Press.',
   questions: [
     { text: 'I feel that I am a person of worth, at least on an equal plane with others.' },
@@ -98,6 +122,8 @@ export const gritConfig: AssessmentConfig = {
   title: 'Short Grit Scale (Grit-S)',
   subtitle: 'How much perseverance and passion do you bring to your long-term goals?',
   description: 'The Short Grit Scale measures your tendency to sustain interest and effort toward long-term goals. Developed by Angela Duckworth.',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['resilience-growth'],
   citation: 'Duckworth, A. L., & Quinn, P. D. (2009). Development and validation of the Short Grit Scale (Grit-S). Journal of Personality Assessment, 91(2), 166–174.',
   questions: [
     { text: 'New ideas and projects sometimes distract me from previous ones.', reverseScored: true },
@@ -131,6 +157,8 @@ export const mindsetConfig: AssessmentConfig = {
   title: 'Growth Mindset Scale',
   subtitle: 'Do you believe your abilities can change?',
   description: 'Based on Carol Dweck\'s Implicit Theories of Intelligence research. Measures whether you hold a growth mindset (abilities can be developed) or a fixed mindset (abilities are innate).',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['resilience-growth'],
   citation: 'Dweck, C. S. (1999). Self-theories: Their role in motivation, personality, and development. Psychology Press.',
   questions: [
     { text: 'You have a certain amount of intelligence, and you can\'t really do much to change it.', reverseScored: true },
@@ -160,6 +188,8 @@ export const bigfiveConfig: AssessmentConfig = {
   title: 'Big Five Personality (IPIP-20)',
   subtitle: 'What does your personality look like across five core dimensions?',
   description: 'The IPIP-20 is a brief measure of the Big Five personality traits from the International Personality Item Pool. It maps your personality across Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism.',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['self-perception'],
   citation: 'Donnellan, M. B., Oswald, F. L., Baird, B. M., & Lucas, R. E. (2006). The Mini-IPIP Scales: Tiny-yet-effective measures of the Big Five factors of personality. Psychological Assessment, 18(2), 166–174.',
   questions: [
     // Extraversion
@@ -206,12 +236,14 @@ export const bigfiveConfig: AssessmentConfig = {
   ],
 }
 
-// ─── PERMA Profiler ─────────────────────────────────
+// ─── PERMA Profiler (Full 23-item) ──────────────────
 export const permaConfig: AssessmentConfig = {
   id: 'perma',
   title: 'PERMA Profiler',
   subtitle: 'How are you flourishing across five pillars of well-being?',
-  description: 'The PERMA Profiler measures five pillars of well-being identified by Martin Seligman: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment.',
+  description: 'The PERMA Profiler is a 23-item measure of five pillars of well-being identified by Martin Seligman: Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment — plus Negative Emotion and Health subscales.',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['well-being'],
   citation: 'Butler, J., & Kern, M. L. (2016). The PERMA-Profiler: A brief multidimensional measure of flourishing. International Journal of Wellbeing, 6(3), 1–48.',
   questions: [
     // Positive Emotion (P)
@@ -234,17 +266,31 @@ export const permaConfig: AssessmentConfig = {
     { text: 'How much of the time do you feel you are making progress towards accomplishing your goals?' },
     { text: 'How often do you achieve the important goals you have set for yourself?' },
     { text: 'How often are you able to handle your responsibilities?' },
+    // Negative Emotion (N)
+    { text: 'In general, how often do you feel anxious?' },
+    { text: 'How often do you feel angry?' },
+    { text: 'In general, how often do you feel sad?' },
+    // Health (H)
+    { text: 'In general, how would you say your health is?' },
+    { text: 'How satisfied are you with your current physical health?' },
+    { text: 'Compared to others of your same age and sex, how is your health?' },
+    // Single items
+    { text: 'How lonely do you feel in your daily life?' },
+    { text: 'Taking all things together, how happy would you say you are?' },
   ],
-  scaleLabels: ['Not at All', 'Very Rarely', 'Rarely', 'Sometimes', 'Often', 'Very Often', 'Almost Always', 'Completely/Always', 'Very Much So', 'Absolutely/Always'],
+  scaleLabels: ['Not at All', 'Very Slightly', 'Slightly', 'A Little', 'Somewhat', 'Moderately', 'Quite a Bit', 'Very Much', 'Extremely', 'Almost Completely', 'Completely'],
   scaleMin: 0,
   scaleMax: 10,
   scoreType: 'average',
+  scoredQuestionIndices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14], // Overall well-being score uses only the 15 PERMA items
   subscales: [
     { name: 'Positive Emotion', questionIndices: [0, 1, 2], description: 'How often you experience joy, contentment, and positive feelings.' },
     { name: 'Engagement', questionIndices: [3, 4, 5], description: 'How absorbed and interested you become in activities.' },
     { name: 'Relationships', questionIndices: [6, 7, 8], description: 'The quality and support of your social connections.' },
     { name: 'Meaning', questionIndices: [9, 10, 11], description: 'How purposeful and valuable your life feels.' },
     { name: 'Accomplishment', questionIndices: [12, 13, 14], description: 'Your sense of progress and achievement toward goals.' },
+    { name: 'Negative Emotion', questionIndices: [15, 16, 17], description: 'How often you experience anxiety, anger, and sadness. Higher scores indicate more negative emotion.' },
+    { name: 'Health', questionIndices: [18, 19, 20], description: 'Your perceived physical health and satisfaction with it.' },
   ],
   categories: [
     { min: 8.0, max: 10.0, label: 'Flourishing', emoji: '🌻', description: 'You are thriving across the pillars of well-being.', insight: 'You report high levels of well-being across most dimensions. Seligman\'s research shows that flourishing is not about being happy all the time — it\'s about having a rich combination of positive emotion, deep engagement, strong relationships, a sense of meaning, and real accomplishment. You appear to have this combination working well in your life.' },
@@ -260,6 +306,8 @@ export const happinessConfig: AssessmentConfig = {
   title: 'Subjective Happiness Scale',
   subtitle: 'How happy are you, in your own estimation?',
   description: 'The Subjective Happiness Scale is a 4-item measure of global subjective happiness developed by Sonja Lyubomirsky. It captures your own sense of how happy you are, both in absolute terms and relative to others.',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['well-being'],
   citation: 'Lyubomirsky, S., & Lepper, H. S. (1999). A measure of subjective happiness: Preliminary reliability and construct validation. Social Indicators Research, 46, 137–155.',
   questions: [
     { text: 'In general, I consider myself a very happy person.' },
@@ -285,7 +333,9 @@ export const dass21Config: AssessmentConfig = {
   id: 'dass21',
   title: 'DASS-21',
   subtitle: 'How have you been feeling over the past week?',
-  description: 'The DASS-21 measures three related negative emotional states: Depression, Anxiety, and Stress. It is not a diagnostic tool — it measures symptoms you have been experiencing recently. Important: If you are in crisis, please contact the 988 Suicide and Crisis Lifeline (call or text 988).',
+  description: 'The DASS-21 measures three related negative emotional states: Depression, Anxiety, and Stress. It is a screening instrument, not a diagnostic tool — it measures symptoms you have been experiencing recently.',
+  disclaimer: 'This is a screening tool, not a clinical diagnosis. If you are experiencing significant distress, please consult a mental health professional. If you are in crisis, contact the 988 Suicide and Crisis Lifeline (call or text 988).',
+  tags: ['mental-health'],
   citation: 'Lovibond, S. H., & Lovibond, P. F. (1995). Manual for the Depression Anxiety Stress Scales (2nd ed.). Psychology Foundation of Australia.',
   questions: [
     // Depression (D)
@@ -322,6 +372,7 @@ export const dass21Config: AssessmentConfig = {
     { name: 'Anxiety', questionIndices: [7, 8, 9, 10, 11, 12, 13], description: 'Physical arousal, panic, fear, and worry symptoms.' },
     { name: 'Stress', questionIndices: [14, 15, 16, 17, 18, 19, 20], description: 'Tension, irritability, agitation, and difficulty relaxing.' },
   ],
+  subscaleMultiplier: 2, // Standard DASS-21 scoring: multiply subscale sums by 2 to map onto DASS-42 severity norms
   categories: [
     { min: 0, max: 30, label: 'Low Symptoms', emoji: '🌿', description: 'Your symptom levels are in the normal range.', insight: 'Your combined scores across depression, anxiety, and stress are low. This suggests you have been coping well recently. Check the subscale scores below for a more nuanced picture — it is possible to be low on two and higher on one. Remember that this reflects the past week, not a permanent state.' },
     { min: 31, max: 47, label: 'Mild to Moderate Symptoms', emoji: '🌥️', description: 'You are experiencing some emotional distress.', insight: 'Your scores suggest mild to moderate levels of depression, anxiety, or stress. This is common during challenging periods. Look at your subscale scores to see which area is contributing most. Research shows that regular exercise, adequate sleep, social connection, and stress management techniques can help. If symptoms persist, consider speaking with a professional.' },
@@ -335,6 +386,8 @@ export const hopeConfig: AssessmentConfig = {
   title: 'Adult Hope Scale',
   subtitle: 'How goal-directed and resourceful is your thinking?',
   description: 'The Adult Hope Scale measures two components of hopeful thinking: Agency (your sense that you can achieve goals) and Pathways (your ability to generate routes to those goals). Hope in this context is not wishful thinking — it is a measurable cognitive pattern.',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['resilience-growth'],
   citation: 'Snyder, C. R., Harris, C., Anderson, J. R., Holleran, S. A., Irving, L. M., Sigmon, S. T., ... & Harney, P. (1991). The will and the ways: Development and validation of an individual-differences measure of hope. Journal of Personality and Social Psychology, 60(4), 570–585.',
   questions: [
     { text: 'I can think of many ways to get out of a jam.' },  // Pathways
@@ -354,6 +407,7 @@ export const hopeConfig: AssessmentConfig = {
   scaleMin: 1,
   scaleMax: 8,
   scoreType: 'average',
+  scoredQuestionIndices: [0, 1, 3, 5, 7, 8, 9, 11], // Exclude filler items (indices 2, 4, 6, 10) per Snyder's original scoring
   subscales: [
     { name: 'Pathways Thinking', questionIndices: [0, 3, 5, 7], description: 'Your ability to generate multiple routes toward your goals.' },
     { name: 'Agency Thinking', questionIndices: [1, 8, 9, 11], description: 'Your belief in your capacity to initiate and sustain action toward goals.' },
@@ -372,6 +426,8 @@ export const selfcompassionConfig: AssessmentConfig = {
   title: 'Self-Compassion Scale (Short Form)',
   subtitle: 'How do you treat yourself when things go wrong?',
   description: 'The Self-Compassion Scale Short Form measures how kind versus critical you are toward yourself during difficult times. Developed by Kristin Neff, it captures six facets: Self-Kindness, Self-Judgment, Common Humanity, Isolation, Mindfulness, and Over-Identification.',
+  disclaimer: 'This assessment is for educational and self-discovery purposes only. It is not a clinical diagnostic tool and does not replace professional evaluation.',
+  tags: ['self-perception'],
   citation: 'Raes, F., Pommier, E., Neff, K. D., & Van Gucht, D. (2011). Construction and factorial validation of a short form of the Self-Compassion Scale. Clinical Psychology & Psychotherapy, 18(3), 250–255.',
   questions: [
     { text: 'When I fail at something important to me, I become consumed by feelings of inadequacy.', reverseScored: true },  // Self-Judgment
@@ -425,7 +481,7 @@ export function getAssessmentConfig(id: string): AssessmentConfig | null {
 export function calculateScore(
   config: AssessmentConfig,
   answers: number[] // raw answers (1-indexed scale values)
-): { score: number; category: ScoreCategory; subscaleScores?: { name: string; score: number; description: string }[] } {
+): { score: number; category: ScoreCategory; subscaleScores?: { name: string; score: number; maxScore: number; description: string }[] } {
   // Apply reverse scoring
   const scoredAnswers = config.questions.map((q, i) => {
     const answer = answers[i]
@@ -435,25 +491,32 @@ export function calculateScore(
     return answer
   })
 
-  // Calculate total/average
-  const sum = scoredAnswers.reduce((a, b) => a + b, 0)
+  // Calculate total/average (using only scored indices if specified)
+  const indicesToScore = config.scoredQuestionIndices ?? scoredAnswers.map((_, i) => i)
+  const scoredValues = indicesToScore.map(i => scoredAnswers[i])
+  const sum = scoredValues.reduce((a, b) => a + b, 0)
   const score = config.scoreType === 'average'
-    ? Math.round((sum / scoredAnswers.length) * 100) / 100
+    ? Math.round((sum / scoredValues.length) * 100) / 100
     : sum
 
   // Find category
   const category = config.categories.find(c => score >= c.min && score <= c.max) || config.categories[config.categories.length - 1]
 
   // Calculate subscales if present
-  let subscaleScores: { name: string; score: number; description: string }[] | undefined
+  let subscaleScores: { name: string; score: number; maxScore: number; description: string }[] | undefined
   if (config.subscales) {
     subscaleScores = config.subscales.map(sub => {
       const subAnswers = sub.questionIndices.map(i => scoredAnswers[i])
       const subSum = subAnswers.reduce((a, b) => a + b, 0)
-      const subScore = config.scoreType === 'average'
+      const rawSubScore = config.scoreType === 'average'
         ? Math.round((subSum / subAnswers.length) * 100) / 100
         : subSum
-      return { name: sub.name, score: subScore, description: sub.description }
+      const multiplier = config.subscaleMultiplier || 1
+      const subScore = Math.round(rawSubScore * multiplier * 100) / 100
+      const maxSubScore = config.scoreType === 'average'
+        ? config.scaleMax * multiplier
+        : sub.questionIndices.length * config.scaleMax * multiplier
+      return { name: sub.name, score: subScore, maxScore: maxSubScore, description: sub.description }
     })
   }
 

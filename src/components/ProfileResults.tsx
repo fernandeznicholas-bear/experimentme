@@ -130,7 +130,7 @@ function ResultCard({ results }: { results: AssessmentResult[] }) {
   const scoreChange = hasHistory ? result.score - previousResults[0].score : null
 
   // Get subscale data if present
-  const subscales = (result.details as { subscales?: { name: string; score: number; description: string }[] })?.subscales
+  const subscales = (result.details as { subscales?: { name: string; score: number; maxScore?: number; description: string }[] })?.subscales
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] overflow-hidden transition-all">
@@ -203,11 +203,11 @@ function ResultCard({ results }: { results: AssessmentResult[] }) {
             <div className="mb-4">
               <h4 className="text-sm font-semibold text-brown-deep mb-3">Your Subscales</h4>
               <div className="space-y-3">
-                {subscales.map((sub: { name: string; score: number; description: string }) => (
+                {subscales.map((sub: { name: string; score: number; maxScore?: number; description: string }) => (
                   <div key={sub.name}>
                     <ScoreBar
                       score={sub.score}
-                      maxScore={meta.maxScore}
+                      maxScore={sub.maxScore ?? meta.maxScore}
                       label={sub.name}
                     />
                     <p className="text-xs text-text-muted mt-1">{sub.description}</p>

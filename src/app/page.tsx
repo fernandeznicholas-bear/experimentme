@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase-browser'
+import { assessmentTagLabels, assessmentTagColors, type AssessmentTag } from '@/lib/assessments'
 
 const assessments = [
   {
@@ -11,6 +12,8 @@ const assessments = [
     fullName: 'Satisfaction with Life Scale',
     tag: 'WELLBEING ASSESSMENT',
     abbr: 'SWLS',
+    category: 'well-being' as AssessmentTag,
+    percentileBadge: 'Most cited life satisfaction measure',
     description: 'The Satisfaction With Life Scale — measure your overall life satisfaction with 5 validated questions.',
     sampleQuestion: 'In most ways my life is close to my ideal.',
     questions: 5,
@@ -27,6 +30,8 @@ const assessments = [
     fullName: 'Rosenberg Self-Esteem Scale',
     tag: 'SELF-WORTH ASSESSMENT',
     abbr: 'RSE',
+    category: 'self-perception' as AssessmentTag,
+    percentileBadge: 'Most widely used self-esteem scale',
     description: 'The Rosenberg Self-Esteem Scale — the most widely used measure of global self-worth.',
     sampleQuestion: 'I feel that I am a person of worth, at least on an equal plane with others.',
     questions: 10,
@@ -43,6 +48,8 @@ const assessments = [
     fullName: 'Short Grit Scale (Grit-S)',
     tag: 'PERSEVERANCE ASSESSMENT',
     abbr: 'GRIT-S',
+    category: 'resilience-growth' as AssessmentTag,
+    percentileBadge: 'Angela Duckworth\'s landmark scale',
     description: 'The Short Grit Scale by Angela Duckworth — measure your perseverance and passion for long-term goals.',
     sampleQuestion: "Setbacks don't discourage me. I don't give up easily.",
     questions: 8,
@@ -59,6 +66,8 @@ const assessments = [
     fullName: 'Growth Mindset Scale',
     tag: 'MINDSET ASSESSMENT',
     abbr: 'GMS',
+    category: 'resilience-growth' as AssessmentTag,
+    percentileBadge: 'Based on Carol Dweck\'s research',
     description: "Based on Carol Dweck's research — discover whether you lean toward a growth or fixed mindset.",
     sampleQuestion: 'You can always substantially change how intelligent you are.',
     questions: 8,
@@ -75,6 +84,8 @@ const assessments = [
     fullName: 'IPIP-20 Big Five Mini',
     tag: 'PERSONALITY ASSESSMENT',
     abbr: 'BIG 5',
+    category: 'self-perception' as AssessmentTag,
+    percentileBadge: '5 personality traits in 5 minutes',
     description: 'The IPIP-20 Mini — map your personality across Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism.',
     sampleQuestion: 'I am the life of the party.',
     questions: 20,
@@ -91,10 +102,12 @@ const assessments = [
     fullName: 'PERMA Profiler',
     tag: 'WELLBEING ASSESSMENT',
     abbr: 'PERMA',
-    description: "Seligman's five pillars of flourishing — Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment.",
+    category: 'well-being' as AssessmentTag,
+    percentileBadge: 'Seligman\'s 5 pillars of flourishing',
+    description: "Seligman's five pillars of flourishing — Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment — plus Negative Emotion and Health.",
     sampleQuestion: 'How often do you feel joyful?',
-    questions: 15,
-    time: '4 min',
+    questions: 23,
+    time: '5 min',
     icon: '🌻',
     color: 'bg-amber/10 border-amber/20',
     scaleLabels: ['Never', '', '', '', '', '', '', '', '', '', 'Always'],
@@ -107,6 +120,8 @@ const assessments = [
     fullName: 'Subjective Happiness Scale',
     tag: 'HAPPINESS ASSESSMENT',
     abbr: 'SHS',
+    category: 'well-being' as AssessmentTag,
+    percentileBadge: 'Shortest validated happiness measure',
     description: 'Lyubomirsky\'s 4-item measure — the shortest validated happiness scale in psychology.',
     sampleQuestion: 'In general, I consider myself a very happy person.',
     questions: 4,
@@ -118,11 +133,31 @@ const assessments = [
     live: true,
   },
   {
+    slug: 'dass21',
+    name: 'Depression, Anxiety & Stress',
+    fullName: 'DASS-21',
+    tag: 'MENTAL HEALTH SCREENING',
+    abbr: 'DASS-21',
+    category: 'mental-health' as AssessmentTag,
+    percentileBadge: 'Screens depression, anxiety & stress',
+    description: 'The DASS-21 — screens for depression, anxiety, and stress symptoms over the past week.',
+    sampleQuestion: 'I found it hard to wind down.',
+    questions: 21,
+    time: '5 min',
+    icon: '🧠',
+    color: 'bg-[#6B7FBF]/10 border-[#6B7FBF]/20',
+    scaleLabels: ['Did not apply', 'Some degree', 'Considerable', 'Very much'],
+    scaleMax: 4,
+    live: true,
+  },
+  {
     slug: 'hope',
     name: 'Hope',
     fullName: 'Adult Hope Scale',
     tag: 'HOPE ASSESSMENT',
     abbr: 'AHS',
+    category: 'resilience-growth' as AssessmentTag,
+    percentileBadge: 'Snyder\'s agency + pathways model',
     description: 'Snyder\'s Adult Hope Scale — measure your goal-directed thinking across agency and pathways.',
     sampleQuestion: 'I energetically pursue my goals.',
     questions: 12,
@@ -139,6 +174,8 @@ const assessments = [
     fullName: 'Self-Compassion Scale (Short Form)',
     tag: 'SELF-COMPASSION ASSESSMENT',
     abbr: 'SCS-SF',
+    category: 'self-perception' as AssessmentTag,
+    percentileBadge: 'Kristin Neff\'s self-kindness measure',
     description: 'Kristin Neff\'s Short Form — how kind vs. critical are you toward yourself during difficult times?',
     sampleQuestion: 'I try to be understanding and patient toward aspects of my personality I don\'t like.',
     questions: 12,
@@ -173,6 +210,7 @@ export default function HomePage() {
   const [formInterest, setFormInterest] = useState('swls')
   const [completedAssessments, setCompletedAssessments] = useState<Set<string>>(new Set())
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [activeTag, setActiveTag] = useState<AssessmentTag | null>(null)
 
   useEffect(() => {
     const idx = Math.floor(Math.random() * assessments.length)
@@ -240,10 +278,10 @@ export default function HomePage() {
 
           {/* Right: Assessment preview card */}
           <div className="relative flex justify-center">
-            {/* Floating percentile badge */}
+            {/* Floating percentile badge — adapts to random assessment */}
             <div className="absolute -top-2 right-4 md:right-8 z-10 bg-white rounded-full px-4 py-2 shadow-lg border border-sage/20 flex items-center gap-2">
-              <span className="text-lg">🏆</span>
-              <span className="text-sage font-semibold text-sm">93rd percentile in Life Satisfaction</span>
+              <span className="text-lg">🔬</span>
+              <span className="text-sage font-semibold text-sm">{randomAssessment.percentileBadge}</span>
             </div>
 
             {/* Card */}
@@ -371,9 +409,36 @@ export default function HomePage() {
               ✓ {completedAssessments.size} of {assessments.length} completed — {assessments.length - completedAssessments.size} remaining
             </p>
           )}
+
+          {/* Tag filter */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
+            <button
+              onClick={() => setActiveTag(null)}
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                activeTag === null
+                  ? 'bg-brown-deep text-cream'
+                  : 'bg-cream/60 text-text-muted hover:bg-cream'
+              }`}
+            >
+              All
+            </button>
+            {(Object.keys(assessmentTagLabels) as AssessmentTag[]).map((tag) => (
+              <button
+                key={tag}
+                onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
+                  activeTag === tag
+                    ? assessmentTagColors[tag]
+                    : 'bg-cream/60 text-text-muted hover:bg-cream'
+                }`}
+              >
+                {assessmentTagLabels[tag]}
+              </button>
+            ))}
+          </div>
         </div>
         <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-          {assessments.map((a) => {
+          {assessments.filter(a => !activeTag || a.category === activeTag).map((a) => {
             const isDone = completedAssessments.has(a.slug)
             return a.live ? (
               <Link
@@ -397,10 +462,12 @@ export default function HomePage() {
                 <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mb-3 leading-relaxed">
                   {a.description}
                 </p>
-                <div className="flex items-center gap-4 text-xs text-text-muted">
+                <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap">
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${assessmentTagColors[a.category]}`}>
+                    {assessmentTagLabels[a.category]}
+                  </span>
                   <span>{a.questions} questions</span>
                   <span>~{a.time}</span>
-                  <span>English</span>
                   {isDone && <span className="text-sage font-semibold">Retake anytime</span>}
                 </div>
               </Link>
@@ -455,7 +522,7 @@ export default function HomePage() {
           {/* Stats cards */}
           <div className="grid grid-cols-2 gap-4">
             {[
-              { value: '10', label: 'Validated assessments live now' },
+              { value: String(assessments.length), label: 'Validated assessments live now' },
               { value: '100%', label: 'Open instruments — no paywalls' },
               { value: 'IRB', label: 'Friendly design from day one' },
               { value: 'Free', label: 'For participants, always' },

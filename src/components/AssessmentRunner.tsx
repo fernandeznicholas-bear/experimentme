@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { AssessmentConfig, calculateScore, ScoreCategory } from '@/lib/assessments'
 import { createClient } from '@/lib/supabase-browser'
+import { buildShareUrl, type ShareData } from '@/lib/share'
 
 interface Props {
   config: AssessmentConfig
@@ -18,7 +19,7 @@ export function AssessmentRunner({ config }: Props) {
   const [result, setResult] = useState<{
     score: number
     category: ScoreCategory
-    subscaleScores?: { name: string; score: number; description: string }[]
+    subscaleScores?: { name: string; score: number; maxScore: number; description: string }[]
   } | null>(null)
   const [saved, setSaved] = useState(false)
   const [user, setUser] = useState<{ id: string } | null>(null)
@@ -85,7 +86,7 @@ export function AssessmentRunner({ config }: Props) {
 
   const saveResult = async (
     userId: string,
-    result: { score: number; category: ScoreCategory; subscaleScores?: { name: string; score: number; description: string }[] },
+    result: { score: number; category: ScoreCategory; subscaleScores?: { name: string; score: number; maxScore: number; description: string }[] },
     finalAnswers: number[]
   ) => {
     const supabase = createClient()
@@ -127,8 +128,12 @@ export function AssessmentRunner({ config }: Props) {
               <span>Instant results</span>
             </div>
 
-            <p className="text-sm text-text-muted font-[family-name:var(--font-body)] mb-8 leading-relaxed max-w-md mx-auto">
+            <p className="text-sm text-text-muted font-[family-name:var(--font-body)] mb-4 leading-relaxed max-w-md mx-auto">
               {config.description}
+            </p>
+
+            <p className="text-xs text-text-muted/70 font-[family-name:var(--font-body)] mb-8 leading-relaxed max-w-sm mx-auto italic">
+              {config.disclaimer}
             </p>
 
             <button
@@ -251,13 +256,13 @@ export function AssessmentRunner({ config }: Props) {
                     <div className="flex justify-between items-center mb-1">
                       <span className="text-sm font-semibold text-text-main">{sub.name}</span>
                       <span className="text-sm font-bold text-terracotta">
-                        {sub.score}/{config.scaleMax}
+                        {sub.score}/{sub.maxScore}
                       </span>
                     </div>
                     <div className="h-2 bg-cream rounded-full overflow-hidden mb-1">
                       <div
                         className="h-full bg-terracotta rounded-full"
-                        style={{ width: `${(sub.score / config.scaleMax) * 100}%` }}
+                        style={{ width: `${(sub.score / sub.maxScore) * 100}%` }}
                       />
                     </div>
                     <p className="text-xs text-text-muted">{sub.description}</p>
@@ -340,6 +345,9 @@ export function AssessmentRunner({ config }: Props) {
             </div>
           )}
 
+          {/* Share */}
+          <ShareButtons config={config} result={result} />
+
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
@@ -368,4 +376,63 @@ export function AssessmentRunner({ config }: Props) {
   }
 
   return null
+}
+
+function ShareButtons({ config, result }: {
+  config: AssessmentConfig
+  result: { score: number; category: ScoreCategory; subscaleScores?: { name: string; score: number; maxScore: number; description: string }[] }
+}) {
+  const [copied, setCopied] = useState(false)
+
+  const shareData: ShareData = {
+    a: config.id,
+    s: result.score,
+    ss: result.subscaleScores?.map(s => ({ n: s.name, s: s.score })),
+  }
+  const shareUrl = buildShareUrl(shareData)
+  const shareText = `I scored ${result.score} on the ${config.title} — ${result.category.label}. See where you stand:`
+
+  const handleCopyLink = async () => {
+    await navigator.clipboard.writeText(shareUrl)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      await navigator.share({ title: `My ${config.title} Result`, text: shareText, url: shareUrl })
+    }
+  }
+
+  return (
+    <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] p-6 mb-6 text-center">
+      <h3 className="font-[family-name:var(--font-heading)] text-base font-bold text-brown-deep mb-3">
+        Share Your Results
+      </h3>
+      <div className="flex flex-wrap justify-center gap-3">
+        <button
+          onClick={handleCopyLink}
+          className="px-5 py-2.5 rounded-full border-2 border-terracotta/30 text-terracotta font-semibold text-sm hover:bg-terracotta/5 transition-colors cursor-pointer"
+        >
+          {copied ? 'Copied!' : 'Copy Link'}
+        </button>
+        {typeof navigator !== 'undefined' && 'share' in navigator && (
+          <button
+            onClick={handleNativeShare}
+            className="px-5 py-2.5 rounded-full border-2 border-sage/30 text-sage font-semibold text-sm hover:bg-sage/5 transition-colors cursor-pointer"
+          >
+            Share...
+          </button>
+        )}
+        <a
+          href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-5 py-2.5 rounded-full border-2 border-[#1DA1F2]/30 text-[#1DA1F2] font-semibold text-sm hover:bg-[#1DA1F2]/5 transition-colors no-underline"
+        >
+          Post on X
+        </a>
+      </div>
+    </div>
+  )
 }
