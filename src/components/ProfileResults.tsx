@@ -70,9 +70,45 @@ function ScoreLevelExplorer({ assessmentType }: { assessmentType: string }) {
   )
 }
 
-function ResultCard({ result }: { result: AssessmentResult }) {
+function HistoryEntry({ result, meta, isFirst }: { result: AssessmentResult; meta: { name: string; icon: string; maxScore: number; scoreType: 'sum' | 'average' }; isFirst: boolean }) {
+  const config = getAssessmentConfig(result.assessment_type)
+  const category = config?.categories.find(c => c.label === result.category)
+  const date = new Date(result.completed_at).toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
+  return (
+    <div className={`flex items-center gap-3 py-3 ${!isFirst ? 'border-t border-[var(--border)]' : ''}`}>
+      <div className="text-lg flex-shrink-0">{category?.emoji || '📊'}</div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-text-main">{result.category}</span>
+          <span className="text-xs text-text-muted">{date}</span>
+        </div>
+        <div className="mt-1">
+          <ScoreBar score={result.score} maxScore={meta.maxScore} />
+        </div>
+      </div>
+      <div className="flex-shrink-0 text-right">
+        <span className="font-[family-name:var(--font-heading)] text-lg font-bold text-terracotta">
+          {result.score}
+        </span>
+        <span className="text-xs text-text-muted">/{meta.maxScore}</span>
+      </div>
+    </div>
+  )
+}
+
+function ResultCard({ results }: { results: AssessmentResult[] }) {
   const [expanded, setExpanded] = useState(false)
   const [showLevels, setShowLevels] = useState(false)
+  const [showHistory, setShowHistory] = useState(false)
+
+  const result = results[0] // Latest result
+  const previousResults = results.slice(1) // Older results
+  const hasHistory = previousResults.length > 0
 
   const meta = assessmentMeta[result.assessment_type] || {
     name: result.assessment_type,
@@ -90,7 +126,8 @@ function ResultCard({ result }: { result: AssessmentResult }) {
     year: 'numeric',
   })
 
-  const pct = Math.round((result.score / meta.maxScore) * 100)
+  // Score change from previous attempt
+  const scoreChange = hasHistory ? result.score - previousResults[0].score : null
 
   // Get subscale data if present
   const subscales = (result.details as { subscales?: { name: string; score: number; description: string }[] })?.subscales
@@ -110,11 +147,21 @@ function ResultCard({ result }: { result: AssessmentResult }) {
                 {meta.name}
               </h3>
               <span className="text-xs text-text-muted flex-shrink-0">{date}</span>
+              {hasHistory && (
+                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber/20 text-amber font-semibold flex-shrink-0">
+                  {results.length}×
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-3">
               <span className="text-sm font-semibold text-terracotta">
                 {category?.emoji} {result.category}
               </span>
+              {scoreChange !== null && scoreChange !== 0 && (
+                <span className={`text-xs font-semibold ${scoreChange > 0 ? 'text-sage' : 'text-terracotta'}`}>
+                  {scoreChange > 0 ? '▲' : '▼'} {Math.abs(scoreChange)} from last
+                </span>
+              )}
             </div>
             {/* Score bar */}
             <div className="mt-3">
@@ -167,6 +214,25 @@ function ResultCard({ result }: { result: AssessmentResult }) {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* History */}
+          {hasHistory && (
+            <div className="mb-4">
+              <button
+                onClick={() => setShowHistory(!showHistory)}
+                className="text-sm text-amber font-semibold hover:underline cursor-pointer"
+              >
+                {showHistory ? `Hide history ▲` : `View history (${previousResults.length} previous) ▼`}
+              </button>
+              {showHistory && (
+                <div className="mt-3 bg-cream/30 rounded-xl p-4 animate-fade-up">
+                  {previousResults.map((prev, i) => (
+                    <HistoryEntry key={prev.id} result={prev} meta={meta} isFirst={i === 0} />
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
@@ -354,6 +420,19 @@ function ProfileStats({ results }: { results: AssessmentResult[] }) {
 }
 
 export function ProfileResults({ results }: { results: AssessmentResult[] }) {
+  // Group results by assessment type, latest first (already sorted by completed_at desc)
+  const grouped = new Map<string, AssessmentResult[]>()
+  results.forEach(r => {
+    const existing = grouped.get(r.assessment_type) || []
+    existing.push(r)
+    grouped.set(r.assessment_type, existing)
+  })
+
+  // Order groups by latest attempt date (first result in each group is the latest)
+  const sortedGroups = Array.from(grouped.values()).sort(
+    (a, b) => new Date(b[0].completed_at).getTime() - new Date(a[0].completed_at).getTime()
+  )
+
   return (
     <div>
       {/* Stats bar */}
@@ -362,13 +441,13 @@ export function ProfileResults({ results }: { results: AssessmentResult[] }) {
       {/* Radar chart */}
       <RadarChart results={results} />
 
-      {/* Individual results */}
+      {/* Individual results — grouped by assessment */}
       <h2 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-brown-deep mb-4">
         Your Results
       </h2>
       <div className="space-y-4">
-        {results.map((result) => (
-          <ResultCard key={result.id} result={result} />
+        {sortedGroups.map((groupResults) => (
+          <ResultCard key={groupResults[0].assessment_type} results={groupResults} />
         ))}
       </div>
     </div>
