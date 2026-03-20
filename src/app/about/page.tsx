@@ -42,7 +42,7 @@ export default function AboutPage() {
             What if every time someone participated in research, they learned something real about themselves?
           </p>
           <p className="font-[family-name:var(--font-body)] text-text-main leading-relaxed mb-4">
-            Experiment Me was built by an educator who spent years watching the disconnect between researchers and participants — and believed it didn't have to be that way.
+            Built by a psychology professor with years of research training, Experiment Me exists because the best tools for understanding yourself shouldn't live in academic journals nobody reads.
           </p>
           <p className="font-[family-name:var(--font-body)] text-text-main leading-relaxed">
             The idea is simple: give people their results. Use validated instruments. Explain what the science actually says. Turn participation into self-discovery.
