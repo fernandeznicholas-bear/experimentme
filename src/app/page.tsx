@@ -218,24 +218,40 @@ export default function HomePage() {
     const idx = Math.floor(Math.random() * assessments.length)
     setRandomAssessment(assessments[idx])
 
-    // Check auth and fetch completed assessments
-    const supabase = createClient()
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    supabase.auth.getUser().then((result: any) => {
-      const user = result?.data?.user
-      if (user) {
-        setIsLoggedIn(true)
-        supabase
-          .from('assessment_results')
-          .select('assessment_type')
-          .eq('user_id', user.id)
-          .then(({ data }: { data: { assessment_type: string }[] | null }) => {
-            if (data) {
-              setCompletedAssessments(new Set(data.map((r: { assessment_type: string }) => r.assessment_type)))
-            }
-          })
-      }
-    })
+    const fetchCompleted = () => {
+      const supabase = createClient()
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      supabase.auth.getUser().then((result: any) => {
+        const user = result?.data?.user
+        if (user) {
+          setIsLoggedIn(true)
+          supabase
+            .from('assessment_results')
+            .select('assessment_type')
+            .eq('user_id', user.id)
+            .then(({ data }: { data: { assessment_type: string }[] | null }) => {
+              if (data) {
+                setCompletedAssessments(new Set(data.map((r: { assessment_type: string }) => r.assessment_type)))
+              } else {
+                setCompletedAssessments(new Set())
+              }
+            })
+        }
+      })
+    }
+
+    fetchCompleted()
+
+    // Re-fetch when user navigates back (e.g. after deleting results on profile)
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') fetchCompleted()
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+    window.addEventListener('focus', fetchCompleted)
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility)
+      window.removeEventListener('focus', fetchCompleted)
+    }
   }, [])
 
   // Build the scale buttons to show (max 7 visible)
