@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { getAssessmentConfig } from '@/lib/assessments'
 import { buildShareUrl, type ShareData } from '@/lib/share'
 import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
+import { createClient } from '@/lib/supabase-browser'
 
 interface AssessmentResult {
   id: string
@@ -73,7 +74,9 @@ function ScoreLevelExplorer({ assessmentType }: { assessmentType: string }) {
   )
 }
 
-function HistoryEntry({ result, meta, isFirst }: { result: AssessmentResult; meta: { name: string; icon: string; maxScore: number; scoreType: 'sum' | 'average' }; isFirst: boolean }) {
+function HistoryEntry({ result, meta, isFirst, onDelete }: { result: AssessmentResult; meta: { name: string; icon: string; maxScore: number; scoreType: 'sum' | 'average' }; isFirst: boolean; onDelete: (id: string) => void }) {
+  const [confirmDel, setConfirmDel] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const config = getAssessmentConfig(result.assessment_type)
   const category = config?.categories.find(c => c.label === result.category)
   const date = new Date(result.completed_at).toLocaleDateString('en-US', {
@@ -82,24 +85,49 @@ function HistoryEntry({ result, meta, isFirst }: { result: AssessmentResult; met
     year: 'numeric',
   })
 
+  const handleDelete = async () => {
+    setDeleting(true)
+    const supabase = createClient()
+    const { error } = await supabase.from('assessment_results').delete().eq('id', result.id)
+    setDeleting(false)
+    if (!error) onDelete(result.id)
+  }
+
   return (
-    <div className={`flex items-center gap-3 py-3 ${!isFirst ? 'border-t border-[var(--border)]' : ''}`}>
-      <div className="text-lg flex-shrink-0">{category?.emoji || '📊'}</div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-text-main">{result.category}</span>
-          <span className="text-xs text-text-muted">{date}</span>
+    <div className={`py-3 ${!isFirst ? 'border-t border-[var(--border)]' : ''}`}>
+      <div className="flex items-center gap-3">
+        <div className="text-lg flex-shrink-0">{category?.emoji || '📊'}</div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-text-main">{result.category}</span>
+            <span className="text-xs text-text-muted">{date}</span>
+          </div>
+          <div className="mt-1">
+            <ScoreBar score={result.score} maxScore={meta.maxScore} />
+          </div>
         </div>
-        <div className="mt-1">
-          <ScoreBar score={result.score} maxScore={meta.maxScore} />
+        <div className="flex-shrink-0 text-right">
+          <span className="font-[family-name:var(--font-heading)] text-lg font-bold text-terracotta">
+            {result.score}
+          </span>
+          <span className="text-xs text-text-muted">/{meta.maxScore}</span>
         </div>
       </div>
-      <div className="flex-shrink-0 text-right">
-        <span className="font-[family-name:var(--font-heading)] text-lg font-bold text-terracotta">
-          {result.score}
-        </span>
-        <span className="text-xs text-text-muted">/{meta.maxScore}</span>
-      </div>
+      {confirmDel ? (
+        <div className="flex items-center gap-3 mt-2 ml-8">
+          <span className="text-xs text-text-muted">Delete?</span>
+          <button onClick={handleDelete} disabled={deleting} className="text-xs font-semibold text-red-600 hover:text-red-700 cursor-pointer disabled:opacity-50">
+            {deleting ? 'Deleting...' : 'Yes'}
+          </button>
+          <button onClick={() => setConfirmDel(false)} className="text-xs text-text-muted hover:text-brown-deep cursor-pointer">
+            No
+          </button>
+        </div>
+      ) : (
+        <button onClick={() => setConfirmDel(true)} className="text-xs text-text-muted hover:text-red-600 transition-colors cursor-pointer mt-1 ml-8">
+          Delete
+        </button>
+      )}
     </div>
   )
 }
@@ -203,10 +231,23 @@ function ShareButtons({ assessmentType, score, subscales }: {
   )
 }
 
-function ResultCard({ results }: { results: AssessmentResult[] }) {
+function ResultCard({ results, onDelete }: { results: AssessmentResult[]; onDelete: (id: string) => void }) {
   const [expanded, setExpanded] = useState(false)
   const [showLevels, setShowLevels] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
+  const [confirmDelete, setConfirmDelete] = useState<string | null>(null)
+  const [deleting, setDeleting] = useState(false)
+
+  const handleDelete = async (id: string) => {
+    setDeleting(true)
+    const supabase = createClient()
+    const { error } = await supabase.from('assessment_results').delete().eq('id', id)
+    setDeleting(false)
+    if (!error) {
+      setConfirmDelete(null)
+      onDelete(id)
+    }
+  }
 
   const result = results[0] // Latest result
   const previousResults = results.slice(1) // Older results
@@ -356,7 +397,7 @@ function ResultCard({ results }: { results: AssessmentResult[] }) {
               {showHistory && (
                 <div className="mt-3 bg-cream/30 rounded-xl p-4 animate-fade-up">
                   {previousResults.map((prev, i) => (
-                    <HistoryEntry key={prev.id} result={prev} meta={meta} isFirst={i === 0} />
+                    <HistoryEntry key={prev.id} result={prev} meta={meta} isFirst={i === 0} onDelete={onDelete} />
                   ))}
                 </div>
               )}
@@ -379,6 +420,35 @@ function ResultCard({ results }: { results: AssessmentResult[] }) {
               {config.citation}
             </p>
           )}
+
+          {/* Delete */}
+          <div className="mt-4 pt-4 border-t border-[var(--border)]">
+            {confirmDelete === result.id ? (
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-text-muted">Delete this result? This can&apos;t be undone.</span>
+                <button
+                  onClick={() => handleDelete(result.id)}
+                  disabled={deleting}
+                  className="text-xs font-semibold text-red-600 hover:text-red-700 cursor-pointer disabled:opacity-50"
+                >
+                  {deleting ? 'Deleting...' : 'Yes, delete'}
+                </button>
+                <button
+                  onClick={() => setConfirmDelete(null)}
+                  className="text-xs text-text-muted hover:text-brown-deep cursor-pointer"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirmDelete(result.id)}
+                className="text-xs text-text-muted hover:text-red-600 transition-colors cursor-pointer"
+              >
+                Delete this result
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -546,7 +616,13 @@ function ProfileStats({ results }: { results: AssessmentResult[] }) {
   )
 }
 
-export function ProfileResults({ results }: { results: AssessmentResult[] }) {
+export function ProfileResults({ results: initialResults }: { results: AssessmentResult[] }) {
+  const [results, setResults] = useState(initialResults)
+
+  const handleDelete = (id: string) => {
+    setResults(prev => prev.filter(r => r.id !== id))
+  }
+
   // Group results by assessment type, latest first (already sorted by completed_at desc)
   const grouped = new Map<string, AssessmentResult[]>()
   results.forEach(r => {
@@ -559,6 +635,26 @@ export function ProfileResults({ results }: { results: AssessmentResult[] }) {
   const sortedGroups = Array.from(grouped.values()).sort(
     (a, b) => new Date(b[0].completed_at).getTime() - new Date(a[0].completed_at).getTime()
   )
+
+  if (results.length === 0) {
+    return (
+      <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] p-8 text-center">
+        <div className="text-5xl mb-4">&#x1F52C;</div>
+        <h2 className="font-[family-name:var(--font-heading)] text-2xl font-bold text-brown-deep mb-3">
+          No Results Yet
+        </h2>
+        <p className="text-text-muted font-[family-name:var(--font-body)] mb-6 max-w-md mx-auto">
+          Take your first assessment to start building your evidence-based psychological profile.
+        </p>
+        <Link
+          href="/#assessments"
+          className="inline-block px-6 py-3 rounded-xl bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors no-underline"
+        >
+          Browse Assessments
+        </Link>
+      </div>
+    )
+  }
 
   return (
     <div>
@@ -574,7 +670,7 @@ export function ProfileResults({ results }: { results: AssessmentResult[] }) {
       </h2>
       <div className="space-y-4">
         {sortedGroups.map((groupResults) => (
-          <ResultCard key={groupResults[0].assessment_type} results={groupResults} />
+          <ResultCard key={groupResults[0].assessment_type} results={groupResults} onDelete={handleDelete} />
         ))}
       </div>
     </div>
