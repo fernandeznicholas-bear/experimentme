@@ -32,6 +32,20 @@ export interface DeepDiveContent {
     text: string // APA-formatted reference
     isPrimary?: boolean // The original/main citation
   }[]
+  simple?: {
+    overview: {
+      what: string // Plain-language version
+      why: string
+    }
+    history: {
+      context: string // Storytelling version
+      evolution: string
+    }
+    validation: string // Single friendly summary paragraph
+    keyFindings: {
+      finding: string // Plain-language version
+    }[]
+  }
 }
 
 export const deepDiveContent: Record<string, DeepDiveContent> = {
@@ -101,6 +115,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Pavot, W., & Diener, E. (2008). The Satisfaction With Life Scale and the emerging construct of life satisfaction. The Journal of Positive Psychology, 3(2), 137–152.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz asks you to step back and think about your life as a whole — not whether you had a good day today, but whether you feel satisfied with your life overall. It\'s about how close your life is to what you actually want it to be.',
+        why: 'Knowing how satisfied you are with your life gives you a starting point. If there\'s a big gap between where you are and where you want to be, that\'s useful information. It helps you figure out what to focus on — whether that\'s relationships, career, health, or something else entirely.',
+      },
+      history: {
+        context: 'Back in the 1980s, researchers mostly asked people one vague question like "How satisfied are you with your life?" which wasn\'t very reliable. Ed Diener and his team at the University of Illinois created this 5-question version so people could give a more thoughtful, well-rounded answer based on what matters most to them personally.',
+        evolution: 'It became one of the most popular well-being questionnaires in the world. It\'s been translated into dozens of languages and used everywhere from therapy offices to the World Happiness Report. It\'s considered the gold standard for measuring life satisfaction.',
+      },
+      validation: 'This is one of the most well-tested questionnaires in psychology. It gives consistent results when you take it again, it matches what your friends and family would say about your satisfaction, and it\'s been used successfully with people of all ages and cultures for over 40 years.',
+      keyFindings: [
+        { finding: 'Money helps with life satisfaction up to a point, but after you\'re comfortable, earning more doesn\'t make much difference.' },
+        { finding: 'Strong relationships are the #1 predictor of life satisfaction — more important than income, health, or career success.' },
+        { finding: 'Your satisfaction can change over time, especially after big life events like getting married or losing a job, though people tend to bounce back partially over time.' },
+      ],
+    },
   },
 
   grit: {
@@ -169,6 +199,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Duckworth, A. L. (2016). Grit: The Power of Passion and Perseverance. Scribner.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz measures two things: whether you tend to stick with the same goals and interests over time, and whether you keep pushing through when things get hard. Together, that\'s what researchers call "grit" — your ability to stay committed to long-term goals.',
+        why: 'Being smart or talented isn\'t always what matters most. Research shows that people who stick with things and keep working hard — even when it\'s not fun — often achieve more than people who are naturally gifted but give up easily. This helps you understand your own pattern.',
+      },
+      history: {
+        context: 'Angela Duckworth noticed something interesting at West Point Military Academy: the cadets who survived the brutal summer training weren\'t necessarily the strongest, smartest, or most athletic — they were the grittiest. She created this quiz to measure that "never quit" quality.',
+        evolution: 'Grit became a huge concept after Duckworth\'s TED talk (30+ million views) and bestselling book. It\'s now used in schools, the military, businesses, and sports programs around the world.',
+      },
+      validation: 'This questionnaire has been tested with thousands of people — from West Point cadets to spelling bee champions to college students. It reliably predicts who will stick with difficult challenges over time, and it gives consistent results when you retake it.',
+      keyFindings: [
+        { finding: 'At West Point, grit predicted who would survive the toughest training better than SAT scores, grades, or physical fitness.' },
+        { finding: 'Spelling bee finalists who scored higher on grit practiced more hours and placed higher — not because they were smarter, but because they put in more work.' },
+        { finding: 'Grit tends to increase as you get older, meaning it\'s something you can develop through life experience.' },
+      ],
+    },
   },
 
   bigfive: {
@@ -237,6 +283,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Roberts, B. W., Walton, K. E., & Viechtbauer, W. (2006). Patterns of mean-level change in personality traits across the life course: A meta-analysis of longitudinal studies. Psychological Bulletin, 132(1), 1–25.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz measures your personality across five big dimensions that researchers have found in every culture they\'ve studied: how open you are to new ideas, how organized and disciplined you are, how social and energetic you are, how cooperative and trusting you are, and how emotionally sensitive you are.',
+        why: 'These five traits are the most well-supported framework for understanding personality in all of psychology. Your profile can help explain why you thrive in some situations and struggle in others — from career fit to relationship dynamics to how you handle stress.',
+      },
+      history: {
+        context: 'Researchers spent decades asking: "What are the most fundamental ways people differ from each other?" They studied thousands of personality-describing words across languages and cultures, and the same five big categories kept showing up — no matter where they looked. These became known as the "Big Five."',
+        evolution: 'The Big Five is now the dominant personality model in psychology. This shorter 20-question version gives you a solid snapshot of your personality. For a more detailed picture, longer versions exist with up to 240 questions, but this captures the essentials.',
+      },
+      validation: 'This is the most well-established personality model in psychology. The same five traits show up in studies across 50+ cultures. The short version used here gives a reliable overview of your personality profile, backed by decades of research with hundreds of thousands of participants.',
+      keyFindings: [
+        { finding: 'Being organized and disciplined (Conscientiousness) is the strongest personality predictor of job performance across nearly all types of work.' },
+        { finding: 'Your personality naturally shifts as you age — people tend to become kinder, more organized, and more emotionally stable over time.' },
+        { finding: 'These five personality dimensions show up in every culture studied around the world, suggesting they reflect something fundamental about human nature.' },
+      ],
+    },
   },
 
   rosenberg: {
@@ -305,6 +367,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Sowislo, J. F., & Orth, U. (2013). Does low self-esteem predict depression and anxiety? A meta-analysis of longitudinal studies. Psychological Bulletin, 139(1), 213–240.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz measures how you feel about yourself overall — not whether you\'re good at specific things, but whether you generally see yourself as a person of value with good qualities. It\'s your big-picture sense of self-worth.',
+        why: 'How you feel about yourself affects almost everything — your relationships, your resilience when things go wrong, your mental health, and even your willingness to try new things. Understanding where you stand can help you recognize patterns in how you show up in life.',
+      },
+      history: {
+        context: 'In the 1960s, sociologist Morris Rosenberg studied over 5,000 high school students to understand how social factors like family, class, and background shape self-worth. He created this simple 10-question scale as part of that work, and it turned out to be so good that it\'s still the most widely used self-esteem measure in the world, over 60 years later.',
+        evolution: 'Even though it was originally made for teenagers, it works just as well for adults of all ages. It\'s been translated into 50+ languages and used in thousands of studies. It\'s the go-to tool whenever researchers need to measure self-esteem.',
+      },
+      validation: 'This is the most widely used and trusted self-esteem measure in psychology. It\'s been tested with people of virtually every age, background, and culture. It gives consistent results over time and matches well with what other people observe about your self-esteem.',
+      keyFindings: [
+        { finding: 'Self-esteem follows a predictable pattern through life: it dips during the teen years, rises steadily through adulthood, peaks around age 60, then gradually declines.' },
+        { finding: 'Low self-esteem and depression feed each other — feeling bad about yourself can lead to depression, and depression erodes how you see yourself.' },
+        { finding: 'Basing your self-worth on external things (grades, looks, approval from others) leads to worse outcomes than basing it on personal values and growth.' },
+      ],
+    },
   },
 
   mindset: {
@@ -373,6 +451,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Sisk, V. F., Burgoyne, A. P., Sun, J., Butler, J. L., & Macnamara, B. N. (2018). To what extent and under what circumstances are growth mind-sets important to academic achievement? Two meta-analyses. Psychological Science, 29(4), 549–571.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz measures whether you believe your abilities and intelligence are basically set in stone ("fixed mindset") or whether you think they can grow and improve with effort ("growth mindset"). Most people fall somewhere in between.',
+        why: 'What you believe about your own potential has a huge impact on what you actually do. People who believe they can improve tend to take on challenges, bounce back from failure, and keep trying. People who believe ability is fixed tend to avoid challenges and give up faster — because if you think talent is all you\'ve got, struggling feels like proof you don\'t have enough.',
+      },
+      history: {
+        context: 'Psychologist Carol Dweck spent decades studying why some kids crumble when they face difficulty while others rise to the challenge. She traced it back to a simple belief: kids who thought intelligence was fixed gave up when things got hard, while kids who thought it could grow kept trying and actually improved.',
+        evolution: 'Growth mindset became a household term after Dweck\'s bestselling book and TED talk. Schools around the world now teach it. Recent research has gotten more specific about when and how mindset matters most — it seems to make the biggest difference when you\'re facing a real challenge or going through a transition.',
+      },
+      validation: 'This is a well-established measure backed by decades of research across children, teens, and adults around the world. It gives very consistent results and meaningfully predicts how people respond to challenges, failure, and effort.',
+      keyFindings: [
+        { finding: 'A short online growth mindset lesson improved grades for struggling students and got more kids to sign up for advanced math — effects that lasted all year.' },
+        { finding: 'People with a fixed mindset see effort as a sign they\'re not smart enough. People with a growth mindset see effort as how you get smarter.' },
+        { finding: 'Brain scans show that growth mindset people pay more attention to their mistakes — which helps them actually learn from errors instead of ignoring them.' },
+      ],
+    },
   },
 
   perma: {
@@ -441,6 +535,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Goodman, F. R., Disabato, D. J., Kashdan, T. B., & Kauffman, S. B. (2018). Measuring well-being: A comparison of subjective well-being and PERMA. The Journal of Positive Psychology, 13(4), 321–332.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz measures five building blocks of a good life: feeling positive emotions, being deeply engaged in what you do, having strong relationships, finding meaning and purpose, and accomplishing things that matter to you. It also checks in on negative emotions, health, and loneliness.',
+        why: 'Most happiness quizzes give you one number. This one shows you five. You might score high on relationships but low on meaning, or feel great about your accomplishments but struggle with positive emotions. Seeing the full picture helps you figure out which parts of your life are thriving and which could use more attention.',
+      },
+      history: {
+        context: 'Martin Seligman, one of the founders of positive psychology, originally said well-being was about three things: feeling good, being engaged, and finding meaning. But he realized two big pieces were missing — relationships and accomplishment — so he expanded it to five in his 2011 book "Flourish."',
+        evolution: 'PERMA has become one of the most popular frameworks for understanding well-being. Schools, companies, and even some governments use it to measure and improve how people are doing — going beyond just asking "are you happy?" to understanding the different ingredients of a fulfilling life.',
+      },
+      validation: 'This questionnaire has been tested with over 31,000 people across multiple countries. It consistently measures five distinct aspects of well-being, and it matches up well with other trusted well-being measures. It\'s one of the most respected tools in positive psychology.',
+      keyFindings: [
+        { finding: 'The five elements are connected but different — you can be doing great in some areas and struggling in others, which is why looking at all five matters.' },
+        { finding: 'Being deeply absorbed in what you do (engagement) contributes to a good life even when it doesn\'t feel "happy" in the moment — think of a challenging project that\'s deeply satisfying.' },
+        { finding: 'Across cultures, meaning and relationships are consistently the strongest predictors of overall life satisfaction.' },
+      ],
+    },
   },
 
   happiness: {
@@ -509,6 +619,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Lyubomirsky, S., King, L., & Diener, E. (2005). The benefits of frequent positive affect: Does happiness lead to success? Psychological Bulletin, 131(6), 803–855.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This is a quick 4-question quiz that asks you a simple but profound question: do you consider yourself a happy person? It measures your overall sense of happiness — not whether you had a good week, but whether you generally see yourself as someone who is happy.',
+        why: 'Researchers have found that how happy people say they are is actually a really good predictor of how they behave, how they cope with problems, and how satisfied they are with life. Your own sense of happiness captures something important that can\'t be measured by looking at your circumstances alone.',
+      },
+      history: {
+        context: 'Psychologist Sonja Lyubomirsky wanted a really short, reliable way to measure happiness. Existing questionnaires were either too long or focused on specific pieces of happiness rather than the whole picture. She created these 4 questions to capture what people really mean when they say "I\'m a happy person."',
+        evolution: 'Because it\'s so short (under a minute to complete), it became one of the most popular happiness measures in the world. Lyubomirsky went on to write "The How of Happiness," a book about evidence-based ways to become happier.',
+      },
+      validation: 'This scale has been tested across 14 different studies with over 2,700 people. It gives consistent results over time, matches what your friends would say about your happiness, and lines up well with other well-being measures. All that from just 4 questions.',
+      keyFindings: [
+        { finding: 'About 50% of happiness differences between people come from genetics, 10% from life circumstances, and 40% from what you choose to do — meaning there\'s a lot of room to boost your happiness through intentional habits.' },
+        { finding: 'Happy people don\'t have fewer bad things happen to them — they just interpret and respond to events differently, using more positive thinking and leaning on social support.' },
+        { finding: 'Simple daily habits like expressing gratitude, doing kind things for others, and savoring good moments can lead to lasting increases in happiness.' },
+      ],
+    },
   },
 
   dass21: {
@@ -577,6 +703,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Crawford, J. R., & Henry, J. D. (2003). The Depression Anxiety Stress Scales (DASS): Normative data and latent structure in a large non-clinical sample. British Journal of Clinical Psychology, 42(2), 111–131.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz screens for three types of emotional difficulty: depression (feeling hopeless, unmotivated, or down on yourself), anxiety (feeling nervous, panicky, or physically on edge), and stress (feeling wound up, irritable, or unable to relax). It measures each one separately so you can see which, if any, are affecting you.',
+        why: 'Depression, anxiety, and stress often overlap, but they\'re different experiences that might need different approaches. This quiz helps you see which ones are showing up and how strongly — which is useful whether you\'re just checking in on yourself or deciding whether to talk to a professional.',
+      },
+      history: {
+        context: 'Two Australian psychologists (father and son) noticed that existing depression and anxiety questionnaires were too blurry — they couldn\'t clearly tell the difference between the two. So they created this tool that cleanly separates depression, anxiety, and stress into three distinct scores.',
+        evolution: 'It became one of the most widely used mental health screening tools in the world, partly because it\'s free to use (unlike many clinical questionnaires). It\'s been translated into 40+ languages and is used in clinics, research, and workplaces globally.',
+      },
+      validation: 'This is a well-established clinical screening tool tested with thousands of people in both clinical and general populations. It reliably separates depression, anxiety, and stress into three distinct measures, and it\'s sensitive enough to track changes during treatment.',
+      keyFindings: [
+        { finding: 'The three-part structure (depression, anxiety, stress) holds up consistently across different cultures and populations — these really are three separate things.' },
+        { finding: 'Scores respond to treatment — if therapy or medication is working, your scores go down, making it useful for tracking your progress.' },
+        { finding: 'About 1 in 4 adults scores in the mild-or-above range on at least one area, so if your scores are elevated, you\'re not alone.' },
+      ],
+    },
   },
 
   hope: {
@@ -645,6 +787,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Snyder, C. R., Shorey, H. S., Cheavens, J., Pulvers, K. M., Adams, V. H., & Wiklund, C. (2002). Hope and academic success in college. Journal of Educational Psychology, 94(4), 820–826.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz measures hope — but not in the vague "hoping for the best" sense. It measures two specific things: whether you can come up with plans to reach your goals (pathways), and whether you feel motivated to actually follow through on those plans (agency). Real hope is "I can find a way AND I\'ll go after it."',
+        why: 'Hope, defined this way, is a surprisingly powerful predictor of success. Hopeful people don\'t just wish for good outcomes — they actively figure out how to get there and stay motivated even when things get tough. Understanding your hope profile tells you whether you need more ideas or more drive.',
+      },
+      history: {
+        context: 'Psychologist C.R. Snyder believed that hope wasn\'t just a feeling — it was a way of thinking. He argued that truly hopeful people do two things: they generate multiple paths to their goals, and they believe in their ability to follow those paths. He created this quiz to measure both sides of that equation.',
+        evolution: 'Hope theory led to "Hope Therapy," a real treatment approach that helps people build both skills — coming up with plans and staying motivated. The research has connected hope to better grades, better health, better athletic performance, and faster recovery from illness.',
+      },
+      validation: 'This questionnaire has been tested with over 3,000 people across many different groups — college students, therapy patients, and more. It reliably predicts who will succeed in difficult challenges, and it gives consistent results over time. Hope scores can also improve with the right kind of support.',
+      keyFindings: [
+        { finding: 'Hope predicted college grades better than SAT scores, high school GPA, or self-esteem — it captures something unique about motivation.' },
+        { finding: 'When one path to a goal is blocked, high-hope people come up with more alternative routes, making them more resilient to obstacles.' },
+        { finding: 'An 8-session hope-building program significantly reduced depression and anxiety symptoms compared to a control group.' },
+      ],
+    },
   },
 
   selfcompassion: {
@@ -713,6 +871,22 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
         text: 'Zessin, U., Dickhäuser, O., & Garbade, S. (2015). The relationship between self-compassion and well-being: A meta-analysis. Applied Psychology: Health and Well-Being, 7(3), 340–364.',
       },
     ],
+    simple: {
+      overview: {
+        what: 'This quiz measures how you treat yourself when things go wrong. Do you beat yourself up, or show yourself the same kindness you\'d give a friend? Do you feel alone in your struggles, or remember that everyone goes through hard times? Do you get consumed by negative thoughts, or keep things in perspective?',
+        why: 'Self-compassion is like a shock absorber for life\'s difficulties. Unlike self-esteem (which requires feeling good about yourself), self-compassion works even when you fail or mess up. Research shows it\'s one of the strongest predictors of mental health — and the good news is it\'s a skill you can build.',
+      },
+      history: {
+        context: 'Psychologist Kristin Neff noticed that psychology had studied compassion for others extensively, but almost completely ignored compassion directed at yourself. Drawing on Buddhist philosophy, she defined self-compassion as three things: being kind to yourself, remembering that suffering is part of being human, and keeping painful feelings in perspective.',
+        evolution: 'Self-compassion has become one of the hottest topics in psychology. Neff co-created an 8-week training program (Mindful Self-Compassion) taught worldwide. Over 4,000 studies have now used this scale. It\'s influenced therapy approaches, healthcare worker wellness programs, and education.',
+      },
+      validation: 'This scale has been tested with thousands of people in 20+ languages. It gives very consistent results and strongly predicts mental health outcomes. The short form used here captures the same information as the full 26-question version with 97% accuracy.',
+      keyFindings: [
+        { finding: 'Self-compassion gives you the same benefits as high self-esteem (less depression, more happiness) without the downsides (narcissism, defensiveness when things go wrong).' },
+        { finding: 'An 8-week self-compassion training program increased self-compassion by 43% and significantly reduced depression, anxiety, and stress.' },
+        { finding: 'Self-compassion is not self-pity or letting yourself off the hook. People with high self-compassion actually take MORE responsibility for their mistakes, because they can face them without being crushed by shame.' },
+      ],
+    },
   },
 }
 

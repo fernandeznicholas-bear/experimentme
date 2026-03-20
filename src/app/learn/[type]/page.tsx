@@ -23,6 +23,7 @@ export default function LearnPage() {
   const config = getAssessmentConfig(type)
   const content = getDeepDiveContent(type)
   const [latestResult, setLatestResult] = useState<StoredResult | null>(null)
+  const [viewMode, setViewMode] = useState<'simple' | 'research'>('simple')
 
   useEffect(() => {
     if (!config) return
@@ -97,6 +98,32 @@ export default function LearnPage() {
           <p className="font-[family-name:var(--font-body)] text-lg text-text-muted leading-relaxed">
             {config.subtitle}
           </p>
+
+          {/* View Mode Toggle */}
+          {hasDeepDive && content?.simple && (
+            <div className="mt-5 inline-flex items-center rounded-full bg-cream/80 border border-[var(--border)] p-1">
+              <button
+                onClick={() => setViewMode('simple')}
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+                  viewMode === 'simple'
+                    ? 'bg-white text-brown-deep shadow-sm'
+                    : 'text-text-muted hover:text-brown-deep'
+                }`}
+              >
+                Simple
+              </button>
+              <button
+                onClick={() => setViewMode('research')}
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+                  viewMode === 'research'
+                    ? 'bg-white text-brown-deep shadow-sm'
+                    : 'text-text-muted hover:text-brown-deep'
+                }`}
+              >
+                Research
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Your Result (if logged in and taken) */}
@@ -161,17 +188,17 @@ export default function LearnPage() {
         {hasDeepDive ? (
           <>
             {/* Overview */}
-            <Section title="What It Measures">
+            <Section title={viewMode === 'simple' ? 'What Is This?' : 'What It Measures'}>
               <p className="font-[family-name:var(--font-body)] text-text-main leading-relaxed mb-4">
-                {content.overview.what}
+                {viewMode === 'simple' && content.simple ? content.simple.overview.what : content.overview.what}
               </p>
               <p className="font-[family-name:var(--font-body)] text-text-main leading-relaxed">
-                {content.overview.why}
+                {viewMode === 'simple' && content.simple ? content.simple.overview.why : content.overview.why}
               </p>
             </Section>
 
             {/* History */}
-            <Section title="History & Development">
+            <Section title={viewMode === 'simple' ? 'The Backstory' : 'History & Development'}>
               <div className="flex items-center gap-4 mb-4 bg-cream/50 rounded-xl p-4 border border-[var(--border)]">
                 <div>
                   <p className="text-sm font-semibold text-brown-deep">{content.history.creators}</p>
@@ -179,42 +206,54 @@ export default function LearnPage() {
                 </div>
               </div>
               <p className="font-[family-name:var(--font-body)] text-text-main leading-relaxed mb-4">
-                {content.history.context}
+                {viewMode === 'simple' && content.simple ? content.simple.history.context : content.history.context}
               </p>
               <p className="font-[family-name:var(--font-body)] text-text-main leading-relaxed">
-                {content.history.evolution}
+                {viewMode === 'simple' && content.simple ? content.simple.history.evolution : content.history.evolution}
               </p>
             </Section>
 
             {/* Validation */}
-            <Section title="Scientific Validation">
-              <div className="space-y-4">
-                <ValidationStat
-                  label="Internal Consistency"
-                  value={content.validation.internalConsistency}
-                />
-                <ValidationStat
-                  label="Test-Retest Reliability"
-                  value={content.validation.testRetest}
-                />
-                <ValidationStat
-                  label="Validation Samples"
-                  value={content.validation.sampleInfo}
-                />
-                <ValidationStat
-                  label="Convergent Validity"
-                  value={content.validation.convergent}
-                />
-                {content.validation.notes && (
-                  <p className="font-[family-name:var(--font-body)] text-text-muted text-sm leading-relaxed italic mt-2">
-                    {content.validation.notes}
+            <Section title={viewMode === 'simple' ? 'Can You Trust It?' : 'Scientific Validation'}>
+              {viewMode === 'simple' && content.simple ? (
+                <div className="bg-sage/10 rounded-xl border border-sage/20 p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-lg">&#x2705;</span>
+                    <span className="text-sm font-bold text-brown-deep">Yes — here&apos;s why</span>
+                  </div>
+                  <p className="font-[family-name:var(--font-body)] text-text-main text-sm leading-relaxed">
+                    {content.simple.validation}
                   </p>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <ValidationStat
+                    label="Internal Consistency"
+                    value={content.validation.internalConsistency}
+                  />
+                  <ValidationStat
+                    label="Test-Retest Reliability"
+                    value={content.validation.testRetest}
+                  />
+                  <ValidationStat
+                    label="Validation Samples"
+                    value={content.validation.sampleInfo}
+                  />
+                  <ValidationStat
+                    label="Convergent Validity"
+                    value={content.validation.convergent}
+                  />
+                  {content.validation.notes && (
+                    <p className="font-[family-name:var(--font-body)] text-text-muted text-sm leading-relaxed italic mt-2">
+                      {content.validation.notes}
+                    </p>
+                  )}
+                </div>
+              )}
             </Section>
 
             {/* Score Interpretation */}
-            <Section title="Score Interpretation">
+            <Section title={viewMode === 'simple' ? 'What Your Score Means' : 'Score Interpretation'}>
               <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mb-4">
                 Scores range from {config.categories[config.categories.length - 1].min} to {config.categories[0].max}.
                 {config.scoreType === 'sum' ? ' Your score is the sum of all responses.' : ' Your score is the average of all responses.'}
@@ -265,24 +304,36 @@ export default function LearnPage() {
             )}
 
             {/* Population Norms */}
-            <NormsSection assessmentId={type} userScore={latestResult?.score ?? null} />
+            {viewMode === 'research' && (
+              <NormsSection assessmentId={type} userScore={latestResult?.score ?? null} />
+            )}
 
             {/* Key Findings */}
-            <Section title="Key Research Findings">
+            <Section title={viewMode === 'simple' ? 'What Research Shows' : 'Key Research Findings'}>
               <div className="space-y-4">
-                {content.keyFindings.map((kf, i) => (
-                  <div key={i} className="bg-cream/50 rounded-xl border border-[var(--border)] p-4">
-                    <p className="font-[family-name:var(--font-body)] text-text-main text-sm leading-relaxed mb-2">
-                      {kf.finding}
-                    </p>
-                    <p className="text-xs text-text-muted italic">{kf.source}</p>
-                  </div>
-                ))}
+                {viewMode === 'simple' && content.simple ? (
+                  content.simple.keyFindings.map((kf, i) => (
+                    <div key={i} className="bg-cream/50 rounded-xl border border-[var(--border)] p-4">
+                      <p className="font-[family-name:var(--font-body)] text-text-main text-sm leading-relaxed">
+                        {kf.finding}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  content.keyFindings.map((kf, i) => (
+                    <div key={i} className="bg-cream/50 rounded-xl border border-[var(--border)] p-4">
+                      <p className="font-[family-name:var(--font-body)] text-text-main text-sm leading-relaxed mb-2">
+                        {kf.finding}
+                      </p>
+                      <p className="text-xs text-text-muted italic">{kf.source}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </Section>
 
             {/* Practical Applications */}
-            <Section title="Where It's Used">
+            <Section title="Where It&apos;s Used">
               <div className="grid sm:grid-cols-2 gap-3">
                 {content.practicalApplications.map((app) => (
                   <div key={app.title} className="bg-cream/50 rounded-xl border border-[var(--border)] p-4">
@@ -293,26 +344,28 @@ export default function LearnPage() {
               </div>
             </Section>
 
-            {/* References */}
-            <Section title="References">
-              <div className="space-y-3">
-                {content.references.map((ref, i) => (
-                  <p
-                    key={i}
-                    className={`font-[family-name:var(--font-body)] text-sm leading-relaxed ${
-                      ref.isPrimary ? 'text-brown-deep font-semibold' : 'text-text-muted'
-                    }`}
-                  >
-                    {ref.isPrimary && (
-                      <span className="inline-block px-2 py-0.5 rounded-full bg-terracotta/10 text-terracotta text-[10px] font-bold uppercase tracking-wider mr-2">
-                        Primary
-                      </span>
-                    )}
-                    {ref.text}
-                  </p>
-                ))}
-              </div>
-            </Section>
+            {/* References (Research mode only) */}
+            {viewMode === 'research' && (
+              <Section title="References">
+                <div className="space-y-3">
+                  {content.references.map((ref, i) => (
+                    <p
+                      key={i}
+                      className={`font-[family-name:var(--font-body)] text-sm leading-relaxed ${
+                        ref.isPrimary ? 'text-brown-deep font-semibold' : 'text-text-muted'
+                      }`}
+                    >
+                      {ref.isPrimary && (
+                        <span className="inline-block px-2 py-0.5 rounded-full bg-terracotta/10 text-terracotta text-[10px] font-bold uppercase tracking-wider mr-2">
+                          Primary
+                        </span>
+                      )}
+                      {ref.text}
+                    </p>
+                  ))}
+                </div>
+              </Section>
+            )}
           </>
         ) : (
           <>
