@@ -73,6 +73,12 @@ export function Navbar() {
         >
           About
         </Link>
+        <Link
+          href="/contact"
+          className="hidden md:inline text-sm font-medium text-brown-mid hover:text-terracotta transition-colors no-underline"
+        >
+          Contact
+        </Link>
 
         {user ? (
           <div className="relative">
@@ -94,6 +100,13 @@ export function Navbar() {
                   onClick={() => setMenuOpen(false)}
                 >
                   View Profile
+                </Link>
+                <Link
+                  href="/settings"
+                  className="block px-4 py-2 text-sm text-text-main hover:bg-cream transition-colors no-underline"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Settings
                 </Link>
                 <button
                   onClick={handleSignOut}
