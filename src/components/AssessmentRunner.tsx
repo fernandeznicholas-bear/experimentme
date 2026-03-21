@@ -8,6 +8,7 @@ import { buildShareUrl, type ShareData } from '@/lib/share'
 import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
 import { DemographicQuickAsk } from '@/components/DemographicQuickAsk'
 import { ResearchConsentPrompt } from '@/components/ResearchConsentPrompt'
+import Turnstile from '@/components/Turnstile'
 
 interface Props {
   config: AssessmentConfig
@@ -31,6 +32,13 @@ export function AssessmentRunner({ config }: Props) {
   const [showDemoAsk, setShowDemoAsk] = useState(false)
   const [demoAskDismissed, setDemoAskDismissed] = useState(false)
   const [consentDismissed, setConsentDismissed] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+  const [pendingSave, setPendingSave] = useState<{
+    userId: string
+    result: { score: number; category: ScoreCategory; subscaleScores?: { name: string; score: number; maxScore: number; description: string }[] }
+    answers: number[]
+  } | null>(null)
+  const [saveError, setSaveError] = useState(false)
 
   useEffect(() => {
     const supabase = createClient()
@@ -41,6 +49,31 @@ export function AssessmentRunner({ config }: Props) {
       setUserChecked(true)
     })
   }, [])
+
+  // When Turnstile token arrives and there's a pending save, verify and save
+  useEffect(() => {
+    if (!turnstileToken || !pendingSave || saved) return
+
+    const verifyAndSave = async () => {
+      try {
+        const verifyRes = await fetch('/api/verify-turnstile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: turnstileToken }),
+        })
+        const verifyData = await verifyRes.json()
+        if (verifyData.success) {
+          await saveResult(pendingSave.userId, pendingSave.result, pendingSave.answers)
+        } else {
+          setSaveError(true)
+        }
+      } catch {
+        setSaveError(true)
+      }
+    }
+
+    verifyAndSave()
+  }, [turnstileToken, pendingSave, saved])
 
   const handleStart = () => {
     setScreen('questions')
@@ -60,16 +93,17 @@ export function AssessmentRunner({ config }: Props) {
       setScreen('results')
       window.scrollTo({ top: 0, behavior: 'smooth' })
 
-      // Save to Supabase — re-check auth in case it resolved late
+      // Re-check auth — if logged in, defer save until Turnstile verification
       const supabase = createClient()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       supabase.auth.getUser().then((authResult: any) => {
         const authUser = authResult?.data?.user
         if (authUser) {
           setUser({ id: authUser.id })
-          saveResult(authUser.id, result, newAnswers)
+          // Don't save yet — wait for Turnstile verification (triggered by useEffect)
+          setPendingSave({ userId: authUser.id, result, answers: newAnswers })
         } else {
-          // Not logged in — store result in localStorage so it can be saved after login
+          // Not logged in — store result in localStorage (no DB risk from bots)
           const pendingResult = {
             assessment_type: config.id,
             score: result.score,
@@ -355,10 +389,30 @@ export function AssessmentRunner({ config }: Props) {
             </div>
           )}
 
+          {/* Turnstile verification for logged-in users before saving */}
+          {user && pendingSave && !saved && !saveError && (
+            <div className="bg-cream/50 rounded-2xl border border-[var(--border)] p-4 mb-6 text-center">
+              <p className="text-xs text-text-muted mb-2">Verifying before saving...</p>
+              <Turnstile
+                onSuccess={(token) => setTurnstileToken(token)}
+                onError={() => setSaveError(true)}
+                onExpire={() => setTurnstileToken(null)}
+              />
+            </div>
+          )}
+
           {saved && (
             <div className="bg-sage/10 rounded-2xl border border-sage/20 p-4 mb-6 text-center">
               <p className="text-sm text-sage font-semibold">
                 ✓ Result saved to your profile
+              </p>
+            </div>
+          )}
+
+          {saveError && !saved && (
+            <div className="bg-amber-50 rounded-2xl border border-amber-200 p-4 mb-6 text-center">
+              <p className="text-sm text-amber-700">
+                Could not verify — result not saved. Try refreshing and retaking the assessment.
               </p>
             </div>
           )}

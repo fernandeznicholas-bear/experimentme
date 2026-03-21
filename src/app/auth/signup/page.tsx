@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase-browser'
 import Link from 'next/link'
+import Turnstile from '@/components/Turnstile'
 
 export default function SignupPage() {
   const [email, setEmail] = useState('')
@@ -11,6 +12,7 @@ export default function SignupPage() {
   const [name, setName] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -20,6 +22,26 @@ export default function SignupPage() {
 
     if (password.length < 6) {
       setError('Password must be at least 6 characters')
+      setLoading(false)
+      return
+    }
+
+    // Verify Turnstile token server-side
+    try {
+      const verifyRes = await fetch('/api/verify-turnstile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: turnstileToken }),
+      })
+      const verifyData = await verifyRes.json()
+      if (!verifyData.success) {
+        setError('Human verification failed. Please try again.')
+        setLoading(false)
+        setTurnstileToken(null)
+        return
+      }
+    } catch {
+      setError('Verification error. Please try again.')
       setLoading(false)
       return
     }
@@ -140,9 +162,15 @@ export default function SignupPage() {
               </div>
             </div>
 
+            <Turnstile
+              onSuccess={(token) => setTurnstileToken(token)}
+              onError={() => setTurnstileToken(null)}
+              onExpire={() => setTurnstileToken(null)}
+            />
+
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !turnstileToken}
               className="w-full py-3 rounded-xl bg-terracotta text-white font-semibold text-base hover:bg-terracotta-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             >
               {loading ? 'Creating account...' : 'Create Free Account'}

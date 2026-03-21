@@ -4,6 +4,7 @@ import { Suspense, useState } from 'react'
 import { createClient } from '@/lib/supabase-browser'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
+import Turnstile from '@/components/Turnstile'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function savePendingResult(supabase: any) {
@@ -32,6 +33,7 @@ function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
   const router = useRouter()
   const searchParams = useSearchParams()
   const errorParam = searchParams.get('error')
@@ -41,6 +43,26 @@ function LoginForm() {
     e.preventDefault()
     setLoading(true)
     setError('')
+
+    // Verify Turnstile token server-side
+    try {
+      const verifyRes = await fetch('/api/verify-turnstile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: turnstileToken }),
+      })
+      const verifyData = await verifyRes.json()
+      if (!verifyData.success) {
+        setError('Human verification failed. Please try again.')
+        setLoading(false)
+        setTurnstileToken(null)
+        return
+      }
+    } catch {
+      setError('Verification error. Please try again.')
+      setLoading(false)
+      return
+    }
 
     const supabase = createClient()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,9 +141,15 @@ function LoginForm() {
           </div>
         </div>
 
+        <Turnstile
+          onSuccess={(token) => setTurnstileToken(token)}
+          onError={() => setTurnstileToken(null)}
+          onExpire={() => setTurnstileToken(null)}
+        />
+
         <button
           type="submit"
-          disabled={loading}
+          disabled={loading || !turnstileToken}
           className="w-full py-3 rounded-xl bg-terracotta text-white font-semibold text-base hover:bg-terracotta-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {loading ? 'Signing in...' : 'Sign In'}

@@ -206,10 +206,6 @@ const marqueeItems = [
 export default function HomePage() {
   const router = useRouter()
   const [randomAssessment, setRandomAssessment] = useState(assessments[0])
-  const [formRole, setFormRole] = useState<'participant' | 'researcher'>('participant')
-  const [formName, setFormName] = useState('')
-  const [formEmail, setFormEmail] = useState('')
-  const [formInterest, setFormInterest] = useState('swls')
   const [completedAssessments, setCompletedAssessments] = useState<Set<string>>(new Set())
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [activeTag, setActiveTag] = useState<AssessmentTag | null>(null)
@@ -563,118 +559,6 @@ export default function HomePage() {
                 <div className="text-sm text-cream/60 mt-1.5">{stat.label}</div>
               </div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Waitlist / Join Form */}
-      <section className="py-20 px-4 bg-warm-white">
-        <div className="max-w-5xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <span className="w-8 h-0.5 bg-terracotta rounded-full" />
-              <span className="text-xs font-semibold tracking-wider text-terracotta uppercase">Join the Waitlist</span>
-            </div>
-            <h2 className="font-[family-name:var(--font-heading)] text-3xl md:text-4xl font-bold text-brown-deep leading-tight mb-4">
-              Be the first to discover yourself through science.
-            </h2>
-            <p className="font-[family-name:var(--font-body)] text-text-muted max-w-md leading-relaxed">
-              Experiment Me is launching soon. Be among the first curious people —
-              and researchers who are ready to do something different.
-            </p>
-          </div>
-
-          {/* Form card */}
-          <div className="bg-white rounded-2xl shadow-lg border border-[var(--border)] p-8">
-            {/* Role toggle */}
-            <div className="flex rounded-full bg-cream/60 p-1 mb-6">
-              <button
-                onClick={() => setFormRole('participant')}
-                className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                  formRole === 'participant'
-                    ? 'bg-white text-terracotta shadow-sm'
-                    : 'text-text-muted hover:text-brown-deep'
-                }`}
-              >
-                I&apos;m a Participant
-              </button>
-              <button
-                onClick={() => setFormRole('researcher')}
-                className={`flex-1 py-2.5 rounded-full text-sm font-semibold transition-all ${
-                  formRole === 'researcher'
-                    ? 'bg-white text-terracotta shadow-sm'
-                    : 'text-text-muted hover:text-brown-deep'
-                }`}
-              >
-                I&apos;m a Researcher
-              </button>
-            </div>
-
-            <form
-              action="https://formsubmit.co/fernandez.nicholas@gmail.com"
-              method="POST"
-              className="space-y-4"
-            >
-              <input type="hidden" name="_subject" value={`Experiment Me Waitlist — ${formRole}`} />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="role" value={formRole} />
-
-              <div>
-                <label className="block text-sm font-semibold text-brown-deep mb-1.5">First Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  placeholder="e.g. Maria"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-cream/20 text-brown-deep placeholder:text-text-muted/50 focus:outline-none focus:border-terracotta/40 focus:ring-2 focus:ring-terracotta/10 transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-brown-deep mb-1.5">Email Address</label>
-                <input
-                  type="email"
-                  name="email"
-                  placeholder="you@email.com"
-                  value={formEmail}
-                  onChange={(e) => setFormEmail(e.target.value)}
-                  required
-                  className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-cream/20 text-brown-deep placeholder:text-text-muted/50 focus:outline-none focus:border-terracotta/40 focus:ring-2 focus:ring-terracotta/10 transition-all"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-brown-deep mb-1.5">
-                  Which assessment interests you most?
-                </label>
-                <select
-                  name="interest"
-                  value={formInterest}
-                  onChange={(e) => setFormInterest(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-cream/20 text-brown-deep focus:outline-none focus:border-terracotta/40 focus:ring-2 focus:ring-terracotta/10 transition-all appearance-none"
-                >
-                  <option value="swls">Life Satisfaction (SWLS)</option>
-                  <option value="rosenberg">Self-Esteem (Rosenberg)</option>
-                  <option value="grit">Grit Scale</option>
-                  <option value="mindset">Growth Mindset</option>
-                  <option value="bigfive">Big Five Personality</option>
-                  <option value="perma">PERMA Wellbeing</option>
-                  <option value="happiness">Subjective Happiness</option>
-                  <option value="dass21">Depression, Anxiety & Stress (DASS-21)</option>
-                  <option value="hope">Hope Scale</option>
-                  <option value="selfcompassion">Self-Compassion</option>
-                </select>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full py-3.5 rounded-full bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors text-base"
-              >
-                Get Early Access &rarr;
-              </button>
-            </form>
           </div>
         </div>
       </section>
