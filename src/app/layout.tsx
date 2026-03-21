@@ -3,6 +3,7 @@ import { Playfair_Display, Lora, Nunito, DM_Serif_Display } from "next/font/goog
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { SplashScreen } from "@/components/SplashScreen";
+import { SessionTimeout } from "@/components/SessionTimeout";
 
 const playfair = Playfair_Display({
   variable: "--font-heading",
@@ -50,6 +51,7 @@ export default function RootLayout({
       >
         <SplashScreen />
         <Navbar />
+        <SessionTimeout />
         {children}
       </body>
     </html>
