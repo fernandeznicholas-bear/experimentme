@@ -888,6 +888,271 @@ export const deepDiveContent: Record<string, DeepDiveContent> = {
       ],
     },
   },
+
+  phq9: {
+    id: 'phq9',
+    overview: {
+      what: 'The Patient Health Questionnaire-9 (PHQ-9) measures the severity of depressive symptoms over the past two weeks. Its nine items map directly onto the nine diagnostic criteria for major depressive disorder in DSM-5, making it both a severity measure and a diagnostic aid. Unlike many depression scales, the PHQ-9 was designed for use in primary care — not just psychiatric settings.',
+      why: 'Depression is the leading cause of disability worldwide, yet it remains underdiagnosed and undertreated. The PHQ-9 helps bridge this gap by giving any healthcare provider a brief, validated tool to detect and monitor depression. For individuals, it provides a concrete, evidence-based way to understand and track your mental health over time.',
+    },
+    history: {
+      creators: 'Robert L. Spitzer, Kurt Kroenke, and Janet B.W. Williams',
+      year: 2001,
+      context: 'The PHQ-9 was developed as part of the larger PRIME-MD (Primary Care Evaluation of Mental Disorders) initiative, which aimed to give primary care physicians practical tools for detecting mental health conditions. Kroenke and Spitzer recognized that most depression in the population was being treated (or missed) by primary care doctors, not psychiatrists — so they needed a measure that was brief, free, and clinically actionable.',
+      evolution: 'Since publication, the PHQ-9 has become the most widely used depression screening tool in the world. It has been translated into over 80 languages and validated in hundreds of studies across diverse populations. It is recommended by the American Psychiatric Association, the U.S. Preventive Services Task Force, and national guidelines in multiple countries. Adaptations include the PHQ-A (for adolescents), PHQ-2 (an ultra-brief 2-item version), and PHQ-8 (excluding the suicide item for research use).',
+    },
+    validation: {
+      internalConsistency: 'Cronbach\'s alpha of .89 in the original validation study, consistently .86–.92 across subsequent studies.',
+      testRetest: '.84 over a 48-hour interval, indicating excellent short-term reliability.',
+      sampleInfo: 'Original validation with 6,000 patients across 8 primary care clinics and 7 obstetrics-gynecology clinics. Since then validated with tens of thousands of participants across clinical and community settings worldwide.',
+      convergent: 'Correlates strongly (.73) with the Beck Depression Inventory and (.77) with the Mental Health Professional structured interview. A PHQ-9 score ≥10 has 88% sensitivity and 88% specificity for detecting major depression.',
+      notes: 'The PHQ-9 is one of very few depression measures that is entirely free, in the public domain, and has no copyright restrictions — making it accessible worldwide.',
+    },
+    practicalApplications: [
+      { title: 'Primary Care Screening', description: 'Used by physicians worldwide to screen for depression during routine visits. Recommended by the U.S. Preventive Services Task Force for universal screening.' },
+      { title: 'Treatment Monitoring', description: 'Administered repeatedly to track changes in depression severity during treatment. A 5-point change is considered clinically meaningful.' },
+      { title: 'Clinical Trials', description: 'Widely used as an outcome measure in antidepressant and psychotherapy research due to its sensitivity to change.' },
+      { title: 'Population Health', description: 'Used in large epidemiological studies and national health surveys to estimate depression prevalence across populations.' },
+    ],
+    keyFindings: [
+      { finding: 'A PHQ-9 score of 10 or higher correctly identifies major depression in 88% of cases, making it as accurate as longer clinician-administered interviews.', source: 'Kroenke et al., 2001' },
+      { finding: 'The PHQ-9 is sensitive to treatment change — patients who improve clinically show an average 5-point decrease in PHQ-9 scores within 8 weeks of treatment.', source: 'Löwe et al., 2004' },
+      { finding: 'Serial PHQ-9 monitoring during treatment significantly improves depression outcomes compared to usual care, with patients reaching remission faster.', source: 'Trivedi et al., 2004' },
+    ],
+    references: [
+      { text: 'Kroenke, K., Spitzer, R. L., & Williams, J. B. (2001). The PHQ-9: Validity of a brief depression severity measure. Journal of General Internal Medicine, 16(9), 606–613.', isPrimary: true },
+      { text: 'Löwe, B., Unützer, J., Callahan, C. M., Perkins, A. J., & Kroenke, K. (2004). Monitoring depression treatment outcomes with the Patient Health Questionnaire-9. Medical Care, 42(12), 1194–1201.' },
+      { text: 'Kroenke, K., Strine, T. W., Spitzer, R. L., Williams, J. B., Berry, J. T., & Mokdad, A. H. (2009). The PHQ-8 as a measure of current depression in the general population. Journal of Affective Disorders, 114(1-3), 163–173.' },
+    ],
+    simple: {
+      overview: {
+        what: 'The PHQ-9 asks you about 9 common symptoms of depression — things like low mood, trouble sleeping, fatigue, and difficulty concentrating. It covers the past two weeks and tells you how severe your symptoms are.',
+        why: 'Depression is one of the most common mental health conditions in the world, but many people never get screened. The PHQ-9 gives you a quick, evidence-based snapshot of where you stand — and if you score high, it is a signal to seek support.',
+      },
+      history: {
+        context: 'Most depression goes undetected in primary care. In the late 1990s, researchers at Columbia University and across primary care clinics built the PHQ-9 to fix this — a free, 9-question tool that any doctor could use to screen for depression in under 3 minutes.',
+        evolution: 'The PHQ-9 is now the most widely used depression screening tool on the planet. It has been translated into 80+ languages, adopted by national health guidelines worldwide, and is the default screening tool in most electronic health records.',
+      },
+      validation: 'The PHQ-9 has been tested with tens of thousands of people worldwide. It correctly identifies major depression 88% of the time — as accurate as a full clinical interview. It is endorsed by the American Psychiatric Association and the U.S. Preventive Services Task Force.',
+      keyFindings: [
+        { finding: 'A score of 10 or higher correctly identifies depression 88% of the time — as reliable as a much longer face-to-face interview with a psychiatrist.' },
+        { finding: 'Tracking your PHQ-9 score over time during treatment helps you recover faster. People who monitored their scores reached remission sooner than those who did not.' },
+        { finding: 'The PHQ-9 is one of the few clinical tools that is completely free, with no copyright restrictions — making it available to anyone in the world.' },
+      ],
+    },
+  },
+
+  gad7: {
+    id: 'gad7',
+    overview: {
+      what: 'The GAD-7 measures the severity of generalized anxiety disorder symptoms over the past two weeks. It captures the core features of GAD — excessive worry, difficulty controlling worry, restlessness, fatigue, difficulty concentrating, irritability, and sleep disturbance. While developed for GAD, it also performs well as a screener for panic disorder, social anxiety disorder, and PTSD.',
+      why: 'Anxiety disorders are the most common class of mental health conditions, affecting roughly 1 in 5 adults. Yet anxiety is frequently unrecognized in healthcare settings because patients often present with physical symptoms (headaches, stomach problems, insomnia) rather than explicitly reporting worry. The GAD-7 provides a reliable way to detect and monitor anxiety.',
+    },
+    history: {
+      creators: 'Robert L. Spitzer, Kurt Kroenke, Janet B.W. Williams, and Bernd Löwe',
+      year: 2006,
+      context: 'The GAD-7 was developed by the same team that created the PHQ-9, as part of a broader effort to equip primary care with validated mental health screening tools. The items were selected from a larger pool based on their alignment with DSM-IV criteria for GAD and their ability to discriminate between patients with and without the disorder.',
+      evolution: 'The GAD-7 rapidly became the most widely used anxiety screening tool in clinical practice and research. It is now included in most electronic health record systems alongside the PHQ-9. A 2-item version (GAD-2) was developed for ultra-brief screening, and the measure has been validated in over 30 languages.',
+    },
+    validation: {
+      internalConsistency: 'Cronbach\'s alpha of .92 in the original validation study.',
+      testRetest: 'Intraclass correlation of .83 over a one-week interval.',
+      sampleInfo: 'Originally validated with 2,740 primary care patients. Subsequently validated in diverse populations including adolescents, elderly adults, pregnant women, and patients with chronic medical conditions.',
+      convergent: 'Correlates .74 with the Beck Anxiety Inventory and .72 with the anxiety subscale of the Symptom Checklist-90. A score ≥10 has 89% sensitivity and 82% specificity for detecting GAD.',
+      notes: 'Like the PHQ-9, the GAD-7 is entirely in the public domain with no copyright restrictions.',
+    },
+    practicalApplications: [
+      { title: 'Primary Care Screening', description: 'Paired with the PHQ-9 as a standard mental health screening battery in primary care settings worldwide.' },
+      { title: 'Treatment Monitoring', description: 'Tracks anxiety symptom severity over the course of therapy or medication treatment. A 4-point change is clinically meaningful.' },
+      { title: 'Research', description: 'One of the most commonly used anxiety outcome measures in clinical trials for both pharmacological and psychological interventions.' },
+      { title: 'Telehealth', description: 'Widely used in remote and digital mental health platforms for initial screening and ongoing monitoring.' },
+    ],
+    keyFindings: [
+      { finding: 'A GAD-7 score of 10 or higher correctly identifies generalized anxiety disorder in 89% of cases, with only an 18% false-positive rate.', source: 'Spitzer et al., 2006' },
+      { finding: 'The GAD-7 is not just useful for GAD — it detects panic disorder (sensitivity 74%), social anxiety disorder (sensitivity 72%), and PTSD (sensitivity 66%) as well.', source: 'Kroenke et al., 2007' },
+      { finding: 'Increasing GAD-7 scores are associated with progressively worse functional impairment, disability days, and healthcare utilization.', source: 'Spitzer et al., 2006' },
+    ],
+    references: [
+      { text: 'Spitzer, R. L., Kroenke, K., Williams, J. B., & Löwe, B. (2006). A brief measure for assessing generalized anxiety disorder: The GAD-7. Archives of Internal Medicine, 166(10), 1092–1097.', isPrimary: true },
+      { text: 'Kroenke, K., Spitzer, R. L., Williams, J. B., Monahan, P. O., & Löwe, B. (2007). Anxiety disorders in primary care: prevalence, impairment, comorbidity, and detection. Annals of Internal Medicine, 146(5), 317–325.' },
+      { text: 'Löwe, B., Decker, O., Müller, S., Brähler, E., Schellberg, D., Herzog, W., & Herzberg, P. Y. (2008). Validation and standardization of the Generalized Anxiety Disorder Screener (GAD-7) in the general population. Medical Care, 46(3), 266–274.' },
+    ],
+    simple: {
+      overview: {
+        what: 'The GAD-7 asks about 7 common anxiety symptoms — like excessive worry, restlessness, and trouble relaxing — over the past two weeks. Your score tells you how severe your anxiety is.',
+        why: 'Anxiety is the most common mental health condition, but it often goes undetected because people show up with physical symptoms (headaches, stomach issues, insomnia) rather than saying "I\'m anxious." The GAD-7 gives you a quick, evidence-based anxiety check.',
+      },
+      history: {
+        context: 'Built by the same team behind the PHQ-9, the GAD-7 was designed to be anxiety\'s equivalent of that gold-standard depression screener — brief, free, and accurate enough for any doctor to use.',
+        evolution: 'Since 2006, the GAD-7 has become the go-to anxiety screening tool worldwide. It\'s built into most electronic health record systems and has been translated into 30+ languages.',
+      },
+      validation: 'Tested with thousands of people, the GAD-7 correctly identifies anxiety disorders 89% of the time. It\'s endorsed by clinical guidelines worldwide and is completely free to use — no copyright restrictions.',
+      keyFindings: [
+        { finding: 'A score of 10 or higher correctly identifies generalized anxiety disorder 89% of the time — nearly as good as a full diagnostic interview.' },
+        { finding: 'The GAD-7 also catches other anxiety conditions: it detects panic disorder 74% of the time and social anxiety 72% of the time.' },
+        { finding: 'Higher GAD-7 scores are directly linked to more missed work days, more doctor visits, and greater difficulty functioning in daily life.' },
+      ],
+    },
+  },
+
+  pcl5: {
+    id: 'pcl5',
+    overview: {
+      what: 'The PCL-5 measures the 20 symptoms of PTSD as defined by DSM-5, organized into four clusters: intrusion (re-experiencing the trauma), avoidance (steering clear of reminders), negative changes in cognitions and mood, and alterations in arousal and reactivity. It assesses symptom severity over the past month.',
+      why: 'PTSD affects approximately 6% of the U.S. population at some point in their lives, and rates are much higher among military veterans, first responders, and survivors of violence or disaster. Yet PTSD is frequently missed in clinical settings. The PCL-5 provides a validated way to screen for PTSD, monitor symptoms, and track treatment progress.',
+    },
+    history: {
+      creators: 'Frank W. Weathers, Brett T. Litz, Terence M. Keane, Patrick A. Palmieri, Brian P. Marx, and Paula P. Schnurr',
+      year: 2013,
+      context: 'The PCL-5 was developed at the National Center for PTSD to align with the updated DSM-5 diagnostic criteria. It replaced the PCL (for DSM-IV), which had been the most widely used PTSD self-report measure since 1993. The update was necessary because DSM-5 significantly reorganized PTSD criteria — adding new symptoms and splitting the original three clusters into four.',
+      evolution: 'The PCL-5 has rapidly become the standard self-report measure for PTSD in both clinical and research settings. It has been translated into over 20 languages and validated with diverse trauma-exposed populations. The National Center for PTSD provides it free of charge, consistent with its mission of improving the well-being of veterans and all trauma-exposed individuals.',
+    },
+    validation: {
+      internalConsistency: 'Cronbach\'s alpha of .94–.97 across validation studies, indicating excellent internal reliability.',
+      testRetest: '.82–.84 over a one-week interval.',
+      sampleInfo: 'Validated with multiple samples including U.S. military veterans (N=1,976), active-duty service members, college students, and community trauma survivors.',
+      convergent: 'Correlates .84–.87 with the Clinician-Administered PTSD Scale for DSM-5 (CAPS-5), the gold-standard clinician interview. A cutoff score of 31–33 provides optimal sensitivity (87–89%) and specificity (82–85%) for probable PTSD.',
+      notes: 'The PCL-5 is freely available from the National Center for PTSD (www.ptsd.va.gov) and may be used without permission or fees.',
+    },
+    practicalApplications: [
+      { title: 'Clinical Screening', description: 'Used in VA hospitals, military clinics, and civilian settings to screen for probable PTSD and determine need for further evaluation.' },
+      { title: 'Treatment Monitoring', description: 'Administered before, during, and after evidence-based PTSD treatments (CPT, PE, EMDR) to track symptom change. A 10-point change is clinically meaningful.' },
+      { title: 'Research', description: 'The most widely used self-report PTSD measure in clinical trials and epidemiological studies since its release.' },
+      { title: 'Disaster Response', description: 'Used in post-disaster mental health screening to identify individuals who may need trauma-focused treatment.' },
+    ],
+    keyFindings: [
+      { finding: 'A PCL-5 cutoff score of 33 correctly identifies probable PTSD in 87–89% of cases, closely matching structured clinical interviews.', source: 'Bovin et al., 2016' },
+      { finding: 'Evidence-based PTSD treatments (CPT, PE, EMDR) produce an average PCL-5 score reduction of 20–25 points, moving most patients below the clinical cutoff.', source: 'Resick et al., 2017' },
+      { finding: 'The four-cluster structure of the PCL-5 (intrusion, avoidance, negative cognitions/mood, arousal/reactivity) helps clinicians target treatment to the specific symptom clusters causing the most distress.', source: 'Weathers et al., 2013' },
+    ],
+    references: [
+      { text: 'Weathers, F. W., Litz, B. T., Keane, T. M., Palmieri, P. A., Marx, B. P., & Schnurr, P. P. (2013). The PTSD Checklist for DSM-5 (PCL-5). National Center for PTSD.', isPrimary: true },
+      { text: 'Bovin, M. J., Marx, B. P., Weathers, F. W., Gallagher, M. W., Rodriguez, P., Schnurr, P. P., & Keane, T. M. (2016). Psychometric properties of the PTSD Checklist for Diagnostic and Statistical Manual of Mental Disorders–Fifth Edition (PCL-5) in veterans. Psychological Assessment, 28(11), 1379–1391.' },
+      { text: 'Blevins, C. A., Weathers, F. W., Davis, M. T., Witte, T. K., & Domino, J. L. (2015). The Posttraumatic Stress Disorder Checklist for DSM-5 (PCL-5): Development and initial psychometric evaluation. Journal of Traumatic Stress, 28(6), 489–498.' },
+    ],
+    simple: {
+      overview: {
+        what: 'The PCL-5 asks about 20 PTSD symptoms organized into four groups: intrusive memories and flashbacks, avoidance of reminders, negative changes in how you think and feel, and being on edge or easily startled. It covers the past month.',
+        why: 'PTSD affects about 1 in 17 people at some point in their lives — and rates are much higher for veterans, first responders, and survivors of violence. The PCL-5 gives you a quick, evidence-based way to understand whether your trauma-related symptoms are in the clinical range.',
+      },
+      history: {
+        context: 'The PCL-5 was built by researchers at the National Center for PTSD — a U.S. government institute dedicated to understanding and treating trauma. They needed a tool that could quickly and reliably identify PTSD symptoms in veterans and civilians alike.',
+        evolution: 'Since 2013, the PCL-5 has become the standard PTSD screening tool in VA hospitals, military clinics, and research studies worldwide. It\'s freely available to anyone — no fees, no permissions needed.',
+      },
+      validation: 'The PCL-5 has been tested with thousands of trauma-exposed people. A score of 33 or higher correctly identifies probable PTSD about 88% of the time. It\'s as accurate as a much longer face-to-face clinical interview.',
+      keyFindings: [
+        { finding: 'A score of 33 or higher correctly identifies probable PTSD 88% of the time — nearly as accurate as a full clinical interview.' },
+        { finding: 'Evidence-based PTSD treatments (like Cognitive Processing Therapy and Prolonged Exposure) typically drop PCL-5 scores by 20–25 points, often moving people below the clinical cutoff.' },
+        { finding: 'The four symptom clusters help you and your therapist pinpoint which specific symptoms are causing the most trouble — so treatment can be targeted.' },
+      ],
+    },
+  },
+
+  who5: {
+    id: 'who5',
+    overview: {
+      what: 'The WHO-5 Well-Being Index measures subjective psychological well-being using five positively worded statements about how you have been feeling over the past two weeks. Unlike most mental health measures that focus on symptoms and problems, the WHO-5 focuses on positive well-being — cheerfulness, calm, energy, restfulness, and engagement.',
+      why: 'Well-being is more than the absence of illness. The WHO-5 captures whether you are actually feeling good, not just whether you are not feeling bad. This positive framing makes it useful both as a well-being measure and — paradoxically — as one of the most sensitive screening tools for depression, because people whose well-being has dropped often have depression that has not yet been recognized.',
+    },
+    history: {
+      creators: 'Per Bech (World Health Organization Collaborating Centre in Mental Health)',
+      year: 1998,
+      context: 'The WHO-5 evolved from earlier WHO well-being indices developed in the 1980s. Per Bech, a Danish psychiatrist, refined the scale through rigorous psychometric testing, reducing it from 28 items to 10, then to 5 — finding that the ultra-brief version captured the same information. It was officially adopted by the World Health Organization as part of its quality-of-life assessment toolkit.',
+      evolution: 'The WHO-5 has been translated into over 30 languages and used in hundreds of studies worldwide. It has been validated as a depression screener, a quality-of-life measure, an outcome measure in clinical trials, and a population health indicator. Its brevity (just 5 items, under 1 minute) has made it one of the most practical well-being tools available.',
+    },
+    validation: {
+      internalConsistency: 'Cronbach\'s alpha of .84 across validation studies.',
+      testRetest: 'Not formally assessed due to the time-sensitive nature of the measure (it captures current state), but short-term stability is good.',
+      sampleInfo: 'Validated in large-scale population studies including the Danish general population (N=9,542), and in clinical studies with patients with diabetes, depression, cardiac disease, and other conditions.',
+      convergent: 'Correlates strongly (-.70 to -.80) with depression measures (PHQ-9, BDI). A score below 13 has been shown to have high sensitivity (93%) for detecting depression.',
+      notes: 'The WHO-5 is freely available in the public domain. Its positive framing makes it acceptable and non-threatening to respondents, reducing stigma-related non-response.',
+    },
+    practicalApplications: [
+      { title: 'Depression Screening', description: 'WHO recommends a score below 13 as a trigger for further depression assessment. More sensitive than many dedicated depression tools.' },
+      { title: 'Clinical Trials', description: 'Used as a patient-reported outcome measure in trials for antidepressants, diabetes treatments, and other interventions where well-being is relevant.' },
+      { title: 'Population Health Surveys', description: 'Used by governments and organizations to monitor population-level well-being and mental health trends.' },
+      { title: 'Workplace Wellness', description: 'Brief enough to include in employee wellness surveys to monitor team and organizational well-being over time.' },
+    ],
+    keyFindings: [
+      { finding: 'A WHO-5 score below 13 detects depression with 93% sensitivity — meaning it catches nearly all cases of depression, making it one of the most sensitive available screeners.', source: 'Topp et al., 2015' },
+      { finding: 'The WHO-5 is equally valid as a well-being measure across diverse cultures and languages, showing good psychometric properties in over 30 language versions.', source: 'Topp et al., 2015' },
+      { finding: 'Changes in WHO-5 scores during treatment closely track changes in depression severity, making it a good proxy outcome measure that is less burdensome for patients.', source: 'Bech et al., 2003' },
+    ],
+    references: [
+      { text: 'Topp, C. W., Østergaard, S. D., Søndergaard, S., & Bech, P. (2015). The WHO-5 Well-Being Index: A systematic review of the literature. Psychotherapy and Psychosomatics, 84(3), 167–176.', isPrimary: true },
+      { text: 'Bech, P., Olsen, L. R., Kjoller, M., & Rasmussen, N. K. (2003). Measuring well-being rather than the absence of distress symptoms: A comparison of the SF-36 Mental Health subscale and the WHO-Five Well-Being Scale. International Journal of Methods in Psychiatric Research, 12(2), 85–91.' },
+      { text: 'World Health Organization. (1998). Wellbeing Measures in Primary Health Care/The DepCare Project. WHO Regional Office for Europe: Copenhagen.' },
+    ],
+    simple: {
+      overview: {
+        what: 'The WHO-5 asks 5 simple questions about how you have been feeling recently — things like whether you have felt cheerful, calm, energetic, well-rested, and interested in life. It focuses on the positive, not on symptoms.',
+        why: 'True well-being is not just the absence of problems — it is actually feeling good. The WHO-5 captures this. And surprisingly, it is also one of the best tools for catching depression early, because a drop in positive well-being is often the first sign.',
+      },
+      history: {
+        context: 'The World Health Organization wanted a universal, ultra-brief tool for measuring how people are actually feeling. Danish psychiatrist Per Bech refined it down from 28 questions to just 5, proving that this tiny scale captured the same information.',
+        evolution: 'The WHO-5 has been translated into 30+ languages and is used by governments, hospitals, and researchers worldwide. Its simplicity and positive framing make it one of the most widely used well-being measures on the planet.',
+      },
+      validation: 'Tested with tens of thousands of people globally. A score below 13 catches 93% of depression cases — better than many dedicated depression tools. It works equally well across cultures and languages.',
+      keyFindings: [
+        { finding: 'A score below 13 catches 93% of depression cases — making it one of the most sensitive depression screeners available, even though it only asks about positive well-being.' },
+        { finding: 'The WHO-5 works equally well across 30+ languages and cultures, making it one of the most universal mental health tools in existence.' },
+        { finding: 'It takes under 1 minute to complete, yet provides information as valuable as much longer questionnaires.' },
+      ],
+    },
+  },
+
+  cssrs: {
+    id: 'cssrs',
+    overview: {
+      what: 'The Columbia-Suicide Severity Rating Scale (C-SSRS) is a structured tool that assesses the severity and type of suicidal ideation and behavior. The screener version used here focuses on recent suicidal ideation, ranging from passive wishes for death through active ideation with specific plans and intent.',
+      why: 'Suicide is a leading cause of death worldwide, yet it is preventable. The greatest barrier to prevention is detection — many people who die by suicide were never asked about suicidal thoughts. The C-SSRS provides a systematic, evidence-based way to ask. Research consistently shows that directly asking about suicide does not increase risk — it reduces it by opening the door to help.',
+    },
+    history: {
+      creators: 'Kelly Posner, Gregory K. Brown, Barbara Stanley, David A. Brent, and colleagues at Columbia University',
+      year: 2011,
+      context: 'The C-SSRS was developed in response to a critical gap in suicide research and prevention: there was no standardized, universally accepted way to define and measure suicidal ideation and behavior. The FDA, NIH, and other agencies recognized that inconsistent measurement was hindering both clinical care and research. Posner and colleagues at Columbia University created the C-SSRS to provide a common language and metric.',
+      evolution: 'The C-SSRS has been adopted more widely than any other suicide assessment tool in history. It is required by the FDA for all clinical trials of psychiatric medications, mandated by the U.S. Department of Defense, and used by the Veterans Health Administration, the CDC, and thousands of hospitals and emergency departments. It has been translated into over 140 languages and is used in over 40 countries.',
+    },
+    validation: {
+      internalConsistency: 'Not applicable in the traditional sense (items form a severity hierarchy, not a unidimensional scale). The ideation severity scale shows good convergent validity and predictive validity.',
+      testRetest: 'High agreement (.97 for ideation classification) between different raters administering the interview.',
+      sampleInfo: 'Validated across multiple populations including adolescents in emergency departments (N=141), adults in clinical trials (N=2,776), and military personnel. Large-scale implementation studies in healthcare systems.',
+      convergent: 'Correlates strongly with other suicide risk measures. The ideation intensity subscale predicts future suicide attempts better than any single risk factor. Endorsed ideation with intent or plan is associated with 4–8x elevated risk of future attempt.',
+      notes: 'The C-SSRS is freely available for use in clinical settings, research, and public health. Training materials are available at cssrs.columbia.edu.',
+    },
+    practicalApplications: [
+      { title: 'Emergency Departments', description: 'Universal screening of all patients presenting to emergency departments, identifying individuals who need psychiatric evaluation and safety planning.' },
+      { title: 'Military & Veterans', description: 'Mandated screening tool across U.S. Department of Defense and Veterans Health Administration facilities.' },
+      { title: 'FDA Drug Trials', description: 'Required by the FDA for monitoring suicidality in all clinical trials of psychiatric medications since 2012.' },
+      { title: 'Schools & Communities', description: 'Used in school-based suicide prevention programs and community gatekeeper training (e.g., QPR, ASIST).' },
+    ],
+    keyFindings: [
+      { finding: 'Directly asking about suicide using structured tools like the C-SSRS does not increase suicidal ideation or distress — it consistently decreases it by opening the door to help.', source: 'Dazzi et al., 2014' },
+      { finding: 'C-SSRS ideation severity significantly predicts future suicide attempts. Individuals who report active ideation with intent are 4–8 times more likely to attempt suicide than those with passive ideation alone.', source: 'Posner et al., 2011' },
+      { finding: 'Implementation of universal C-SSRS screening in emergency departments increased detection of suicidal patients by 53% compared to clinical judgment alone.', source: 'Boudreaux et al., 2016' },
+    ],
+    references: [
+      { text: 'Posner, K., Brown, G. K., Stanley, B., Brent, D. A., Yershova, K. V., Oquendo, M. A., ... & Mann, J. J. (2011). The Columbia-Suicide Severity Rating Scale: Initial validity and internal consistency findings from three multisite studies with adolescents and adults. American Journal of Psychiatry, 168(12), 1266–1277.', isPrimary: true },
+      { text: 'Dazzi, T., Gribble, R., Wessely, S., & Fear, N. T. (2014). Does asking about suicide and related behaviours induce suicidal ideation? What is the evidence? Psychological Medicine, 44(16), 3361–3363.' },
+      { text: 'Boudreaux, E. D., Camargo, C. A., Arias, S. A., Sullivan, A. F., Allen, M. H., Goldstein, A. B., ... & Miller, I. W. (2016). Improving suicide risk screening and detection in the emergency department. American Journal of Preventive Medicine, 50(4), 445–453.' },
+    ],
+    simple: {
+      overview: {
+        what: 'The C-SSRS screener asks 6 direct questions about suicidal thoughts — from passive wishes for death through active plans and intent. It is designed to identify where on the spectrum of risk you might fall.',
+        why: 'Suicide is preventable, but only if we ask. Research shows that asking people directly about suicide does NOT increase their risk — it actually helps. The C-SSRS gives you and healthcare providers a clear, structured way to have this conversation.',
+      },
+      history: {
+        context: 'Before the C-SSRS, there was no standard way to ask about suicide. Different doctors asked different questions, and many didn\'t ask at all. Researchers at Columbia University built the C-SSRS to create a universal tool — one set of questions that anyone could use to assess risk.',
+        evolution: 'The C-SSRS is now the most widely adopted suicide screening tool in history. It\'s required by the FDA, used by the U.S. military, and deployed in emergency departments, schools, and crisis centers in 40+ countries and 140+ languages.',
+      },
+      validation: 'The C-SSRS has been tested across multiple populations and settings. It reliably predicts who is at elevated risk, and when implemented in emergency departments, it catches 53% more at-risk individuals than clinical judgment alone.',
+      keyFindings: [
+        { finding: 'Asking about suicide does NOT increase risk. Multiple studies confirm that structured screening actually reduces distress by opening the door to help.' },
+        { finding: 'People who report active suicidal thoughts with a plan are 4–8 times more likely to attempt suicide — making early detection through screening critical.' },
+        { finding: 'When hospitals started using the C-SSRS for universal screening, they caught 53% more at-risk people than when relying on clinician judgment alone.' },
+      ],
+    },
+  },
 }
 
 export function getDeepDiveContent(id: string): DeepDiveContent | null {

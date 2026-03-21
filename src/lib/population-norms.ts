@@ -221,6 +221,67 @@ export const populationNorms: Record<string, AssessmentNorms> = {
       higherIsBetter: true,
     },
   },
+
+  phq9: {
+    overall: {
+      mean: 5.08,
+      sd: 5.67,
+      sampleDescription: 'U.S. adults (general population)',
+      sampleSize: 5018,
+      source: 'Kroenke et al., 2009',
+      higherIsBetter: false,
+    },
+  },
+
+  gad7: {
+    overall: {
+      mean: 4.90,
+      sd: 4.80,
+      sampleDescription: 'U.S. adults (primary care patients)',
+      sampleSize: 2740,
+      source: 'Spitzer et al., 2006',
+      higherIsBetter: false,
+    },
+  },
+
+  pcl5: {
+    overall: {
+      mean: 15.0,
+      sd: 16.3,
+      sampleDescription: 'U.S. military veterans',
+      sampleSize: 1976,
+      source: 'Bovin et al., 2016',
+      higherIsBetter: false,
+    },
+    subscales: [
+      { name: 'Intrusion', mean: 4.2, sd: 5.0 },
+      { name: 'Avoidance', mean: 2.5, sd: 3.0 },
+      { name: 'Negative Cognitions & Mood', mean: 5.0, sd: 6.5 },
+      { name: 'Arousal & Reactivity', mean: 3.3, sd: 5.0 },
+    ],
+  },
+
+  who5: {
+    overall: {
+      mean: 17.3,
+      sd: 5.7,
+      sampleDescription: 'Danish adults (general population)',
+      sampleSize: 9542,
+      source: 'Bech et al., 2003',
+      higherIsBetter: true,
+    },
+  },
+
+  cssrs: {
+    overall: {
+      mean: 0.15,
+      sd: 0.50,
+      sampleDescription: 'U.S. adults (general population)',
+      sampleSize: 2692,
+      source: 'Posner et al., 2011',
+      higherIsBetter: false,
+    },
+  },
 }
 
 export function getAssessmentNorms(id: string): AssessmentNorms | null {

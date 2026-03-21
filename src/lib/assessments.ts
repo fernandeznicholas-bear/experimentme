@@ -460,6 +460,178 @@ export const selfcompassionConfig: AssessmentConfig = {
   ],
 }
 
+// ─── PHQ-9 ─────────────────────────────────────────
+export const phq9Config: AssessmentConfig = {
+  id: 'phq9',
+  title: 'Patient Health Questionnaire (PHQ-9)',
+  subtitle: 'How have you been feeling over the past two weeks?',
+  description: 'The PHQ-9 is the most widely used screening tool for depression in primary care settings. It consists of 9 items mapping directly onto the DSM-5 criteria for major depressive disorder.',
+  disclaimer: 'This is a screening tool, not a clinical diagnosis. If you are experiencing significant distress, please consult a mental health professional. If you are in crisis, contact the 988 Suicide and Crisis Lifeline (call or text 988).',
+  tags: ['mental-health'],
+  citation: 'Kroenke, K., Spitzer, R. L., & Williams, J. B. (2001). The PHQ-9: Validity of a brief depression severity measure. Journal of General Internal Medicine, 16(9), 606–613.',
+  questions: [
+    { text: 'Little interest or pleasure in doing things.' },
+    { text: 'Feeling down, depressed, or hopeless.' },
+    { text: 'Trouble falling or staying asleep, or sleeping too much.' },
+    { text: 'Feeling tired or having little energy.' },
+    { text: 'Poor appetite or overeating.' },
+    { text: 'Feeling bad about yourself — or that you are a failure or have let yourself or your family down.' },
+    { text: 'Trouble concentrating on things, such as reading the newspaper or watching television.' },
+    { text: 'Moving or speaking so slowly that other people could have noticed? Or the opposite — being so fidgety or restless that you have been moving around a lot more than usual.' },
+    { text: 'Thoughts that you would be better off dead, or of hurting yourself in some way.' },
+  ],
+  scaleLabels: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'],
+  scaleMin: 0,
+  scaleMax: 3,
+  scoreType: 'sum',
+  categories: [
+    { min: 20, max: 27, label: 'Severe Depression', emoji: '🌧️', description: 'Your symptoms suggest severe depression.', insight: 'A score in this range indicates severe depressive symptoms that are significantly impacting your daily life. This level of depression typically requires active treatment — research strongly supports a combination of psychotherapy (especially CBT or behavioral activation) and medication consultation. Please reach out to a mental health professional. If you are having thoughts of self-harm, contact the 988 Suicide and Crisis Lifeline immediately.' },
+    { min: 15, max: 19, label: 'Moderately Severe Depression', emoji: '☁️', description: 'Your symptoms suggest moderately severe depression.', insight: 'Your score indicates moderately severe depressive symptoms. At this level, treatment is strongly recommended. Research shows that both psychotherapy and medication are effective, and the combination is often most beneficial. Many people at this level are functioning day-to-day but finding it very difficult. A mental health professional can help you develop a treatment plan.' },
+    { min: 10, max: 14, label: 'Moderate Depression', emoji: '🌥️', description: 'Your symptoms suggest moderate depression.', insight: 'Your score indicates moderate depressive symptoms. This is above the clinical threshold where treatment is typically recommended. You may be experiencing noticeable difficulty with work, relationships, or daily activities. Research supports both psychotherapy (especially CBT) and lifestyle interventions at this level. Consider speaking with a healthcare provider about a treatment plan.' },
+    { min: 5, max: 9, label: 'Mild Depression', emoji: '🌤️', description: 'Your symptoms suggest mild depression.', insight: 'Your score indicates mild depressive symptoms. While this is below the typical clinical threshold, these symptoms are real and worth attending to. Lifestyle interventions — regular exercise, improving sleep hygiene, social connection, and structured daily activities — have strong evidence for managing mild depression. If symptoms persist or worsen, consider professional support.' },
+    { min: 0, max: 4, label: 'Minimal Depression', emoji: '🌿', description: 'Your symptoms are minimal — you are doing well.', insight: 'Your score suggests minimal or no depressive symptoms over the past two weeks. This is the range where most people who are not experiencing depression fall. Continue engaging in activities and relationships that support your well-being.' },
+  ],
+}
+
+// ─── GAD-7 ─────────────────────────────────────────
+export const gad7Config: AssessmentConfig = {
+  id: 'gad7',
+  title: 'Generalized Anxiety Disorder Scale (GAD-7)',
+  subtitle: 'How anxious have you been over the past two weeks?',
+  description: 'The GAD-7 is a brief, validated screening tool for generalized anxiety disorder. It is widely used in clinical settings and research to measure anxiety symptom severity.',
+  disclaimer: 'This is a screening tool, not a clinical diagnosis. If you are experiencing significant distress, please consult a mental health professional. If you are in crisis, contact the 988 Suicide and Crisis Lifeline (call or text 988).',
+  tags: ['mental-health'],
+  citation: 'Spitzer, R. L., Kroenke, K., Williams, J. B., & Löwe, B. (2006). A brief measure for assessing generalized anxiety disorder: The GAD-7. Archives of Internal Medicine, 166(10), 1092–1097.',
+  questions: [
+    { text: 'Feeling nervous, anxious, or on edge.' },
+    { text: 'Not being able to stop or control worrying.' },
+    { text: 'Worrying too much about different things.' },
+    { text: 'Trouble relaxing.' },
+    { text: 'Being so restless that it is hard to sit still.' },
+    { text: 'Becoming easily annoyed or irritable.' },
+    { text: 'Feeling afraid, as if something awful might happen.' },
+  ],
+  scaleLabels: ['Not at all', 'Several days', 'More than half the days', 'Nearly every day'],
+  scaleMin: 0,
+  scaleMax: 3,
+  scoreType: 'sum',
+  categories: [
+    { min: 15, max: 21, label: 'Severe Anxiety', emoji: '🌧️', description: 'Your symptoms suggest severe anxiety.', insight: 'A score in this range indicates severe anxiety symptoms that are likely significantly impacting your daily functioning. Treatment is strongly recommended — cognitive behavioral therapy (CBT) has the strongest evidence base for anxiety disorders, and medication may also be appropriate. Please consult a mental health professional to develop a treatment plan.' },
+    { min: 10, max: 14, label: 'Moderate Anxiety', emoji: '☁️', description: 'Your symptoms suggest moderate anxiety.', insight: 'Your score indicates moderate anxiety symptoms. This is above the clinical threshold where treatment is typically recommended. You may be spending considerable time worrying, experiencing physical symptoms (tension, restlessness), or avoiding certain situations. CBT, relaxation training, and mindfulness-based approaches all have strong evidence at this level.' },
+    { min: 5, max: 9, label: 'Mild Anxiety', emoji: '🌤️', description: 'Your symptoms suggest mild anxiety.', insight: 'Your score indicates mild anxiety symptoms. While below the clinical threshold, these symptoms are worth monitoring. Evidence-based self-help strategies include regular physical exercise, mindfulness meditation, limiting caffeine, maintaining good sleep hygiene, and practicing relaxation techniques. If symptoms persist or interfere with daily life, consider professional support.' },
+    { min: 0, max: 4, label: 'Minimal Anxiety', emoji: '🌿', description: 'Your anxiety symptoms are minimal.', insight: 'Your score suggests minimal anxiety over the past two weeks. This is within the normal range. Continue engaging in healthy coping strategies and activities that support your well-being.' },
+  ],
+}
+
+// ─── PCL-5 ─────────────────────────────────────────
+export const pcl5Config: AssessmentConfig = {
+  id: 'pcl5',
+  title: 'PTSD Checklist for DSM-5 (PCL-5)',
+  subtitle: 'How have you been affected by stressful experiences in the past month?',
+  description: 'The PCL-5 is a 20-item self-report measure that assesses the severity of PTSD symptoms as defined by DSM-5. It is widely used in both clinical and research settings as a screening tool and symptom monitor.',
+  disclaimer: 'This is a screening tool, not a clinical diagnosis. A diagnosis of PTSD requires a comprehensive clinical evaluation. If you are experiencing significant distress, please consult a mental health professional. If you are in crisis, contact the 988 Suicide and Crisis Lifeline (call or text 988).',
+  tags: ['mental-health'],
+  citation: 'Weathers, F. W., Litz, B. T., Keane, T. M., Palmieri, P. A., Marx, B. P., & Schnurr, P. P. (2013). The PTSD Checklist for DSM-5 (PCL-5). National Center for PTSD.',
+  questions: [
+    // Cluster B: Intrusion (1–5)
+    { text: 'Repeated, disturbing, and unwanted memories of the stressful experience.' },
+    { text: 'Repeated, disturbing dreams of the stressful experience.' },
+    { text: 'Suddenly feeling or acting as if the stressful experience were actually happening again (as if you were actually back there reliving it).' },
+    { text: 'Feeling very upset when something reminded you of the stressful experience.' },
+    { text: 'Having strong physical reactions when something reminded you of the stressful experience (for example, heart pounding, trouble breathing, sweating).' },
+    // Cluster C: Avoidance (6–7)
+    { text: 'Avoiding memories, thoughts, or feelings related to the stressful experience.' },
+    { text: 'Avoiding external reminders of the stressful experience (for example, people, places, conversations, activities, objects, or situations).' },
+    // Cluster D: Negative cognitions and mood (8–14)
+    { text: 'Trouble remembering important parts of the stressful experience.' },
+    { text: 'Having strong negative beliefs about yourself, other people, or the world (for example, having thoughts such as: I am bad, there is something seriously wrong with me, no one can be trusted, the world is completely dangerous).' },
+    { text: 'Blaming yourself or someone else for the stressful experience or what happened after it.' },
+    { text: 'Having strong negative feelings such as fear, horror, anger, guilt, or shame.' },
+    { text: 'Loss of interest in activities that you used to enjoy.' },
+    { text: 'Feeling distant or cut off from other people.' },
+    { text: 'Trouble experiencing positive feelings (for example, being unable to feel happiness or have loving feelings for people close to you).' },
+    // Cluster E: Arousal and reactivity (15–20)
+    { text: 'Irritable behavior, angry outbursts, or acting aggressively.' },
+    { text: 'Taking too many risks or doing things that could cause you harm.' },
+    { text: 'Being "superalert" or watchful or on guard.' },
+    { text: 'Feeling jumpy or easily startled.' },
+    { text: 'Having difficulty concentrating.' },
+    { text: 'Trouble falling or staying asleep.' },
+  ],
+  scaleLabels: ['Not at all', 'A little bit', 'Moderately', 'Quite a bit', 'Extremely'],
+  scaleMin: 0,
+  scaleMax: 4,
+  scoreType: 'sum',
+  subscales: [
+    { name: 'Intrusion', questionIndices: [0, 1, 2, 3, 4], description: 'Re-experiencing the trauma through unwanted memories, flashbacks, or nightmares.' },
+    { name: 'Avoidance', questionIndices: [5, 6], description: 'Avoiding thoughts, feelings, or external reminders of the trauma.' },
+    { name: 'Negative Cognitions & Mood', questionIndices: [7, 8, 9, 10, 11, 12, 13], description: 'Negative beliefs, emotions, detachment, and inability to experience positive feelings.' },
+    { name: 'Arousal & Reactivity', questionIndices: [14, 15, 16, 17, 18, 19], description: 'Hypervigilance, irritability, reckless behavior, sleep problems, and difficulty concentrating.' },
+  ],
+  categories: [
+    { min: 51, max: 80, label: 'Severe PTSD Symptoms', emoji: '🌧️', description: 'Your symptoms are severe and consistent with a likely PTSD diagnosis.', insight: 'A score in this range indicates severe PTSD symptoms across multiple clusters. This level of distress typically requires professional treatment. Evidence-based treatments for PTSD include Cognitive Processing Therapy (CPT), Prolonged Exposure (PE), and EMDR. These therapies have strong research support and can produce significant improvement. Please consult a mental health professional — you do not have to manage this alone.' },
+    { min: 33, max: 50, label: 'Probable PTSD', emoji: '☁️', description: 'Your symptoms are above the clinical cutoff for probable PTSD.', insight: 'Your score is above the recommended clinical cutoff of 33, suggesting probable PTSD. This does not replace a clinical diagnosis, but it indicates symptoms significant enough to warrant a professional evaluation. Trauma-focused therapies (CPT, PE, EMDR) are highly effective, and many people experience substantial improvement within 8–16 sessions. Early intervention leads to better outcomes.' },
+    { min: 20, max: 32, label: 'Moderate Symptoms', emoji: '🌥️', description: 'You are experiencing moderate trauma-related symptoms.', insight: 'Your score suggests moderate PTSD symptoms that are below the clinical cutoff but still notable. You may be experiencing some intrusive memories, avoidance, mood changes, or hyperarousal. These symptoms may benefit from professional support, especially if they are interfering with daily life. Self-care strategies — maintaining routines, social connection, physical exercise, and avoiding alcohol — can also help.' },
+    { min: 0, max: 19, label: 'Low Symptoms', emoji: '🌿', description: 'Your trauma-related symptoms are low.', insight: 'Your score suggests minimal to low PTSD symptoms. This is within the range where most people who have not experienced significant trauma — or who have recovered well — score. If you have experienced trauma and are scoring low, this suggests good resilience and coping. Continue engaging in supportive activities and relationships.' },
+  ],
+}
+
+// ─── WHO-5 ─────────────────────────────────────────
+export const who5Config: AssessmentConfig = {
+  id: 'who5',
+  title: 'WHO-5 Well-Being Index',
+  subtitle: 'How have you been feeling over the past two weeks?',
+  description: 'The WHO-5 is one of the most widely used questionnaires for assessing subjective psychological well-being. Developed by the World Health Organization, it consists of just 5 positively worded items and is used both as a well-being measure and as a screening tool for depression.',
+  disclaimer: 'This is a screening tool, not a clinical diagnosis. If you are experiencing significant distress, please consult a mental health professional. If you are in crisis, contact the 988 Suicide and Crisis Lifeline (call or text 988).',
+  tags: ['well-being', 'mental-health'],
+  citation: 'Topp, C. W., Østergaard, S. D., Søndergaard, S., & Bech, P. (2015). The WHO-5 Well-Being Index: A systematic review of the literature. Psychotherapy and Psychosomatics, 84(3), 167–176.',
+  questions: [
+    { text: 'I have felt cheerful and in good spirits.' },
+    { text: 'I have felt calm and relaxed.' },
+    { text: 'I have felt active and vigorous.' },
+    { text: 'I woke up feeling fresh and rested.' },
+    { text: 'My daily life has been filled with things that interest me.' },
+  ],
+  scaleLabels: ['At no time', 'Some of the time', 'Less than half of the time', 'More than half of the time', 'Most of the time', 'All of the time'],
+  scaleMin: 0,
+  scaleMax: 5,
+  scoreType: 'sum',
+  categories: [
+    { min: 21, max: 25, label: 'Excellent Well-Being', emoji: '🌟', description: 'You are feeling great — your well-being is very high.', insight: 'Your score indicates excellent psychological well-being over the past two weeks. You have been feeling cheerful, rested, and engaged with life. Research shows that high well-being is associated with better physical health, stronger relationships, and greater productivity. Continue nurturing the activities and connections that support your well-being.' },
+    { min: 13, max: 20, label: 'Good Well-Being', emoji: '☀️', description: 'Your well-being is positive overall.', insight: 'Your score indicates good psychological well-being. You are generally feeling positive, though there may be some areas where things could be better. The WHO-5 is sensitive to changes over time, so tracking your score periodically can help you notice shifts in your well-being before they become problems.' },
+    { min: 7, max: 12, label: 'Low Well-Being', emoji: '🌥️', description: 'Your well-being is below average — consider paying attention to this.', insight: 'Your score suggests low well-being over the past two weeks. A score below 13 is the WHO-recommended threshold for screening for depression. This does not mean you are depressed, but it suggests your quality of life has been reduced. Consider whether recent stressors, sleep problems, or social isolation might be contributing. If this is a persistent pattern, speaking with a healthcare provider is recommended.' },
+    { min: 0, max: 6, label: 'Poor Well-Being', emoji: '☁️', description: 'Your well-being is very low — please consider seeking support.', insight: 'Your score indicates very poor psychological well-being. A score at or below 6 (or a score of 0 on any single item) warrants further assessment for depression. This does not mean you are necessarily depressed, but it does mean your quality of life has been significantly impacted recently. Please consider reaching out to a healthcare provider or mental health professional. Evidence-based treatments can make a meaningful difference.' },
+  ],
+}
+
+// ─── C-SSRS (Screener version) ─────────────────────
+export const cssrsConfig: AssessmentConfig = {
+  id: 'cssrs',
+  title: 'Columbia-Suicide Severity Rating Scale (Screener)',
+  subtitle: 'A brief screening for suicidal ideation.',
+  description: 'The C-SSRS is the gold standard for suicide risk assessment, used by the U.S. military, FDA, CDC, and thousands of clinical settings worldwide. This is the brief self-report screener version that assesses recent suicidal ideation. It does not assess behavior or attempt history.',
+  disclaimer: 'If you are currently having thoughts of suicide, please reach out for help immediately. Contact the 988 Suicide and Crisis Lifeline (call or text 988), go to your nearest emergency room, or call emergency services. You are not alone, and help is available.',
+  tags: ['mental-health'],
+  citation: 'Posner, K., Brown, G. K., Stanley, B., Brent, D. A., Yershova, K. V., Oquendo, M. A., ... & Mann, J. J. (2011). The Columbia-Suicide Severity Rating Scale: Initial validity and internal consistency findings from three multisite studies with adolescents and adults. American Journal of Psychiatry, 168(12), 1266–1277.',
+  questions: [
+    { text: 'Have you wished you were dead or wished you could go to sleep and not wake up?' },
+    { text: 'Have you actually had any thoughts of killing yourself?' },
+    { text: 'Have you been thinking about how you might do this?' },
+    { text: 'Have you had these thoughts and had some intention of acting on them?' },
+    { text: 'Have you started to work out or worked out the details of how to kill yourself, and did you intend to carry out this plan?' },
+    { text: 'Have you done anything, started to do anything, or prepared to do anything to end your life?' },
+  ],
+  scaleLabels: ['No', 'Yes'],
+  scaleMin: 0,
+  scaleMax: 1,
+  scoreType: 'sum',
+  categories: [
+    { min: 3, max: 6, label: 'High Risk — Please Seek Help Now', emoji: '🚨', description: 'Your responses indicate active suicidal ideation with intent or planning.', insight: 'Your responses indicate serious suicidal thoughts that require immediate professional attention. This is not something you need to handle alone. Please contact the 988 Suicide and Crisis Lifeline (call or text 988), go to your nearest emergency room, or tell someone you trust right now. Effective treatments exist, and people recover from suicidal crises every day. Your life matters.' },
+    { min: 1, max: 2, label: 'Elevated Risk — Please Talk to Someone', emoji: '⚠️', description: 'Your responses indicate some suicidal ideation.', insight: 'Your responses suggest the presence of suicidal thoughts. Even passive thoughts like wishing you were dead are important to take seriously. Please consider reaching out to a mental health professional, your primary care provider, or a trusted person in your life. The 988 Suicide and Crisis Lifeline (call or text 988) is available 24/7. You deserve support.' },
+    { min: 0, max: 0, label: 'No Current Ideation', emoji: '🌿', description: 'You did not endorse any suicidal ideation.', insight: 'Your responses indicate no current suicidal ideation. If you took this screening as a check-in, that is a healthy practice. If you are experiencing distress in other areas, other assessments on this site may help you understand what you are going through. Remember that it is always okay to reach out for help if your feelings change.' },
+  ],
+}
+
 // Helper to get config by assessment ID
 export function getAssessmentConfig(id: string): AssessmentConfig | null {
   const configs: Record<string, AssessmentConfig> = {
@@ -473,6 +645,11 @@ export function getAssessmentConfig(id: string): AssessmentConfig | null {
     dass21: dass21Config,
     hope: hopeConfig,
     selfcompassion: selfcompassionConfig,
+    phq9: phq9Config,
+    gad7: gad7Config,
+    pcl5: pcl5Config,
+    who5: who5Config,
+    cssrs: cssrsConfig,
   }
   return configs[id] || null
 }
