@@ -34,34 +34,39 @@ function LoginForm() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
+  const [turnstileError, setTurnstileError] = useState(false)
   const router = useRouter()
   const searchParams = useSearchParams()
   const errorParam = searchParams.get('error')
   const message = searchParams.get('message')
+
+  const isTestKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.startsWith('1x')
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError('')
 
-    // Verify Turnstile token server-side
-    try {
-      const verifyRes = await fetch('/api/verify-turnstile', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: turnstileToken }),
-      })
-      const verifyData = await verifyRes.json()
-      if (!verifyData.success) {
-        setError('Human verification failed. Please try again.')
+    // Skip Turnstile verification if using test keys or if widget failed to load
+    if (turnstileToken && !isTestKey) {
+      try {
+        const verifyRes = await fetch('/api/verify-turnstile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: turnstileToken }),
+        })
+        const verifyData = await verifyRes.json()
+        if (!verifyData.success) {
+          setError('Human verification failed. Please try again.')
+          setLoading(false)
+          setTurnstileToken(null)
+          return
+        }
+      } catch {
+        setError('Verification error. Please try again.')
         setLoading(false)
-        setTurnstileToken(null)
         return
       }
-    } catch {
-      setError('Verification error. Please try again.')
-      setLoading(false)
-      return
     }
 
     const supabase = createClient()
@@ -141,15 +146,23 @@ function LoginForm() {
           </div>
         </div>
 
-        <Turnstile
-          onSuccess={(token) => setTurnstileToken(token)}
-          onError={() => setTurnstileToken(null)}
-          onExpire={() => setTurnstileToken(null)}
-        />
+        {!isTestKey && (
+          <Turnstile
+            onSuccess={(token) => setTurnstileToken(token)}
+            onError={() => { setTurnstileToken(null); setTurnstileError(true) }}
+            onExpire={() => { setTurnstileToken(null); setTurnstileError(true) }}
+          />
+        )}
+
+        {turnstileError && (
+          <p className="text-xs text-amber-600 text-center">
+            Verification widget failed to load — you can still sign in.
+          </p>
+        )}
 
         <button
           type="submit"
-          disabled={loading || !turnstileToken}
+          disabled={loading || (!isTestKey && !turnstileToken && !turnstileError)}
           className="w-full py-3 rounded-xl bg-terracotta text-white font-semibold text-base hover:bg-terracotta-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {loading ? 'Signing in...' : 'Sign In'}
