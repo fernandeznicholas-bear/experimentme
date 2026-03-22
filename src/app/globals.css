@@ -89,6 +89,49 @@ html {
   animation-play-state: paused;
 }
 
+/* Album cover facts ticker — smooth continuous scroll */
+@keyframes facts-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.facts-ticker {
+  animation: facts-scroll 18s linear infinite;
+}
+
+.facts-ticker:hover {
+  animation-play-state: paused;
+}
+
+/* Faster facts ticker for prototype jukebox */
+.facts-ticker-fast {
+  animation: facts-scroll 8s linear infinite;
+}
+
+.facts-ticker-fast:hover {
+  animation-play-state: paused;
+}
+
+/* Intro overlay animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px) scale(0.96); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+.animate-slide-up {
+  animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Hide scrollbar for carousel */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
 .splash-shimmer {
   background: radial-gradient(
     ellipse at center bottom,

@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "experimentme-next",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\npm.cmd",
-      "runtimeArgs": ["run", "dev"],
-      "port": 3000
+      "name": "experimentme",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "dev", "--port", "3002"],
+      "port": 3002
     }
   ]
 }
