@@ -18,13 +18,14 @@ export default function ResetPasswordPage() {
     // Supabase automatically picks up the token from the URL hash
     // and establishes a session when the page loads
     const supabase = createClient()
-    supabase.auth.onAuthStateChange((event) => {
+    supabase.auth.onAuthStateChange((event: string) => {
       if (event === 'PASSWORD_RECOVERY') {
         setReady(true)
       }
     })
     // Also check if user already has a session (e.g. page refresh)
-    supabase.auth.getUser().then(({ data: { user } }) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    supabase.auth.getUser().then(({ data: { user } }: any) => {
       if (user) setReady(true)
     })
   }, [])
