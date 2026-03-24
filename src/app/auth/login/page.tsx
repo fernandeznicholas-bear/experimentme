@@ -1,6 +1,6 @@
 'use client'
 
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase-browser'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
@@ -59,6 +59,15 @@ function LoginForm() {
   const message = searchParams.get('message')
 
   const isTestKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.startsWith('1x')
+
+  // If Turnstile doesn't load within 5 seconds (e.g. blocked by ad blocker), allow login anyway
+  useEffect(() => {
+    if (isTestKey) return
+    const timer = setTimeout(() => {
+      if (!turnstileToken) setTurnstileError(true)
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [isTestKey, turnstileToken])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

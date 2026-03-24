@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase-browser'
 import Link from 'next/link'
 import Turnstile from '@/components/Turnstile'
@@ -17,6 +17,15 @@ export default function SignupPage() {
   const [success, setSuccess] = useState(false)
 
   const isTestKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY?.startsWith('1x')
+
+  // If Turnstile doesn't load within 5 seconds (e.g. blocked by ad blocker), allow signup anyway
+  useEffect(() => {
+    if (isTestKey) return
+    const timer = setTimeout(() => {
+      if (!turnstileToken) setTurnstileError(true)
+    }, 5000)
+    return () => clearTimeout(timer)
+  }, [isTestKey, turnstileToken])
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault()
