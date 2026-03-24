@@ -46,6 +46,20 @@ export default async function ProfilePage() {
             Your psychological profile grows with every assessment you take.
             Each result is backed by validated, peer-reviewed science.
           </p>
+          {user.email === 'fernandez.nicholas@gmail.com' && (
+            <Link
+              href="/prototype/dashboard"
+              className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-xl bg-brown-deep text-white font-semibold text-sm hover:bg-brown-deep/90 transition-colors no-underline"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect width="7" height="9" x="3" y="3" rx="1" />
+                <rect width="7" height="5" x="14" y="3" rx="1" />
+                <rect width="7" height="9" x="14" y="12" rx="1" />
+                <rect width="7" height="5" x="3" y="16" rx="1" />
+              </svg>
+              Owner Dashboard
+            </Link>
+          )}
         </div>
 
         {/* Demographic Profile */}
