@@ -74,7 +74,7 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
                 ← Back to Assessments
               </Link>
               <h1 className="font-[family-name:var(--font-heading)] text-3xl font-bold mt-2">
-                Owner Dashboard
+                Admin Dashboard
               </h1>
               <p className="text-white/50 text-sm mt-1">{userEmail}</p>
             </div>

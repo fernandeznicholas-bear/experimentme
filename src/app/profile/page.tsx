@@ -57,7 +57,7 @@ export default async function ProfilePage() {
                 <rect width="7" height="9" x="14" y="12" rx="1" />
                 <rect width="7" height="5" x="3" y="16" rx="1" />
               </svg>
-              Owner Dashboard
+              Admin Dashboard
             </Link>
           )}
         </div>
