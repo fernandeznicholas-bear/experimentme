@@ -5,12 +5,11 @@ import { createClient } from '@/lib/supabase-browser'
 import { useRouter } from 'next/navigation'
 
 interface SettingsClientProps {
-  userId: string
   userEmail: string
   userName: string
 }
 
-export function SettingsClient({ userId, userEmail, userName }: SettingsClientProps) {
+export function SettingsClient({ userEmail, userName }: SettingsClientProps) {
   const supabase = createClient()
   const router = useRouter()
 
@@ -37,8 +36,6 @@ export function SettingsClient({ userId, userEmail, userName }: SettingsClientPr
   const [deleteLoading, setDeleteLoading] = useState(false)
   const [deleteMessage, setDeleteMessage] = useState<{ type: 'error'; text: string } | null>(null)
 
-  // Suppress unused variable warning - userId reserved for future use (e.g. delete account API)
-  void userId
 
   const handleUpdateName = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -97,8 +94,13 @@ export function SettingsClient({ userId, userEmail, userName }: SettingsClientPr
     setPasswordLoading(true)
     setPasswordMessage(null)
 
-    if (newPassword.length < 6) {
-      setPasswordMessage({ type: 'error', text: 'New password must be at least 6 characters.' })
+    if (newPassword.length < 8) {
+      setPasswordMessage({ type: 'error', text: 'New password must be at least 8 characters.' })
+      setPasswordLoading(false)
+      return
+    }
+    if (!/[A-Z]/.test(newPassword) || !/[a-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+      setPasswordMessage({ type: 'error', text: 'Password must include uppercase, lowercase, and a number.' })
       setPasswordLoading(false)
       return
     }
@@ -146,18 +148,18 @@ export function SettingsClient({ userId, userEmail, userName }: SettingsClientPr
     setDeleteMessage(null)
 
     try {
-      // Delete user data from all tables
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any).from('assessment_results').delete().eq('user_id', userId)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any).from('user_demographics').delete().eq('user_id', userId)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      await (supabase as any).from('research_consent').delete().eq('user_id', userId)
+      const res = await fetch('/api/delete-account', { method: 'POST' })
+      const data = await res.json()
 
-      // Sign out — full account deletion from auth.users requires a server-side admin call
-      // The cascade on delete will clean up if/when the admin deletes the auth user
+      if (!res.ok) {
+        setDeleteMessage({ type: 'error', text: data.error || 'Failed to delete account.' })
+        setDeleteLoading(false)
+        return
+      }
+
+      // Account fully deleted server-side — sign out locally and redirect
       await supabase.auth.signOut()
-      router.push('/?message=Account data deleted')
+      router.push('/?message=Account deleted')
     } catch {
       setDeleteMessage({ type: 'error', text: 'Something went wrong. Please try again.' })
       setDeleteLoading(false)
@@ -276,9 +278,9 @@ export function SettingsClient({ userId, userEmail, userName }: SettingsClientPr
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-cream/50 text-text-main focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta transition-colors"
-              placeholder="At least 6 characters"
+              placeholder="At least 8 characters (A-z, 0-9)"
               required
-              minLength={6}
+              minLength={8}
             />
           </div>
           <div>
@@ -293,7 +295,7 @@ export function SettingsClient({ userId, userEmail, userName }: SettingsClientPr
               className="w-full px-4 py-3 rounded-xl border border-[var(--border)] bg-cream/50 text-text-main focus:outline-none focus:ring-2 focus:ring-terracotta/30 focus:border-terracotta transition-colors"
               placeholder="Re-enter new password"
               required
-              minLength={6}
+              minLength={8}
             />
           </div>
           <label className="flex items-center gap-2 text-sm text-text-muted cursor-pointer select-none">

@@ -26,7 +26,6 @@ export default async function SettingsPage() {
         </div>
 
         <SettingsClient
-          userId={user.id}
           userEmail={user.email || ''}
           userName={userName}
         />

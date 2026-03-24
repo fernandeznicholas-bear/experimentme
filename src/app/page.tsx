@@ -340,8 +340,9 @@ export default function HomePage() {
     document.addEventListener('visibilitychange', handleVisibility)
     window.addEventListener('focus', fetchCompleted)
 
-    // Poll every 30s for cross-device sync (e.g. deleted on phone, viewing on desktop)
-    const interval = setInterval(fetchCompleted, 30000)
+    // Poll every 60s for cross-device sync — only if user is logged in
+    // (fetchCompleted checks for auth, but we avoid unnecessary calls for anonymous visitors)
+    const interval = setInterval(fetchCompleted, 60000)
 
     return () => {
       document.removeEventListener('visibilitychange', handleVisibility)

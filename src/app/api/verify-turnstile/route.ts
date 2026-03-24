@@ -20,6 +20,16 @@ function isRateLimited(ip: string): boolean {
 }
 
 export async function POST(request: Request) {
+  // CSRF protection: verify request comes from our own origin
+  const origin = request.headers.get('origin')
+  const host = request.headers.get('host')
+  if (origin && host && !origin.endsWith(host)) {
+    return NextResponse.json(
+      { success: false, error: 'Forbidden' },
+      { status: 403 }
+    )
+  }
+
   // Rate limiting by IP
   const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown'
   if (isRateLimited(ip)) {

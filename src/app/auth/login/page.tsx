@@ -6,6 +6,11 @@ import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Turnstile from '@/components/Turnstile'
 
+const VALID_ASSESSMENT_TYPES = [
+  'swls', 'rosenberg', 'grit', 'mindset', 'bigfive', 'perma', 'happiness',
+  'dass21', 'hope', 'selfcompassion', 'phq9', 'gad7', 'pcl5', 'who5', 'cssrs',
+]
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function savePendingResult(supabase: any) {
   try {
@@ -13,12 +18,25 @@ async function savePendingResult(supabase: any) {
     if (!pending) return
 
     const pendingResult = JSON.parse(pending)
+
+    // Validate before inserting
+    if (
+      !pendingResult.assessment_type ||
+      !VALID_ASSESSMENT_TYPES.includes(pendingResult.assessment_type) ||
+      typeof pendingResult.score !== 'number'
+    ) {
+      localStorage.removeItem('pendingAssessmentResult')
+      return
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const { data: { user } }: any = await supabase.auth.getUser()
     if (!user) return
 
     await supabase.from('assessment_results').insert({
-      ...pendingResult,
+      assessment_type: pendingResult.assessment_type,
+      score: pendingResult.score,
+      details: pendingResult.details ?? null,
       user_id: user.id,
     })
     localStorage.removeItem('pendingAssessmentResult')
@@ -169,7 +187,13 @@ function LoginForm() {
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-text-muted">
+      <p className="mt-4 text-center text-sm text-text-muted">
+        <Link href="/auth/forgot-password" className="text-terracotta font-semibold hover:underline">
+          Forgot your password?
+        </Link>
+      </p>
+
+      <p className="mt-2 text-center text-sm text-text-muted">
         Don&apos;t have an account?{' '}
         <Link href="/auth/signup" className="text-terracotta font-semibold hover:underline">
           Sign up free

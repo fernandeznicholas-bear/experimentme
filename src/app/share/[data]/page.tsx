@@ -10,7 +10,7 @@ export default function SharePage({ params }: { params: Promise<{ data: string }
   const { data } = use(params)
   const shareData = decodeShareData(data)
 
-  if (!shareData) {
+  if (!shareData || !getAssessmentConfig(shareData.a) || typeof shareData.s !== 'number') {
     return (
       <div className="min-h-screen flex items-center justify-center px-4 pt-20 pb-16">
         <div className="text-center">
@@ -109,7 +109,7 @@ export default function SharePage({ params }: { params: Promise<{ data: string }
         {/* Browse more */}
         <p className="text-center text-sm text-text-muted">
           <Link href="/#assessments" className="text-terracotta font-semibold hover:underline no-underline">
-            Browse all {10} assessments
+            Browse all 15 assessments
           </Link>{' '}
           on Experiment Me
         </p>

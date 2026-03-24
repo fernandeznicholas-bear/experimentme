@@ -20,6 +20,11 @@ const ASSESSMENT_NAMES: Record<string, string> = {
   dass21: 'Depression, Anxiety & Stress',
   hope: 'Hope Scale',
   selfcompassion: 'Self-Compassion',
+  phq9: 'Depression (PHQ-9)',
+  gad7: 'Anxiety (GAD-7)',
+  pcl5: 'PTSD (PCL-5)',
+  who5: 'Well-Being (WHO-5)',
+  cssrs: 'Suicide Risk (C-SSRS)',
 }
 
 interface Props {

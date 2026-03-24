@@ -28,6 +28,11 @@ const assessmentMeta: Record<string, { name: string; icon: string; maxScore: num
   dass21: { name: 'Depression, Anxiety & Stress', icon: '🌊', maxScore: 63, scoreType: 'sum' },
   hope: { name: 'Hope', icon: '🌟', maxScore: 8, scoreType: 'average' },
   selfcompassion: { name: 'Self-Compassion', icon: '💛', maxScore: 5, scoreType: 'average' },
+  phq9: { name: 'Depression (PHQ-9)', icon: '🔵', maxScore: 27, scoreType: 'sum' },
+  gad7: { name: 'Anxiety (GAD-7)', icon: '🔷', maxScore: 21, scoreType: 'sum' },
+  pcl5: { name: 'PTSD (PCL-5)', icon: '🛡️', maxScore: 80, scoreType: 'sum' },
+  who5: { name: 'Well-Being (WHO-5)', icon: '🌍', maxScore: 25, scoreType: 'sum' },
+  cssrs: { name: 'Suicide Risk (C-SSRS)', icon: '🆘', maxScore: 6, scoreType: 'sum' },
 }
 
 function ScoreBar({ score, maxScore, label }: { score: number; maxScore: number; label?: string }) {
@@ -667,7 +672,7 @@ function ProfileStats({ results }: { results: AssessmentResult[] }) {
       </div>
       <div className="bg-white rounded-xl shadow-sm border border-[var(--border)] p-4 text-center">
         <div className="font-[family-name:var(--font-heading)] text-2xl font-bold text-terracotta">
-          {10 - uniqueAssessments}
+          {Object.keys(assessmentMeta).length - uniqueAssessments}
         </div>
         <div className="text-xs text-text-muted mt-1">Remaining</div>
       </div>
