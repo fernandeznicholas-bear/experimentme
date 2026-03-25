@@ -36,8 +36,8 @@ export async function GET() {
     admin.auth.admin.listUsers({ perPage: 1, page: 1 }),
     // Users created in last 7 days
     admin.auth.admin.listUsers({ perPage: 1000, page: 1 }),
-    // All assessment results
-    admin.from('assessment_results').select('assessment_type, score, completed_at, created_at'),
+    // All assessment results (includes all users — service role bypasses RLS)
+    admin.from('assessment_results').select('assessment_type, score, completed_at, created_at, user_id'),
     // Recent assessment results (last 30 days)
     admin.from('assessment_results')
       .select('assessment_type, score, completed_at')
@@ -61,17 +61,22 @@ export async function GET() {
   const allResults = allResultsRes.data || []
   const totalAssessments = allResults.length
 
+  // Unique users who completed at least one assessment
+  const uniqueCompleters = new Set(allResults.map(r => r.user_id).filter(Boolean))
+  const uniqueCompleterCount = uniqueCompleters.size
+
   // Per-assessment stats
-  const assessmentMap = new Map<string, { completions: number; scores: number[]; recentCount: number }>()
+  const assessmentMap = new Map<string, { completions: number; scores: number[]; recentCount: number; uniqueUsers: Set<string> }>()
   const recentCutoff = new Date(thirtyDaysAgo)
 
   for (const r of allResults) {
     const type = r.assessment_type
     if (!assessmentMap.has(type)) {
-      assessmentMap.set(type, { completions: 0, scores: [], recentCount: 0 })
+      assessmentMap.set(type, { completions: 0, scores: [], recentCount: 0, uniqueUsers: new Set() })
     }
     const entry = assessmentMap.get(type)!
     entry.completions++
+    if (r.user_id) entry.uniqueUsers.add(r.user_id)
     if (typeof r.score === 'number') entry.scores.push(r.score)
     if (new Date(r.completed_at) >= recentCutoff) entry.recentCount++
   }
@@ -88,6 +93,7 @@ export async function GET() {
       name: assessmentNames[type] || type,
       slug: type,
       completions: data.completions,
+      uniqueUsers: data.uniqueUsers.size,
       avgScore: data.scores.length > 0
         ? (data.scores.reduce((a, b) => a + b, 0) / data.scores.length).toFixed(1)
         : '—',
@@ -143,6 +149,7 @@ export async function GET() {
     stats: {
       totalUsers,
       totalAssessments,
+      uniqueCompleters: uniqueCompleterCount,
       newUsersThisWeek,
       consentRate,
     },

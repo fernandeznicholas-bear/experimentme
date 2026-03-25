@@ -2,280 +2,310 @@
 
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { createClient } from '@/lib/supabase-browser'
-import { assessmentTagLabels, assessmentTagColors, type AssessmentTag } from '@/lib/assessments'
 
-const assessments = [
+// ── Album data — all 15 assessments (album-cover style) ──────────────
+const albums = [
   {
     slug: 'swls',
-    name: 'Life Satisfaction',
-    fullName: 'Satisfaction with Life Scale',
-    tag: 'WELLBEING ASSESSMENT',
-    abbr: 'SWLS',
-    category: 'well-being' as AssessmentTag,
-    percentileBadge: 'Most cited life satisfaction measure',
-    description: 'The Satisfaction With Life Scale — measure your overall life satisfaction with 5 validated questions.',
-    sampleQuestion: 'In most ways my life is close to my ideal.',
+    discoveryName: 'The Life Check',
+    researchName: 'Satisfaction With Life Scale',
+    researchCitation: 'Diener et al., 1985',
+    tagline: 'Five questions. How full is your cup?',
+    researchTagline: 'Global cognitive evaluation of life satisfaction',
+    category: 'Well-Being',
     questions: 5,
     time: '2 min',
+    bg: 'bg-gradient-to-br from-sky-300 via-blue-500 to-indigo-700',
+    pattern: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255,255,255,0.15) 0%, transparent 40%)',
     icon: '☀️',
-    color: 'bg-amber/10 border-amber/20',
-    scaleLabels: ['Strongly Disagree', '', '', '', '', '', 'Strongly Agree'],
-    scaleMax: 7,
-    live: true,
+    facts: [
+      'Created by Ed Diener, the "Dr. Happiness" of psychology',
+      'Translated into dozens of languages worldwide',
+      'Takes less than 2 minutes to complete',
+      'Measures cognitive, not emotional, well-being',
+    ],
   },
   {
     slug: 'rosenberg',
-    name: 'Self-Esteem',
-    fullName: 'Rosenberg Self-Esteem Scale',
-    tag: 'SELF-WORTH ASSESSMENT',
-    abbr: 'RSE',
-    category: 'self-perception' as AssessmentTag,
-    percentileBadge: 'Most widely used self-esteem scale',
-    description: 'The Rosenberg Self-Esteem Scale — the most widely used measure of global self-worth.',
-    sampleQuestion: 'I feel that I am a person of worth, at least on an equal plane with others.',
+    discoveryName: 'The Mirror',
+    researchName: 'Rosenberg Self-Esteem Scale',
+    researchCitation: 'Rosenberg, 1965',
+    tagline: 'How do you really see yourself?',
+    researchTagline: 'Global self-worth and self-acceptance',
+    category: 'Self-Perception',
     questions: 10,
-    time: '2 min',
-    icon: '🌿',
-    color: 'bg-sage/10 border-sage/20',
-    scaleLabels: ['Strongly Disagree', 'Disagree', 'Agree', 'Strongly Agree'],
-    scaleMax: 4,
-    live: true,
+    time: '3 min',
+    bg: 'bg-gradient-to-br from-fuchsia-400 via-purple-600 to-purple-900',
+    pattern: 'linear-gradient(135deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%)',
+    icon: '🪞',
+    facts: [
+      'The most widely used self-esteem measure in history',
+      'Originally developed for adolescents in the 1960s',
+      'Only 10 items but remarkably reliable',
+      'Cited in over 50,000 research papers',
+    ],
   },
   {
     slug: 'grit',
-    name: 'Grit',
-    fullName: 'Short Grit Scale (Grit-S)',
-    tag: 'PERSEVERANCE ASSESSMENT',
-    abbr: 'GRIT-S',
-    category: 'resilience-growth' as AssessmentTag,
-    percentileBadge: 'Angela Duckworth\'s landmark scale',
-    description: 'The Short Grit Scale by Angela Duckworth — measure your perseverance and passion for long-term goals.',
-    sampleQuestion: "Setbacks don't discourage me. I don't give up easily.",
+    discoveryName: 'The Long Game',
+    researchName: 'Short Grit Scale (Grit-S)',
+    researchCitation: 'Duckworth & Quinn, 2009',
+    tagline: 'How far will your passion carry you?',
+    researchTagline: 'Perseverance and passion for long-term goals',
+    category: 'Resilience & Growth',
     questions: 8,
     time: '3 min',
-    icon: '🔥',
-    color: 'bg-terracotta/10 border-terracotta/20',
-    scaleLabels: ['Not at all like me', '', '', '', 'Very much like me'],
-    scaleMax: 5,
-    live: true,
+    bg: 'bg-gradient-to-br from-amber-400 via-orange-600 to-red-800',
+    pattern: 'repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 40px)',
+    icon: '🏔️',
+    facts: [
+      'Angela Duckworth\'s TED talk has 30M+ views',
+      'Grit predicts success beyond IQ or talent',
+      'West Point cadets with high grit were less likely to drop out',
+      'Measures both consistency of interests and perseverance of effort',
+    ],
   },
   {
     slug: 'mindset',
-    name: 'Growth Mindset',
-    fullName: 'Growth Mindset Scale',
-    tag: 'MINDSET ASSESSMENT',
-    abbr: 'GMS',
-    category: 'resilience-growth' as AssessmentTag,
-    percentileBadge: 'Based on Carol Dweck\'s research',
-    description: "Based on Carol Dweck's research — discover whether you lean toward a growth or fixed mindset.",
-    sampleQuestion: 'You can always substantially change how intelligent you are.',
+    discoveryName: 'The Growth Edge',
+    researchName: 'Growth Mindset Scale',
+    researchCitation: 'Dweck, 2006',
+    tagline: 'Do you believe you can change?',
+    researchTagline: 'Implicit theories of intelligence — fixed vs. growth',
+    category: 'Resilience & Growth',
     questions: 8,
     time: '3 min',
+    bg: 'bg-gradient-to-br from-emerald-300 via-green-500 to-teal-800',
+    pattern: 'radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(255,255,255,0.1) 0%, transparent 50%)',
     icon: '🌱',
-    color: 'bg-sage/10 border-sage/20',
-    scaleLabels: ['Strongly Disagree', '', '', '', '', 'Strongly Agree'],
-    scaleMax: 6,
-    live: true,
+    facts: [
+      'Carol Dweck spent 30+ years researching this concept',
+      'Students praised for effort outperform those praised for talent',
+      '"Not yet" is more powerful than "I can\'t"',
+      'Mindset can be shifted with targeted interventions',
+    ],
   },
   {
     slug: 'bigfive',
-    name: 'Big Five Personality',
-    fullName: 'IPIP-20 Big Five Mini',
-    tag: 'PERSONALITY ASSESSMENT',
-    abbr: 'BIG 5',
-    category: 'self-perception' as AssessmentTag,
-    percentileBadge: '5 personality traits in 5 minutes',
-    description: 'The IPIP-20 Mini — map your personality across Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism.',
-    sampleQuestion: 'I am the life of the party.',
+    discoveryName: 'Your Five Colors',
+    researchName: 'IPIP-20 Big Five Mini',
+    researchCitation: 'Donnellan et al., 2006',
+    tagline: 'Five dimensions. One you.',
+    researchTagline: 'Openness · Conscientiousness · Extraversion · Agreeableness · Neuroticism',
+    category: 'Personality',
     questions: 20,
     time: '5 min',
-    icon: '🧬',
-    color: 'bg-brown-light/10 border-brown-light/20',
-    scaleLabels: ['Very Inaccurate', '', '', '', 'Very Accurate'],
-    scaleMax: 5,
-    live: true,
+    bg: 'bg-gradient-to-br from-violet-400 via-indigo-500 to-blue-800',
+    pattern: 'conic-gradient(from 45deg, rgba(255,255,255,0.08) 0deg, transparent 90deg, rgba(255,255,255,0.08) 180deg, transparent 270deg)',
+    icon: '🎨',
+    facts: [
+      'The Big Five model emerged from analyzing every personality word in the dictionary',
+      'These five traits appear across every culture studied',
+      'Personality is roughly 50% heritable',
+      'Conscientiousness is the best personality predictor of job performance',
+    ],
   },
   {
     slug: 'perma',
-    name: 'PERMA Wellbeing',
-    fullName: 'PERMA Profiler',
-    tag: 'WELLBEING ASSESSMENT',
-    abbr: 'PERMA',
-    category: 'well-being' as AssessmentTag,
-    percentileBadge: 'Seligman\'s 5 pillars of flourishing',
-    description: "Seligman's five pillars of flourishing — Positive Emotion, Engagement, Relationships, Meaning, and Accomplishment — plus Negative Emotion and Health.",
-    sampleQuestion: 'How often do you feel joyful?',
+    discoveryName: 'The Full Spectrum',
+    researchName: 'PERMA Profiler',
+    researchCitation: 'Butler & Kern, 2016',
+    tagline: 'Five pillars of a life well-lived.',
+    researchTagline: 'Positive emotion, Engagement, Relationships, Meaning, Accomplishment',
+    category: 'Well-Being',
     questions: 23,
     time: '5 min',
-    icon: '🌻',
-    color: 'bg-amber/10 border-amber/20',
-    scaleLabels: ['Never', '', '', '', '', '', '', '', '', '', 'Always'],
-    scaleMax: 10,
-    live: true,
+    bg: 'bg-gradient-to-br from-rose-400 via-orange-500 to-amber-600',
+    pattern: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.25) 0%, transparent 50%), radial-gradient(circle at 50% 100%, rgba(0,0,0,0.15) 0%, transparent 50%)',
+    icon: '🌈',
+    facts: [
+      'Created by Martin Seligman, the father of positive psychology',
+      'Goes beyond happiness to measure flourishing',
+      'Used by governments to measure national well-being',
+      'PERMA theory replaced Seligman\'s earlier "authentic happiness" model',
+    ],
   },
   {
     slug: 'happiness',
-    name: 'Subjective Happiness',
-    fullName: 'Subjective Happiness Scale',
-    tag: 'HAPPINESS ASSESSMENT',
-    abbr: 'SHS',
-    category: 'well-being' as AssessmentTag,
-    percentileBadge: 'Shortest validated happiness measure',
-    description: 'Lyubomirsky\'s 4-item measure — the shortest validated happiness scale in psychology.',
-    sampleQuestion: 'In general, I consider myself a very happy person.',
+    discoveryName: 'The Joy Read',
+    researchName: 'Subjective Happiness Scale',
+    researchCitation: 'Lyubomirsky & Lepper, 1999',
+    tagline: 'Four questions. No hiding.',
+    researchTagline: 'Global subjective assessment of happiness',
+    category: 'Well-Being',
     questions: 4,
     time: '1 min',
+    bg: 'bg-gradient-to-br from-yellow-300 via-green-400 to-emerald-600',
+    pattern: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.3) 0%, transparent 40%)',
     icon: '✨',
-    color: 'bg-amber/10 border-amber/20',
-    scaleLabels: ['Not at all', '', '', '', '', '', 'A great deal'],
-    scaleMax: 7,
-    live: true,
-  },
-  {
-    slug: 'dass21',
-    name: 'Depression, Anxiety & Stress',
-    fullName: 'DASS-21',
-    tag: 'MENTAL HEALTH SCREENING',
-    abbr: 'DASS-21',
-    category: 'mental-health' as AssessmentTag,
-    percentileBadge: 'Screens depression, anxiety & stress',
-    description: 'The DASS-21 — screens for depression, anxiety, and stress symptoms over the past week.',
-    sampleQuestion: 'I found it hard to wind down.',
-    questions: 21,
-    time: '5 min',
-    icon: '🧠',
-    color: 'bg-[#6B7FBF]/10 border-[#6B7FBF]/20',
-    scaleLabels: ['Did not apply', 'Some degree', 'Considerable', 'Very much'],
-    scaleMax: 4,
-    live: true,
-  },
-  {
-    slug: 'hope',
-    name: 'Hope',
-    fullName: 'Adult Hope Scale',
-    tag: 'HOPE ASSESSMENT',
-    abbr: 'AHS',
-    category: 'resilience-growth' as AssessmentTag,
-    percentileBadge: 'Snyder\'s agency + pathways model',
-    description: 'Snyder\'s Adult Hope Scale — measure your goal-directed thinking across agency and pathways.',
-    sampleQuestion: 'I energetically pursue my goals.',
-    questions: 12,
-    time: '3 min',
-    icon: '🌟',
-    color: 'bg-terracotta/10 border-terracotta/20',
-    scaleLabels: ['Definitely False', '', '', '', '', '', '', 'Definitely True'],
-    scaleMax: 8,
-    live: true,
+    facts: [
+      'Only 4 questions — the shortest validated happiness measure',
+      'Sonja Lyubomirsky is one of the world\'s leading happiness researchers',
+      'Happy people aren\'t just lucky — they think differently',
+      'About 40% of happiness is within your control',
+    ],
   },
   {
     slug: 'selfcompassion',
-    name: 'Self-Compassion',
-    fullName: 'Self-Compassion Scale (Short Form)',
-    tag: 'SELF-COMPASSION ASSESSMENT',
-    abbr: 'SCS-SF',
-    category: 'self-perception' as AssessmentTag,
-    percentileBadge: 'Kristin Neff\'s self-kindness measure',
-    description: 'Kristin Neff\'s Short Form — how kind vs. critical are you toward yourself during difficult times?',
-    sampleQuestion: 'I try to be understanding and patient toward aspects of my personality I don\'t like.',
+    discoveryName: 'The Inner Voice',
+    researchName: 'Self-Compassion Scale (Short Form)',
+    researchCitation: 'Raes et al., 2011',
+    tagline: "What do you say when no one's listening?",
+    researchTagline: 'Self-kindness vs. self-judgment under difficulty',
+    category: 'Self-Perception',
     questions: 12,
     time: '3 min',
+    bg: 'bg-gradient-to-br from-amber-300 via-yellow-500 to-orange-600',
+    pattern: 'radial-gradient(ellipse at 30% 70%, rgba(255,255,255,0.2) 0%, transparent 50%)',
     icon: '💛',
-    color: 'bg-amber/10 border-amber/20',
-    scaleLabels: ['Almost Never', '', '', '', 'Almost Always'],
-    scaleMax: 5,
-    live: true,
+    facts: [
+      'Kristin Neff pioneered the scientific study of self-compassion',
+      'Self-compassion is more stable than self-esteem',
+      'Being kind to yourself isn\'t weak — it builds resilience',
+      'Three components: self-kindness, common humanity, mindfulness',
+    ],
+  },
+  {
+    slug: 'hope',
+    discoveryName: 'The Pathway Finder',
+    researchName: 'Adult Hope Scale',
+    researchCitation: 'Snyder et al., 1991',
+    tagline: 'Can you see a way forward?',
+    researchTagline: 'Agency thinking and pathways thinking toward goals',
+    category: 'Resilience & Growth',
+    questions: 12,
+    time: '3 min',
+    bg: 'bg-gradient-to-br from-cyan-300 via-blue-400 to-indigo-600',
+    pattern: 'linear-gradient(to top, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 50% 30%, rgba(255,255,255,0.2) 0%, transparent 40%)',
+    icon: '🔭',
+    facts: [
+      'Hope has two components: willpower AND waypower',
+      'Hopeful people don\'t just wish — they plan alternative routes',
+      'C.R. Snyder showed hope predicts academic and athletic success',
+      'Hope can be taught and strengthened with practice',
+    ],
+  },
+  {
+    slug: 'dass21',
+    discoveryName: 'The Weather Report',
+    researchName: 'DASS-21',
+    researchCitation: 'Lovibond & Lovibond, 1995',
+    tagline: 'Depression. Anxiety. Stress. All in one.',
+    researchTagline: 'Three-factor emotional distress: depression, anxiety, stress',
+    category: 'Clinical Screening',
+    questions: 21,
+    time: '5 min',
+    bg: 'bg-gradient-to-br from-slate-400 via-gray-600 to-slate-800',
+    pattern: 'repeating-linear-gradient(0deg, transparent, transparent 8px, rgba(255,255,255,0.03) 8px, rgba(255,255,255,0.03) 16px)',
+    icon: '🌧️',
+    facts: [
+      'Separates depression, anxiety, and stress — most scales blend them',
+      'Developed in Australia, now used in 50+ countries',
+      'The 21-item version is just as reliable as the full 42-item DASS',
+      'Free to use, unlike many clinical tools',
+    ],
   },
   {
     slug: 'phq9',
-    name: 'Depression (PHQ-9)',
-    fullName: 'Patient Health Questionnaire (PHQ-9)',
-    tag: 'DEPRESSION SCREENING',
-    abbr: 'PHQ-9',
-    category: 'mental-health' as AssessmentTag,
-    percentileBadge: '#1 depression screener worldwide',
-    description: 'The PHQ-9 — the most widely used depression screening tool in primary care, mapping directly onto DSM-5 criteria.',
-    sampleQuestion: 'Little interest or pleasure in doing things.',
+    discoveryName: 'The Mood Map',
+    researchName: 'Patient Health Questionnaire (PHQ-9)',
+    researchCitation: 'Kroenke, Spitzer & Williams, 2001',
+    tagline: 'An honest check-in with yourself.',
+    researchTagline: 'DSM-5 major depression criteria severity measure',
+    category: 'Clinical Screening',
     questions: 9,
     time: '3 min',
-    icon: '🩺',
-    color: 'bg-[#6B7FBF]/10 border-[#6B7FBF]/20',
-    scaleLabels: ['Not at all', 'Several days', 'More than half', 'Nearly every day'],
-    scaleMax: 4,
-    live: true,
+    bg: 'bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-900',
+    pattern: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 40%)',
+    icon: '🗺️',
+    facts: [
+      'Used in more clinical settings than any other depression screener',
+      'Maps directly onto the 9 DSM-5 criteria for major depression',
+      'A score of 10+ suggests clinical significance',
+      'Developed by Pfizer but released free for public use',
+    ],
   },
   {
     slug: 'gad7',
-    name: 'Anxiety (GAD-7)',
-    fullName: 'Generalized Anxiety Disorder Scale (GAD-7)',
-    tag: 'ANXIETY SCREENING',
-    abbr: 'GAD-7',
-    category: 'mental-health' as AssessmentTag,
-    percentileBadge: 'Gold-standard anxiety screener',
-    description: 'The GAD-7 — a brief, validated screening tool for generalized anxiety disorder severity.',
-    sampleQuestion: 'Feeling nervous, anxious, or on edge.',
+    discoveryName: 'The Pulse Check',
+    researchName: 'Generalized Anxiety Disorder Scale (GAD-7)',
+    researchCitation: 'Spitzer et al., 2006',
+    tagline: "When worry won't let go.",
+    researchTagline: 'Generalized anxiety disorder severity screening',
+    category: 'Clinical Screening',
     questions: 7,
     time: '2 min',
-    icon: '😰',
-    color: 'bg-[#6B7FBF]/10 border-[#6B7FBF]/20',
-    scaleLabels: ['Not at all', 'Several days', 'More than half', 'Nearly every day'],
-    scaleMax: 4,
-    live: true,
+    bg: 'bg-gradient-to-br from-violet-500 via-purple-600 to-fuchsia-800',
+    pattern: 'repeating-radial-gradient(circle at 50% 50%, transparent 0px, transparent 15px, rgba(255,255,255,0.04) 15px, rgba(255,255,255,0.04) 30px)',
+    icon: '💓',
+    facts: [
+      'The most widely used anxiety screener in primary care',
+      'Created by the same team behind the PHQ-9',
+      'Anxiety disorders affect 284 million people globally',
+      'Often paired with PHQ-9 for a complete mental health screen',
+    ],
   },
   {
     slug: 'pcl5',
-    name: 'PTSD (PCL-5)',
-    fullName: 'PTSD Checklist for DSM-5 (PCL-5)',
-    tag: 'PTSD SCREENING',
-    abbr: 'PCL-5',
-    category: 'mental-health' as AssessmentTag,
-    percentileBadge: 'Gold-standard PTSD symptom measure',
-    description: 'The PCL-5 — assesses PTSD symptom severity across intrusion, avoidance, mood changes, and hyperarousal.',
-    sampleQuestion: 'Repeated, disturbing, and unwanted memories of the stressful experience.',
+    discoveryName: 'The Echo',
+    researchName: 'PTSD Checklist (PCL-5)',
+    researchCitation: 'Weathers et al., 2013',
+    tagline: "When the past won't stay past.",
+    researchTagline: 'DSM-5 PTSD symptom severity assessment',
+    category: 'Clinical Screening',
     questions: 20,
     time: '5 min',
-    icon: '🛡️',
-    color: 'bg-[#6B7FBF]/10 border-[#6B7FBF]/20',
-    scaleLabels: ['Not at all', '', '', '', 'Extremely'],
-    scaleMax: 5,
-    live: true,
+    bg: 'bg-gradient-to-br from-red-500 via-rose-700 to-red-900',
+    pattern: 'linear-gradient(135deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%)',
+    icon: '🔁',
+    facts: [
+      'Updated to align with DSM-5 PTSD criteria',
+      'Developed by the National Center for PTSD',
+      'PTSD affects roughly 6% of the US population at some point',
+      'A score of 33+ suggests a probable PTSD diagnosis',
+    ],
   },
   {
     slug: 'who5',
-    name: 'Well-Being (WHO-5)',
-    fullName: 'WHO-5 Well-Being Index',
-    tag: 'WELLBEING SCREENING',
-    abbr: 'WHO-5',
-    category: 'well-being' as AssessmentTag,
-    percentileBadge: 'World Health Organization measure',
-    description: 'The WHO-5 — one of the most widely used well-being questionnaires in the world. Just 5 items.',
-    sampleQuestion: 'I have felt cheerful and in good spirits.',
+    discoveryName: 'The Well Check',
+    researchName: 'WHO-5 Well-Being Index',
+    researchCitation: 'WHO, 1998',
+    tagline: 'How have the last two weeks felt?',
+    researchTagline: 'Subjective psychological well-being over 14 days',
+    category: 'Well-Being',
     questions: 5,
     time: '1 min',
-    icon: '🌍',
-    color: 'bg-amber/10 border-amber/20',
-    scaleLabels: ['At no time', '', '', '', '', 'All of the time'],
-    scaleMax: 6,
-    live: true,
+    bg: 'bg-gradient-to-br from-teal-300 via-cyan-500 to-blue-700',
+    pattern: 'radial-gradient(circle at 80% 20%, rgba(255,255,255,0.25) 0%, transparent 40%)',
+    icon: '🌡️',
+    facts: [
+      'Created by the World Health Organization',
+      'Used in 30+ languages across the globe',
+      'Only 5 positively worded items — no trick questions',
+      'Also used as a screening tool for depression',
+    ],
   },
   {
     slug: 'cssrs',
-    name: 'Suicide Risk Screen',
-    fullName: 'Columbia-Suicide Severity Rating Scale (Screener)',
-    tag: 'SAFETY SCREENING',
-    abbr: 'C-SSRS',
-    category: 'mental-health' as AssessmentTag,
-    percentileBadge: 'FDA-approved suicide risk screener',
-    description: 'The C-SSRS — the gold standard for suicide risk screening, used by the U.S. military, FDA, and CDC.',
-    sampleQuestion: 'Have you wished you were dead or wished you could go to sleep and not wake up?',
+    discoveryName: 'The Safety Net',
+    researchName: 'Columbia Suicide Severity Rating Scale',
+    researchCitation: 'Posner et al., 2011',
+    tagline: 'Because asking matters.',
+    researchTagline: 'Suicidal ideation and behavior severity classification',
+    category: 'Clinical Screening',
     questions: 6,
     time: '2 min',
-    icon: '🚨',
-    color: 'bg-[#6B7FBF]/10 border-[#6B7FBF]/20',
-    scaleLabels: ['No', 'Yes'],
-    scaleMax: 2,
-    live: true,
+    bg: 'bg-gradient-to-br from-gray-500 via-gray-700 to-gray-900',
+    pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)',
+    icon: '🛡️',
+    facts: [
+      'Required by the FDA for all drug trials since 2012',
+      'Asking about suicide does NOT increase risk — research confirms this',
+      'Used in ERs, schools, military, and crisis centers worldwide',
+      'Developed at Columbia University with NIH funding',
+    ],
   },
 ]
 
@@ -298,17 +328,25 @@ const marqueeItems = [
   'C-SSRS SUICIDE RISK',
 ]
 
+const CARD_W = 280
+const CARD_GAP = 24
+
 export default function HomePage() {
   const router = useRouter()
-  const [randomAssessment, setRandomAssessment] = useState(assessments[0])
   const [completedAssessments, setCompletedAssessments] = useState<Set<string>>(new Set())
   const [isLoggedIn, setIsLoggedIn] = useState(false)
-  const [activeTag, setActiveTag] = useState<AssessmentTag | null>(null)
+
+  // Carousel state
+  const [researchMode, setResearchMode] = useState(false)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [factIndex, setFactIndex] = useState(0)
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const isDragging = useRef(false)
+  const dragStartX = useRef(0)
+  const scrollStartX = useRef(0)
+  const preventClick = useRef(false)
 
   useEffect(() => {
-    const idx = Math.floor(Math.random() * assessments.length)
-    setRandomAssessment(assessments[idx])
-
     const fetchCompleted = () => {
       const supabase = createClient()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -333,15 +371,11 @@ export default function HomePage() {
 
     fetchCompleted()
 
-    // Re-fetch when user navigates back (e.g. after deleting results on profile)
     const handleVisibility = () => {
       if (document.visibilityState === 'visible') fetchCompleted()
     }
     document.addEventListener('visibilitychange', handleVisibility)
     window.addEventListener('focus', fetchCompleted)
-
-    // Poll every 60s for cross-device sync — only if user is logged in
-    // (fetchCompleted checks for auth, but we avoid unnecessary calls for anonymous visitors)
     const interval = setInterval(fetchCompleted, 60000)
 
     return () => {
@@ -351,119 +385,106 @@ export default function HomePage() {
     }
   }, [])
 
-  // Build the scale buttons to show (max 7 visible)
-  const scaleCount = randomAssessment.scaleMax
-  const showScaleLabels = scaleCount <= 7
+  // Rotate facts ticker
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFactIndex(prev => prev + 1)
+    }, 3500)
+    return () => clearInterval(interval)
+  }, [])
+
+  // Reset fact index when active card changes
+  useEffect(() => {
+    setFactIndex(0)
+  }, [activeIndex])
+
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current || isDragging.current) return
+    const scrollLeft = scrollRef.current.scrollLeft
+    const idx = Math.round(scrollLeft / (CARD_W + CARD_GAP))
+    setActiveIndex(Math.max(0, Math.min(idx, albums.length - 1)))
+  }, [])
+
+  const scrollToIndex = useCallback((idx: number) => {
+    if (!scrollRef.current) return
+    scrollRef.current.scrollTo({ left: idx * (CARD_W + CARD_GAP), behavior: 'smooth' })
+  }, [])
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isDragging.current = true
+    preventClick.current = false
+    dragStartX.current = e.clientX
+    scrollStartX.current = scrollRef.current?.scrollLeft || 0
+  }
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !scrollRef.current) return
+    const dx = dragStartX.current - e.clientX
+    if (Math.abs(dx) > 5) preventClick.current = true
+    scrollRef.current.scrollLeft = scrollStartX.current + dx
+  }
+  const handleMouseUp = () => {
+    if (!isDragging.current) return
+    isDragging.current = false
+    handleScroll()
+    setTimeout(() => {
+      if (scrollRef.current) {
+        const idx = Math.round(scrollRef.current.scrollLeft / (CARD_W + CARD_GAP))
+        scrollToIndex(idx)
+      }
+    }, 10)
+  }
+
+  const goTo = (idx: number) => {
+    setActiveIndex(idx)
+    scrollToIndex(idx)
+  }
+
+  const activeAlbum = albums[activeIndex] || null
+  const currentFact = activeAlbum ? activeAlbum.facts[factIndex % activeAlbum.facts.length] : null
 
   return (
     <main className="min-h-screen">
       {/* Hero — split layout */}
       <section className="relative pt-28 pb-16 px-4 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-cream to-warm-white" />
-        <div className="relative max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          {/* Left: Text */}
-          <div>
-            <p className="inline-block px-4 py-1.5 rounded-full bg-terracotta/8 text-terracotta text-xs font-semibold tracking-wider uppercase mb-6">
-              Science-Backed Self-Discovery
-            </p>
-            <h1 className="font-[family-name:var(--font-heading)] text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-brown-deep leading-[1.15] mb-6">
-              The{' '}
-              <em className="text-terracotta not-italic font-bold italic">Science</em>{' '}
-              of You
-            </h1>
-            <p className="font-[family-name:var(--font-body)] text-lg text-text-muted max-w-lg mb-8 leading-relaxed">
-              Real psychological research that gives you something back:
-              evidence-based insight into who you are. Not a quiz. Science.
-            </p>
-            <div className="flex items-center gap-4 flex-wrap">
-              <Link
-                href="#assessments"
-                className="px-7 py-3.5 rounded-full bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors no-underline text-base"
-              >
-                Take Your First Assessment &rarr;
-              </Link>
-              <Link
-                href="#researchers"
-                className="text-text-muted font-semibold hover:text-terracotta transition-colors no-underline text-base"
-              >
-                I&apos;m a Researcher &darr;
-              </Link>
-            </div>
+        <div className="relative max-w-5xl mx-auto text-center">
+          <p className="inline-block px-4 py-1.5 rounded-full bg-terracotta/8 text-terracotta text-xs font-semibold tracking-wider uppercase mb-6">
+            Science-Backed Self-Discovery
+          </p>
+          <h1 className="font-[family-name:var(--font-heading)] text-4xl md:text-5xl lg:text-[3.4rem] font-bold text-brown-deep leading-[1.15] mb-6">
+            The{' '}
+            <em className="text-terracotta not-italic font-bold italic">Science</em>{' '}
+            of You
+          </h1>
+          <p className="font-[family-name:var(--font-body)] text-lg text-text-muted max-w-lg mx-auto mb-8 leading-relaxed">
+            Real psychological research that gives you something back:
+            evidence-based insight into who you are. Not a quiz. Science.
+          </p>
+          <div className="flex items-center gap-4 flex-wrap justify-center">
+            <Link
+              href="#assessments"
+              className="px-7 py-3.5 rounded-full bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors no-underline text-base"
+            >
+              Take Your First Assessment &rarr;
+            </Link>
+            <Link
+              href="#researchers"
+              className="text-text-muted font-semibold hover:text-terracotta transition-colors no-underline text-base"
+            >
+              I&apos;m a Researcher &darr;
+            </Link>
           </div>
-
-          {/* Right: Assessment preview card */}
-          <div className="relative flex justify-center">
-            {/* Floating percentile badge — adapts to random assessment */}
-            <div className="absolute -top-2 right-4 md:right-8 z-10 bg-white rounded-full px-4 py-2 shadow-lg border border-sage/20 flex items-center gap-2">
-              <span className="text-lg">🔬</span>
-              <span className="text-sage font-semibold text-sm">{randomAssessment.percentileBadge}</span>
-            </div>
-
-            {/* Card */}
-            <div className="bg-white rounded-2xl shadow-xl border border-[var(--border)] p-8 max-w-sm w-full">
-              <div className="flex items-center gap-2 mb-4">
-                <span className="w-5 h-0.5 bg-sage rounded-full" />
-                <span className="text-xs font-semibold tracking-wider text-sage uppercase">
-                  {randomAssessment.tag}
-                </span>
-                <span className="text-xs text-text-muted">&middot;</span>
-                <span className="text-xs font-semibold tracking-wider text-sage uppercase">
-                  {randomAssessment.abbr}
-                </span>
-              </div>
-
-              <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-3">
-                {randomAssessment.fullName}
-              </h3>
-
-              <p className="font-[family-name:var(--font-body)] text-text-muted italic text-sm mb-5 leading-relaxed">
-                &ldquo;{randomAssessment.sampleQuestion}&rdquo;
-              </p>
-
-              {/* Scale buttons */}
-              <div className="flex gap-1.5 mb-2">
-                {Array.from({ length: scaleCount }, (_, i) => (
-                  <button
-                    key={i}
-                    className="flex-1 h-12 rounded-lg border border-[var(--border)] bg-cream/40 hover:bg-terracotta/10 hover:border-terracotta/30 transition-colors flex flex-col items-center justify-center cursor-default"
-                  >
-                    <span className="text-sm font-semibold text-brown-deep">{i + 1}</span>
-                  </button>
-                ))}
-              </div>
-              {showScaleLabels && (
-                <div className="flex justify-between text-[10px] text-text-muted mb-4 px-0.5">
-                  <span>{randomAssessment.scaleLabels[0]}</span>
-                  <span>{randomAssessment.scaleLabels[randomAssessment.scaleLabels.length - 1]}</span>
-                </div>
-              )}
-
-              {/* Progress bar */}
-              <div className="w-full bg-cream rounded-full h-1.5 mb-2 overflow-hidden">
-                <div className="h-full rounded-full bg-gradient-to-r from-sage to-amber" style={{ width: '15%' }} />
-              </div>
-              <p className="text-xs text-text-muted text-right mb-5">
-                Question 1 of {randomAssessment.questions}
-              </p>
-
-              <Link
-                href={`/assess/${randomAssessment.slug}`}
-                className="block w-full text-center px-6 py-3 rounded-full bg-terracotta text-white font-semibold hover:bg-terracotta-dark transition-colors no-underline text-sm"
-              >
-                Take the full assessment &rarr;
-              </Link>
-              <p className="text-center text-xs text-text-muted mt-2 flex items-center justify-center gap-1.5">
-                <span>📊</span> See your percentile instantly
-              </p>
-            </div>
-          </div>
+          {isLoggedIn && completedAssessments.size > 0 && (
+            <p className="mt-6 text-sm text-sage font-semibold">
+              {completedAssessments.size} of {albums.length} completed — {albums.length - completedAssessments.size} remaining
+            </p>
+          )}
         </div>
       </section>
 
       {/* Scrolling Marquee Bar */}
       <section className="bg-brown-deep overflow-hidden py-4">
         <div className="marquee-track flex whitespace-nowrap">
-          {/* Duplicate for seamless loop */}
           {[...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, i) => (
             <span key={i} className="inline-flex items-center gap-4 mx-4">
               <span className="text-cream/90 text-sm font-semibold tracking-widest uppercase font-[family-name:var(--font-ui)]">
@@ -472,6 +493,205 @@ export default function HomePage() {
               <span className="text-amber text-xs">✦</span>
             </span>
           ))}
+        </div>
+      </section>
+
+      {/* Album-Cover Carousel */}
+      <section id="assessments" className="py-12 scroll-mt-20 overflow-x-hidden">
+        <div className="max-w-5xl mx-auto px-6 mb-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-brown-deep">
+                Explore Assessments
+              </h2>
+              <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mt-1">
+                15 validated, peer-reviewed instruments. Swipe to explore.
+              </p>
+            </div>
+            {/* Discovery / Research toggle */}
+            <div className="relative inline-flex items-center bg-brown-deep/6 rounded-xl p-1 border border-brown-deep/10">
+              <div
+                className="absolute top-1 bottom-1 rounded-lg bg-white shadow-sm transition-all duration-300 ease-out"
+                style={{
+                  left: researchMode ? 'calc(50% + 2px)' : '4px',
+                  width: 'calc(50% - 6px)',
+                }}
+              />
+              <button
+                onClick={() => setResearchMode(false)}
+                className={`relative z-10 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${!researchMode ? 'text-brown-deep' : 'text-text-muted'}`}
+              >
+                Discovery
+              </button>
+              <button
+                onClick={() => setResearchMode(true)}
+                className={`relative z-10 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${researchMode ? 'text-brown-deep' : 'text-text-muted'}`}
+              >
+                Research
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative mt-2">
+          {/* Navigation arrows */}
+          {activeIndex > 0 && (
+            <button
+              onClick={() => goTo(activeIndex - 1)}
+              className="absolute left-2 sm:left-8 top-[180px] z-30 w-11 h-11 rounded-full bg-white/90 shadow-xl flex items-center justify-center text-brown-deep hover:bg-white hover:scale-110 transition-all cursor-pointer"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4l-6 6 6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+          )}
+          {activeIndex < albums.length - 1 && (
+            <button
+              onClick={() => goTo(activeIndex + 1)}
+              className="absolute right-2 sm:right-8 top-[180px] z-30 w-11 h-11 rounded-full bg-white/90 shadow-xl flex items-center justify-center text-brown-deep hover:bg-white hover:scale-110 transition-all cursor-pointer"
+            >
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+            </button>
+          )}
+
+          {/* Scrollable track */}
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+            className="flex gap-6 overflow-x-auto py-6 no-scrollbar select-none"
+            style={{
+              cursor: isDragging.current ? 'grabbing' : 'grab',
+              paddingLeft: 'calc(50vw - 140px)',
+              paddingRight: 'calc(50vw - 140px)',
+              scrollSnapType: 'x mandatory',
+            }}
+          >
+            {albums.map((album, idx) => {
+              const dist = Math.abs(idx - activeIndex)
+              const scale = dist === 0 ? 1 : dist === 1 ? 0.85 : 0.72
+              const opacity = dist === 0 ? 1 : dist === 1 ? 0.6 : 0.35
+              const rotateY = idx < activeIndex ? 40 : idx > activeIndex ? -40 : 0
+              const zIndex = 20 - dist
+              const isDone = completedAssessments.has(album.slug)
+
+              return (
+                <div
+                  key={album.slug}
+                  className="shrink-0 snap-center"
+                  style={{ width: CARD_W, zIndex }}
+                  onClick={() => {
+                    if (preventClick.current) return
+                    if (idx !== activeIndex) goTo(idx)
+                  }}
+                >
+                  <div
+                    className="transition-all duration-500 ease-out will-change-transform"
+                    style={{
+                      transform: `perspective(800px) scale(${scale}) rotateY(${rotateY}deg)`,
+                      opacity,
+                    }}
+                  >
+                    {/* Album Cover */}
+                    <div className={`relative w-full rounded-2xl overflow-hidden ${album.bg} shadow-2xl`} style={{ height: 380, aspectRatio: '3/4' }}>
+                      {/* CSS art layer */}
+                      <div className="absolute inset-0" style={{ backgroundImage: album.pattern, backgroundSize: dist === 0 ? '100% 100%' : '80px 80px' }} />
+
+                      {/* Large background icon */}
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-[140px] opacity-[0.12] select-none">{album.icon}</span>
+                      </div>
+
+                      {/* Top badges */}
+                      <div className="absolute top-4 left-4 right-4 flex items-start justify-between z-10">
+                        <span className="px-2.5 py-1 rounded-full bg-black/20 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                          {album.category}
+                        </span>
+                        <div className="flex gap-1.5">
+                          {isDone && (
+                            <span className="px-2 py-0.5 rounded-full bg-emerald-500/80 text-white text-[10px] font-bold backdrop-blur-md">
+                              Done
+                            </span>
+                          )}
+                          <span className="px-2 py-0.5 rounded-full bg-black/20 text-white text-[10px] font-medium backdrop-blur-md">
+                            {album.questions}q
+                          </span>
+                          <span className="px-2 py-0.5 rounded-full bg-black/20 text-white text-[10px] font-medium backdrop-blur-md">
+                            {album.time}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Center icon */}
+                      <div className="absolute inset-0 flex items-center justify-center z-10">
+                        <span className="text-7xl drop-shadow-2xl">{album.icon}</span>
+                      </div>
+
+                      {/* Bottom content overlay */}
+                      <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/70 via-black/40 to-transparent pt-16 pb-5 px-5">
+                        <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-white leading-tight drop-shadow-lg">
+                          {researchMode ? album.researchName : album.discoveryName}
+                        </h3>
+                        {researchMode && (
+                          <p className="text-white/50 text-[10px] font-mono mt-0.5">{album.researchCitation}</p>
+                        )}
+                        <p className="text-white/85 text-sm mt-1.5 leading-snug">
+                          {researchMode ? album.researchTagline : album.tagline}
+                        </p>
+
+                        {/* Facts ticker — only on active card */}
+                        {dist === 0 && currentFact && (
+                          <div className="mt-3 pt-3 border-t border-white/15">
+                            <p
+                              key={factIndex}
+                              className="text-white/70 text-xs leading-relaxed animate-[fadeIn_0.5s_ease-out]"
+                            >
+                              {currentFact}
+                            </p>
+                          </div>
+                        )}
+
+                        {/* Action buttons — only on active card */}
+                        {dist === 0 && (
+                          <div className="flex items-center gap-2 mt-3">
+                            <Link
+                              href={`/assess/${album.slug}`}
+                              onClick={e => { if (preventClick.current) e.preventDefault() }}
+                              className="inline-block px-6 py-2.5 rounded-xl bg-white/20 backdrop-blur-md text-white text-sm font-semibold hover:bg-white/30 transition-colors border border-white/20"
+                            >
+                              {isDone ? 'Retake' : (researchMode ? 'Begin Assessment' : 'Begin Discovery')}
+                            </Link>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); router.push(`/learn/${album.slug}`) }}
+                              className="px-4 py-2.5 rounded-xl bg-white/10 backdrop-blur-md text-white/70 text-sm font-medium hover:bg-white/20 transition-colors border border-white/10 cursor-pointer"
+                            >
+                              Learn More
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Dot indicators */}
+          <div className="flex items-center justify-center gap-1.5 mt-2 pb-2">
+            {albums.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => goTo(idx)}
+                className={`rounded-full transition-all duration-300 cursor-pointer ${
+                  idx === activeIndex
+                    ? 'w-7 h-2.5 bg-brown-deep'
+                    : 'w-2.5 h-2.5 bg-brown-deep/20 hover:bg-brown-deep/40'
+                }`}
+              />
+            ))}
+          </div>
         </div>
       </section>
 
@@ -492,7 +712,7 @@ export default function HomePage() {
         <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-8">
           {[
             { step: '01', title: 'Choose an Assessment', desc: 'Browse validated, peer-reviewed instruments. Not invented for clicks — published in journals.' },
-            { step: '02', title: 'Answer Honestly', desc: 'Each assessment takes 2–10 minutes. Your responses are private and never shared individually.' },
+            { step: '02', title: 'Answer Honestly', desc: 'Each assessment takes 2-10 minutes. Your responses are private and never shared individually.' },
             { step: '03', title: 'See Yourself Clearly', desc: 'Get your score, what it means, and what the science says about people who score like you.' },
           ].map((item) => (
             <div key={item.step} className="text-left px-4">
@@ -507,113 +727,6 @@ export default function HomePage() {
               </p>
             </div>
           ))}
-        </div>
-      </section>
-
-      {/* Assessments */}
-      <section id="assessments" className="py-20 px-4 scroll-mt-20">
-        <div className="max-w-4xl mx-auto text-center mb-14">
-          <h2 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-brown-deep mb-4">
-            Assessments
-          </h2>
-          <p className="font-[family-name:var(--font-body)] text-text-muted max-w-lg mx-auto">
-            Every instrument is validated, peer-reviewed, and properly attributed to its original authors.
-          </p>
-          {isLoggedIn && completedAssessments.size > 0 && (
-            <p className="mt-4 text-sm text-sage font-semibold">
-              ✓ {completedAssessments.size} of {assessments.length} completed — {assessments.length - completedAssessments.size} remaining
-            </p>
-          )}
-
-          {/* Tag filter */}
-          <div className="flex flex-wrap items-center justify-center gap-2 mt-6">
-            <button
-              onClick={() => setActiveTag(null)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                activeTag === null
-                  ? 'bg-brown-deep text-cream'
-                  : 'bg-cream/60 text-text-muted hover:bg-cream'
-              }`}
-            >
-              All
-            </button>
-            {(Object.keys(assessmentTagLabels) as AssessmentTag[]).map((tag) => (
-              <button
-                key={tag}
-                onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-                  activeTag === tag
-                    ? assessmentTagColors[tag]
-                    : 'bg-cream/60 text-text-muted hover:bg-cream'
-                }`}
-              >
-                {assessmentTagLabels[tag]}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-          {assessments.filter(a => !activeTag || a.category === activeTag).map((a) => {
-            const isDone = completedAssessments.has(a.slug)
-            return a.live ? (
-              <Link
-                key={a.slug}
-                href={`/assess/${a.slug}`}
-                className={`relative block rounded-2xl border p-6 ${a.color} hover:shadow-md transition-all no-underline group`}
-              >
-                {isDone ? (
-                  <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-sage/20 text-sage text-[10px] font-bold uppercase tracking-wider border border-sage/30">
-                    ✓ Completed
-                  </span>
-                ) : (
-                  <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-sage text-white text-[10px] font-bold uppercase tracking-wider">
-                    Take It Now
-                  </span>
-                )}
-                <div className="text-3xl mb-3">{a.icon}</div>
-                <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-1 group-hover:text-terracotta transition-colors">
-                  {a.name}
-                </h3>
-                <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mb-3 leading-relaxed">
-                  {a.description}
-                </p>
-                <div className="flex items-center gap-4 text-xs text-text-muted flex-wrap">
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${assessmentTagColors[a.category]}`}>
-                    {assessmentTagLabels[a.category]}
-                  </span>
-                  <span>{a.questions} questions</span>
-                  <span>~{a.time}</span>
-                  {isDone && <span className="text-sage font-semibold">Retake anytime</span>}
-                  <button
-                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); router.push(`/learn/${a.slug}`) }}
-                    className="text-terracotta font-semibold hover:underline ml-auto cursor-pointer"
-                  >
-                    Learn More
-                  </button>
-                </div>
-              </Link>
-            ) : (
-              <div
-                key={a.slug}
-                className={`relative rounded-2xl border p-6 ${a.color} opacity-60`}
-              >
-                <span className="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-brown-light/50 text-white text-[10px] font-bold uppercase tracking-wider">
-                  Coming Soon
-                </span>
-                <div className="text-3xl mb-3">{a.icon}</div>
-                <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-brown-deep mb-1">
-                  {a.name}
-                </h3>
-                <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mb-3 leading-relaxed">
-                  {a.description}
-                </p>
-                <div className="flex items-center gap-4 text-xs text-text-muted">
-                  <span>{a.questions} questions</span>
-                  <span>~{a.time}</span>
-                </div>
-              </div>
-            )
-          })}
         </div>
       </section>
 
@@ -643,7 +756,7 @@ export default function HomePage() {
           {/* Stats cards */}
           <div className="grid grid-cols-2 gap-4">
             {[
-              { value: String(assessments.length), label: 'Validated assessments live now' },
+              { value: String(albums.length), label: 'Validated assessments live now' },
               { value: '100%', label: 'Open instruments — no paywalls' },
               { value: 'IRB', label: 'Friendly design from day one' },
               { value: 'Free', label: 'For participants, always' },
@@ -682,6 +795,14 @@ export default function HomePage() {
           </p>
         </div>
       </footer>
+
+      {/* fadeIn animation */}
+      <style jsx global>{`
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </main>
   )
 }

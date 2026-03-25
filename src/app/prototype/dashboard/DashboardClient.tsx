@@ -7,6 +7,7 @@ interface AnalyticsData {
   stats: {
     totalUsers: number
     totalAssessments: number
+    uniqueCompleters: number
     newUsersThisWeek: number
     consentRate: number
   }
@@ -14,6 +15,7 @@ interface AnalyticsData {
     name: string
     slug: string
     completions: number
+    uniqueUsers: number
     avgScore: string
     recentCount: number
   }[]
@@ -34,15 +36,25 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  const [lastRefresh, setLastRefresh] = useState<Date | null>(null)
+
   useEffect(() => {
-    fetch('/api/admin/analytics')
-      .then(res => {
-        if (!res.ok) throw new Error('Failed to fetch analytics')
-        return res.json()
-      })
-      .then(setData)
-      .catch(e => setError(e.message))
-      .finally(() => setLoading(false))
+    const fetchData = () => {
+      fetch('/api/admin/analytics')
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to fetch analytics')
+          return res.json()
+        })
+        .then(d => { setData(d); setLastRefresh(new Date()) })
+        .catch(e => setError(e.message))
+        .finally(() => setLoading(false))
+    }
+
+    fetchData()
+
+    // Auto-refresh every 30 seconds
+    const interval = setInterval(fetchData, 30000)
+    return () => clearInterval(interval)
   }, [])
 
   if (loading) {
@@ -77,6 +89,11 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
                 Admin Dashboard
               </h1>
               <p className="text-white/50 text-sm mt-1">{userEmail}</p>
+              {lastRefresh && (
+                <p className="text-white/30 text-xs mt-1">
+                  Auto-refreshes every 30s &middot; Last: {lastRefresh.toLocaleTimeString()}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -84,10 +101,12 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
 
       {/* Stats cards */}
       <div className="max-w-6xl mx-auto px-6 -mt-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
             { label: 'Total Users', value: stats.totalUsers.toLocaleString(), sub: 'registered accounts' },
-            { label: 'Assessments', value: stats.totalAssessments.toLocaleString(), sub: 'completed' },
+            { label: 'Completers', value: stats.uniqueCompleters.toLocaleString(), sub: 'took 1+ assessment' },
+            { label: 'Completions', value: stats.totalAssessments.toLocaleString(), sub: 'total results' },
+            { label: 'Avg/User', value: stats.uniqueCompleters > 0 ? (stats.totalAssessments / stats.uniqueCompleters).toFixed(1) : '0', sub: 'assessments per user' },
             { label: 'New Users', value: `+${stats.newUsersThisWeek}`, sub: 'this week' },
             { label: 'Data Consent', value: `${stats.consentRate}%`, sub: 'opted in' },
           ].map(s => (
@@ -122,6 +141,7 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
                       <th className="px-5 py-2.5">#</th>
                       <th className="px-5 py-2.5">Assessment</th>
                       <th className="px-5 py-2.5 text-right">Total</th>
+                      <th className="px-5 py-2.5 text-right">Users</th>
                       <th className="px-5 py-2.5 text-right">Avg Score</th>
                       <th className="px-5 py-2.5 text-right">Last 30d</th>
                     </tr>
@@ -132,6 +152,7 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
                         <td className="px-5 py-2.5 text-text-muted">{i + 1}</td>
                         <td className="px-5 py-2.5 font-semibold text-brown-deep">{a.name}</td>
                         <td className="px-5 py-2.5 text-right font-mono text-brown-deep">{a.completions}</td>
+                        <td className="px-5 py-2.5 text-right font-mono text-text-muted">{a.uniqueUsers}</td>
                         <td className="px-5 py-2.5 text-right font-mono text-text-muted">{a.avgScore}</td>
                         <td className="px-5 py-2.5 text-right font-mono text-text-muted">{a.recentCount}</td>
                       </tr>
