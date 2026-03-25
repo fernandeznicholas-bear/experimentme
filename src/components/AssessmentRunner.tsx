@@ -423,8 +423,8 @@ export function AssessmentRunner({ config }: Props) {
             </div>
           )}
 
-          {/* Turnstile verification for logged-in users before saving */}
-          {user && pendingSave && !saved && !saveError && (
+          {/* Turnstile verification before saving (logged-in or anonymous) */}
+          {((user && pendingSave && !saved && !saveError) || pendingAnonymousSave) && !turnstileToken && (
             <div className="bg-cream/50 rounded-2xl border border-[var(--border)] p-4 mb-6 text-center">
               <p className="text-xs text-text-muted mb-2">Verifying before saving...</p>
               <Turnstile

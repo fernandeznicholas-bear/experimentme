@@ -83,7 +83,7 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
         <div className="max-w-6xl mx-auto px-6 pt-28 pb-10">
           <div className="flex items-start justify-between">
             <div>
-              <Link href="/prototype" className="text-white/50 text-sm hover:text-white/70 transition-colors">
+              <Link href="/#assessments" className="text-white/50 text-sm hover:text-white/70 transition-colors">
                 ← Back to Assessments
               </Link>
               <h1 className="font-[family-name:var(--font-heading)] text-3xl font-bold mt-2">

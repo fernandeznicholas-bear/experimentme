@@ -478,21 +478,25 @@ export default function HomePage() {
         </div>
 
         <div className="relative mt-2">
-          {/* Navigation arrows */}
+          {/* Navigation arrows — large touch targets */}
           {activeIndex > 0 && (
             <button
               onClick={() => goTo(activeIndex - 1)}
-              className="absolute left-2 sm:left-8 top-[180px] z-30 w-11 h-11 rounded-full bg-white/90 shadow-xl flex items-center justify-center text-brown-deep hover:bg-white hover:scale-110 transition-all cursor-pointer"
+              className="absolute left-0 top-0 bottom-0 z-30 w-16 sm:w-24 flex items-center justify-center cursor-pointer group"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 4l-6 6 6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/90 shadow-xl flex items-center justify-center text-brown-deep group-hover:bg-white group-hover:scale-110 transition-all">
+                <svg width="24" height="24" viewBox="0 0 20 20" fill="none"><path d="M12 4l-6 6 6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </div>
             </button>
           )}
           {activeIndex < albums.length - 1 && (
             <button
               onClick={() => goTo(activeIndex + 1)}
-              className="absolute right-2 sm:right-8 top-[180px] z-30 w-11 h-11 rounded-full bg-white/90 shadow-xl flex items-center justify-center text-brown-deep hover:bg-white hover:scale-110 transition-all cursor-pointer"
+              className="absolute right-0 top-0 bottom-0 z-30 w-16 sm:w-24 flex items-center justify-center cursor-pointer group"
             >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M8 4l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-white/90 shadow-xl flex items-center justify-center text-brown-deep group-hover:bg-white group-hover:scale-110 transition-all">
+                <svg width="24" height="24" viewBox="0 0 20 20" fill="none"><path d="M8 4l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </div>
             </button>
           )}
 
