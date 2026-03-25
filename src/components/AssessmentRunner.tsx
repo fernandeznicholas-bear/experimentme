@@ -33,11 +33,6 @@ export function AssessmentRunner({ config }: Props) {
   const [demoAskDismissed, setDemoAskDismissed] = useState(false)
   const [consentDismissed, setConsentDismissed] = useState(false)
   const [turnstileToken, setTurnstileToken] = useState<string | null>(null)
-  const [pendingSave, setPendingSave] = useState<{
-    userId: string
-    result: { score: number; category: ScoreCategory; subscaleScores?: { name: string; score: number; maxScore: number; description: string }[] }
-    answers: number[]
-  } | null>(null)
   const [saveError, setSaveError] = useState(false)
   const [pendingAnonymousSave, setPendingAnonymousSave] = useState<{
     assessment_type: string
@@ -57,31 +52,6 @@ export function AssessmentRunner({ config }: Props) {
       setUserChecked(true)
     })
   }, [])
-
-  // When Turnstile token arrives and there's a pending save (logged-in user), verify and save
-  useEffect(() => {
-    if (!turnstileToken || !pendingSave || saved) return
-
-    const verifyAndSave = async () => {
-      try {
-        const verifyRes = await fetch('/api/verify-turnstile', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ token: turnstileToken }),
-        })
-        const verifyData = await verifyRes.json()
-        if (verifyData.success) {
-          await saveResult(pendingSave.userId, pendingSave.result, pendingSave.answers)
-        } else {
-          setSaveError(true)
-        }
-      } catch {
-        setSaveError(true)
-      }
-    }
-
-    verifyAndSave()
-  }, [turnstileToken, pendingSave, saved])
 
   // When Turnstile token arrives and there's a pending anonymous save, save via API
   useEffect(() => {
@@ -127,15 +97,14 @@ export function AssessmentRunner({ config }: Props) {
       setScreen('results')
       window.scrollTo({ top: 0, behavior: 'smooth' })
 
-      // Re-check auth — if logged in, defer save until Turnstile verification
+      // Re-check auth — if logged in, save immediately (user is already authenticated)
       const supabase = createClient()
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       supabase.auth.getUser().then((authResult: any) => {
         const authUser = authResult?.data?.user
         if (authUser) {
           setUser({ id: authUser.id })
-          // Don't save yet — wait for Turnstile verification (triggered by useEffect)
-          setPendingSave({ userId: authUser.id, result, answers: newAnswers })
+          saveResult(authUser.id, result, newAnswers)
         } else {
           // Not logged in — save anonymously to DB AND store in localStorage for account linking
           const pendingResult = {
@@ -180,16 +149,20 @@ export function AssessmentRunner({ config }: Props) {
       completed_at: new Date().toISOString(),
     })
 
-    if (!error) {
-      setSaved(true)
-      // Check if user needs demographic quick ask
-      const { data: demoRows } = await supabase
-        .from('user_demographics')
-        .select('quick_completed')
-        .eq('user_id', userId)
-      const needsDemo = !demoRows || demoRows.length === 0 || !demoRows[0].quick_completed
-      if (needsDemo) setShowDemoAsk(true)
+    if (error) {
+      console.error('Failed to save assessment result:', error)
+      setSaveError(true)
+      return
     }
+
+    setSaved(true)
+    // Check if user needs demographic quick ask
+    const { data: demoRows } = await supabase
+      .from('user_demographics')
+      .select('quick_completed')
+      .eq('user_id', userId)
+    const needsDemo = !demoRows || demoRows.length === 0 || !demoRows[0].quick_completed
+    if (needsDemo) setShowDemoAsk(true)
   }
 
   const maxScore = config.scoreType === 'average' ? config.scaleMax : config.questions.length * config.scaleMax
@@ -426,8 +399,8 @@ export function AssessmentRunner({ config }: Props) {
             </div>
           )}
 
-          {/* Turnstile verification before saving (logged-in or anonymous) */}
-          {((user && pendingSave && !saved && !saveError) || pendingAnonymousSave) && !turnstileToken && (
+          {/* Turnstile verification before saving (anonymous only — logged-in users save directly) */}
+          {pendingAnonymousSave && !turnstileToken && (
             <div className="bg-cream/50 rounded-2xl border border-[var(--border)] p-4 mb-6 text-center">
               <p className="text-xs text-text-muted mb-2">Verifying before saving...</p>
               <Turnstile
