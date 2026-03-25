@@ -17,9 +17,7 @@ const albums = [
     category: 'Well-Being',
     questions: 5,
     time: '2 min',
-    bg: 'bg-gradient-to-br from-sky-300 via-blue-500 to-indigo-700',
-    pattern: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.3) 0%, transparent 50%), radial-gradient(circle at 70% 80%, rgba(255,255,255,0.15) 0%, transparent 40%)',
-    icon: '☀️',
+    image: '/assessments/swls.jpg',
     facts: [
       'Created by Ed Diener, the "Dr. Happiness" of psychology',
       'Translated into dozens of languages worldwide',
@@ -37,9 +35,7 @@ const albums = [
     category: 'Self-Perception',
     questions: 10,
     time: '3 min',
-    bg: 'bg-gradient-to-br from-fuchsia-400 via-purple-600 to-purple-900',
-    pattern: 'linear-gradient(135deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%)',
-    icon: '🪞',
+    image: '/assessments/rosenberg.jpg',
     facts: [
       'The most widely used self-esteem measure in history',
       'Originally developed for adolescents in the 1960s',
@@ -57,9 +53,7 @@ const albums = [
     category: 'Resilience & Growth',
     questions: 8,
     time: '3 min',
-    bg: 'bg-gradient-to-br from-amber-400 via-orange-600 to-red-800',
-    pattern: 'repeating-linear-gradient(45deg, transparent, transparent 20px, rgba(255,255,255,0.05) 20px, rgba(255,255,255,0.05) 40px)',
-    icon: '🏔️',
+    image: '/assessments/grit.jpg',
     facts: [
       'Angela Duckworth\'s TED talk has 30M+ views',
       'Grit predicts success beyond IQ or talent',
@@ -77,9 +71,7 @@ const albums = [
     category: 'Resilience & Growth',
     questions: 8,
     time: '3 min',
-    bg: 'bg-gradient-to-br from-emerald-300 via-green-500 to-teal-800',
-    pattern: 'radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.2) 0%, transparent 50%), radial-gradient(ellipse at 80% 50%, rgba(255,255,255,0.1) 0%, transparent 50%)',
-    icon: '🌱',
+    image: '/assessments/mindset.jpg',
     facts: [
       'Carol Dweck spent 30+ years researching this concept',
       'Students praised for effort outperform those praised for talent',
@@ -97,9 +89,7 @@ const albums = [
     category: 'Personality',
     questions: 20,
     time: '5 min',
-    bg: 'bg-gradient-to-br from-violet-400 via-indigo-500 to-blue-800',
-    pattern: 'conic-gradient(from 45deg, rgba(255,255,255,0.08) 0deg, transparent 90deg, rgba(255,255,255,0.08) 180deg, transparent 270deg)',
-    icon: '🎨',
+    image: '/assessments/bigfive.jpg',
     facts: [
       'The Big Five model emerged from analyzing every personality word in the dictionary',
       'These five traits appear across every culture studied',
@@ -117,9 +107,7 @@ const albums = [
     category: 'Well-Being',
     questions: 23,
     time: '5 min',
-    bg: 'bg-gradient-to-br from-rose-400 via-orange-500 to-amber-600',
-    pattern: 'radial-gradient(circle at 50% 0%, rgba(255,255,255,0.25) 0%, transparent 50%), radial-gradient(circle at 50% 100%, rgba(0,0,0,0.15) 0%, transparent 50%)',
-    icon: '🌈',
+    image: '/assessments/perma.jpg',
     facts: [
       'Created by Martin Seligman, the father of positive psychology',
       'Goes beyond happiness to measure flourishing',
@@ -137,9 +125,7 @@ const albums = [
     category: 'Well-Being',
     questions: 4,
     time: '1 min',
-    bg: 'bg-gradient-to-br from-yellow-300 via-green-400 to-emerald-600',
-    pattern: 'radial-gradient(circle at 70% 30%, rgba(255,255,255,0.3) 0%, transparent 40%)',
-    icon: '✨',
+    image: '/assessments/happiness.jpg',
     facts: [
       'Only 4 questions — the shortest validated happiness measure',
       'Sonja Lyubomirsky is one of the world\'s leading happiness researchers',
@@ -157,9 +143,7 @@ const albums = [
     category: 'Self-Perception',
     questions: 12,
     time: '3 min',
-    bg: 'bg-gradient-to-br from-amber-300 via-yellow-500 to-orange-600',
-    pattern: 'radial-gradient(ellipse at 30% 70%, rgba(255,255,255,0.2) 0%, transparent 50%)',
-    icon: '💛',
+    image: '/assessments/selfcompassion.jpg',
     facts: [
       'Kristin Neff pioneered the scientific study of self-compassion',
       'Self-compassion is more stable than self-esteem',
@@ -177,9 +161,7 @@ const albums = [
     category: 'Resilience & Growth',
     questions: 12,
     time: '3 min',
-    bg: 'bg-gradient-to-br from-cyan-300 via-blue-400 to-indigo-600',
-    pattern: 'linear-gradient(to top, rgba(255,255,255,0.1) 0%, transparent 50%), radial-gradient(circle at 50% 30%, rgba(255,255,255,0.2) 0%, transparent 40%)',
-    icon: '🔭',
+    image: '/assessments/hope.jpg',
     facts: [
       'Hope has two components: willpower AND waypower',
       'Hopeful people don\'t just wish — they plan alternative routes',
@@ -197,9 +179,7 @@ const albums = [
     category: 'Clinical Screening',
     questions: 21,
     time: '5 min',
-    bg: 'bg-gradient-to-br from-slate-400 via-gray-600 to-slate-800',
-    pattern: 'repeating-linear-gradient(0deg, transparent, transparent 8px, rgba(255,255,255,0.03) 8px, rgba(255,255,255,0.03) 16px)',
-    icon: '🌧️',
+    image: '/assessments/dass21.jpg',
     facts: [
       'Separates depression, anxiety, and stress — most scales blend them',
       'Developed in Australia, now used in 50+ countries',
@@ -217,9 +197,7 @@ const albums = [
     category: 'Clinical Screening',
     questions: 9,
     time: '3 min',
-    bg: 'bg-gradient-to-br from-blue-500 via-blue-700 to-indigo-900',
-    pattern: 'radial-gradient(circle at 20% 80%, rgba(255,255,255,0.1) 0%, transparent 40%)',
-    icon: '🗺️',
+    image: '/assessments/phq9.jpg',
     facts: [
       'Used in more clinical settings than any other depression screener',
       'Maps directly onto the 9 DSM-5 criteria for major depression',
@@ -237,9 +215,7 @@ const albums = [
     category: 'Clinical Screening',
     questions: 7,
     time: '2 min',
-    bg: 'bg-gradient-to-br from-violet-500 via-purple-600 to-fuchsia-800',
-    pattern: 'repeating-radial-gradient(circle at 50% 50%, transparent 0px, transparent 15px, rgba(255,255,255,0.04) 15px, rgba(255,255,255,0.04) 30px)',
-    icon: '💓',
+    image: '/assessments/gad7.jpg',
     facts: [
       'The most widely used anxiety screener in primary care',
       'Created by the same team behind the PHQ-9',
@@ -257,9 +233,7 @@ const albums = [
     category: 'Clinical Screening',
     questions: 20,
     time: '5 min',
-    bg: 'bg-gradient-to-br from-red-500 via-rose-700 to-red-900',
-    pattern: 'linear-gradient(135deg, rgba(0,0,0,0.1) 25%, transparent 25%, transparent 75%, rgba(0,0,0,0.1) 75%)',
-    icon: '🔁',
+    image: '/assessments/pcl5.jpg',
     facts: [
       'Updated to align with DSM-5 PTSD criteria',
       'Developed by the National Center for PTSD',
@@ -277,9 +251,7 @@ const albums = [
     category: 'Well-Being',
     questions: 5,
     time: '1 min',
-    bg: 'bg-gradient-to-br from-teal-300 via-cyan-500 to-blue-700',
-    pattern: 'radial-gradient(circle at 80% 20%, rgba(255,255,255,0.25) 0%, transparent 40%)',
-    icon: '🌡️',
+    image: '/assessments/who5.jpg',
     facts: [
       'Created by the World Health Organization',
       'Used in 30+ languages across the globe',
@@ -297,9 +269,7 @@ const albums = [
     category: 'Clinical Screening',
     questions: 6,
     time: '2 min',
-    bg: 'bg-gradient-to-br from-gray-500 via-gray-700 to-gray-900',
-    pattern: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08) 0%, transparent 60%)',
-    icon: '🛡️',
+    image: '/assessments/cssrs.jpg',
     facts: [
       'Required by the FDA for all drug trials since 2012',
       'Asking about suicide does NOT increase risk — research confirms this',
@@ -336,8 +306,8 @@ export default function HomePage() {
   const [completedAssessments, setCompletedAssessments] = useState<Set<string>>(new Set())
   const [isLoggedIn, setIsLoggedIn] = useState(false)
 
-  // Carousel state
-  const [researchMode, setResearchMode] = useState(false)
+  // Carousel state — per-card research mode
+  const [researchCards, setResearchCards] = useState<Set<number>>(new Set())
   const [activeIndex, setActiveIndex] = useState(0)
   const [factIndex, setFactIndex] = useState(0)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -499,38 +469,12 @@ export default function HomePage() {
       {/* Album-Cover Carousel */}
       <section id="assessments" className="py-12 scroll-mt-20 overflow-x-hidden">
         <div className="max-w-5xl mx-auto px-6 mb-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h2 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-brown-deep">
-                Explore Assessments
-              </h2>
-              <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mt-1">
-                15 validated, peer-reviewed instruments. Swipe to explore.
-              </p>
-            </div>
-            {/* Discovery / Research toggle */}
-            <div className="relative inline-flex items-center bg-brown-deep/6 rounded-xl p-1 border border-brown-deep/10">
-              <div
-                className="absolute top-1 bottom-1 rounded-lg bg-white shadow-sm transition-all duration-300 ease-out"
-                style={{
-                  left: researchMode ? 'calc(50% + 2px)' : '4px',
-                  width: 'calc(50% - 6px)',
-                }}
-              />
-              <button
-                onClick={() => setResearchMode(false)}
-                className={`relative z-10 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${!researchMode ? 'text-brown-deep' : 'text-text-muted'}`}
-              >
-                Discovery
-              </button>
-              <button
-                onClick={() => setResearchMode(true)}
-                className={`relative z-10 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${researchMode ? 'text-brown-deep' : 'text-text-muted'}`}
-              >
-                Research
-              </button>
-            </div>
-          </div>
+          <h2 className="font-[family-name:var(--font-heading)] text-3xl font-bold text-brown-deep">
+            Explore Assessments
+          </h2>
+          <p className="font-[family-name:var(--font-body)] text-text-muted text-sm mt-1">
+            15 validated, peer-reviewed instruments. Swipe to explore.
+          </p>
         </div>
 
         <div className="relative mt-2">
@@ -575,6 +519,7 @@ export default function HomePage() {
               const rotateY = idx < activeIndex ? 40 : idx > activeIndex ? -40 : 0
               const zIndex = 20 - dist
               const isDone = completedAssessments.has(album.slug)
+              const isResearch = researchCards.has(idx)
 
               return (
                 <div
@@ -593,19 +538,21 @@ export default function HomePage() {
                       opacity,
                     }}
                   >
-                    {/* Album Cover */}
-                    <div className={`relative w-full rounded-2xl overflow-hidden ${album.bg} shadow-2xl`} style={{ height: 380, aspectRatio: '3/4' }}>
-                      {/* CSS art layer */}
-                      <div className="absolute inset-0" style={{ backgroundImage: album.pattern, backgroundSize: dist === 0 ? '100% 100%' : '80px 80px' }} />
-
-                      {/* Large background icon */}
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-[140px] opacity-[0.12] select-none">{album.icon}</span>
-                      </div>
+                    {/* Album Cover — photo background */}
+                    <div className="relative w-full rounded-2xl overflow-hidden shadow-2xl" style={{ height: 380, aspectRatio: '3/4' }}>
+                      {/* Photo background */}
+                      <img
+                        src={album.image}
+                        alt=""
+                        className="absolute inset-0 w-full h-full object-cover"
+                        draggable={false}
+                      />
+                      {/* Dark overlay for text readability */}
+                      <div className="absolute inset-0 bg-black/30" />
 
                       {/* Top badges */}
                       <div className="absolute top-4 left-4 right-4 flex items-start justify-between z-10">
-                        <span className="px-2.5 py-1 rounded-full bg-black/20 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
+                        <span className="px-2.5 py-1 rounded-full bg-black/30 text-white text-[10px] font-bold uppercase tracking-wider backdrop-blur-md">
                           {album.category}
                         </span>
                         <div className="flex gap-1.5">
@@ -614,35 +561,50 @@ export default function HomePage() {
                               Done
                             </span>
                           )}
-                          <span className="px-2 py-0.5 rounded-full bg-black/20 text-white text-[10px] font-medium backdrop-blur-md">
+                          <span className="px-2 py-0.5 rounded-full bg-black/30 text-white text-[10px] font-medium backdrop-blur-md">
                             {album.questions}q
                           </span>
-                          <span className="px-2 py-0.5 rounded-full bg-black/20 text-white text-[10px] font-medium backdrop-blur-md">
+                          <span className="px-2 py-0.5 rounded-full bg-black/30 text-white text-[10px] font-medium backdrop-blur-md">
                             {album.time}
                           </span>
                         </div>
                       </div>
 
-                      {/* Center icon */}
-                      <div className="absolute inset-0 flex items-center justify-center z-10">
-                        <span className="text-7xl drop-shadow-2xl">{album.icon}</span>
-                      </div>
+                      {/* Per-card Discovery/Research toggle — on the cover */}
+                      {dist === 0 && (
+                        <div className="absolute top-12 left-4 z-10">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              setResearchCards(prev => {
+                                const next = new Set(prev)
+                                if (next.has(idx)) next.delete(idx)
+                                else next.add(idx)
+                                return next
+                              })
+                            }}
+                            className="px-2.5 py-1 rounded-full bg-white/15 text-white text-[10px] font-semibold backdrop-blur-md hover:bg-white/25 transition-colors cursor-pointer border border-white/20"
+                          >
+                            {isResearch ? '🔬 Research' : '🧭 Discovery'}
+                          </button>
+                        </div>
+                      )}
 
                       {/* Bottom content overlay */}
-                      <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/70 via-black/40 to-transparent pt-16 pb-5 px-5">
+                      <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black/80 via-black/50 to-transparent pt-20 pb-5 px-5">
                         <h3 className="font-[family-name:var(--font-heading)] text-xl font-bold text-white leading-tight drop-shadow-lg">
-                          {researchMode ? album.researchName : album.discoveryName}
+                          {isResearch ? album.researchName : album.discoveryName}
                         </h3>
-                        {researchMode && (
+                        {isResearch && (
                           <p className="text-white/50 text-[10px] font-mono mt-0.5">{album.researchCitation}</p>
                         )}
                         <p className="text-white/85 text-sm mt-1.5 leading-snug">
-                          {researchMode ? album.researchTagline : album.tagline}
+                          {isResearch ? album.researchTagline : album.tagline}
                         </p>
 
-                        {/* Facts ticker — only on active card */}
+                        {/* Facts ticker — on active card */}
                         {dist === 0 && currentFact && (
-                          <div className="mt-3 pt-3 border-t border-white/15">
+                          <div className="mt-2.5 pt-2.5 border-t border-white/15">
                             <p
                               key={factIndex}
                               className="text-white/70 text-xs leading-relaxed animate-[fadeIn_0.5s_ease-out]"
@@ -660,7 +622,7 @@ export default function HomePage() {
                               onClick={e => { if (preventClick.current) e.preventDefault() }}
                               className="inline-block px-6 py-2.5 rounded-xl bg-white/20 backdrop-blur-md text-white text-sm font-semibold hover:bg-white/30 transition-colors border border-white/20"
                             >
-                              {isDone ? 'Retake' : (researchMode ? 'Begin Assessment' : 'Begin Discovery')}
+                              {isDone ? 'Retake' : (isResearch ? 'Begin Assessment' : 'Begin Discovery')}
                             </Link>
                             <button
                               onClick={(e) => { e.stopPropagation(); router.push(`/learn/${album.slug}`) }}
