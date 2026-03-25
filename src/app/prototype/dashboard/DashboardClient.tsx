@@ -8,6 +8,7 @@ interface AnalyticsData {
     totalUsers: number
     totalAssessments: number
     uniqueCompleters: number
+    anonymousCompletions: number
     newUsersThisWeek: number
     consentRate: number
   }
@@ -106,7 +107,7 @@ export default function DashboardClient({ userEmail }: { userEmail: string }) {
             { label: 'Total Users', value: stats.totalUsers.toLocaleString(), sub: 'registered accounts' },
             { label: 'Completers', value: stats.uniqueCompleters.toLocaleString(), sub: 'took 1+ assessment' },
             { label: 'Completions', value: stats.totalAssessments.toLocaleString(), sub: 'total results' },
-            { label: 'Avg/User', value: stats.uniqueCompleters > 0 ? (stats.totalAssessments / stats.uniqueCompleters).toFixed(1) : '0', sub: 'assessments per user' },
+            { label: 'Anonymous', value: stats.anonymousCompletions.toLocaleString(), sub: 'no account' },
             { label: 'New Users', value: `+${stats.newUsersThisWeek}`, sub: 'this week' },
             { label: 'Data Consent', value: `${stats.consentRate}%`, sub: 'opted in' },
           ].map(s => (

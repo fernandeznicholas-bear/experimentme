@@ -64,6 +64,7 @@ export async function GET() {
   // Unique users who completed at least one assessment
   const uniqueCompleters = new Set(allResults.map(r => r.user_id).filter(Boolean))
   const uniqueCompleterCount = uniqueCompleters.size
+  const anonymousCompletions = allResults.filter(r => !r.user_id).length
 
   // Per-assessment stats
   const assessmentMap = new Map<string, { completions: number; scores: number[]; recentCount: number; uniqueUsers: Set<string> }>()
@@ -150,6 +151,7 @@ export async function GET() {
       totalUsers,
       totalAssessments,
       uniqueCompleters: uniqueCompleterCount,
+      anonymousCompletions,
       newUsersThisWeek,
       consentRate,
     },

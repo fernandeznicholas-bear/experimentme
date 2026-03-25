@@ -39,6 +39,14 @@ export function AssessmentRunner({ config }: Props) {
     answers: number[]
   } | null>(null)
   const [saveError, setSaveError] = useState(false)
+  const [pendingAnonymousSave, setPendingAnonymousSave] = useState<{
+    assessment_type: string
+    score: number
+    max_score: number
+    category: string
+    details: unknown
+    completed_at: string
+  } | null>(null)
 
   useEffect(() => {
     const supabase = createClient()
@@ -50,7 +58,7 @@ export function AssessmentRunner({ config }: Props) {
     })
   }, [])
 
-  // When Turnstile token arrives and there's a pending save, verify and save
+  // When Turnstile token arrives and there's a pending save (logged-in user), verify and save
   useEffect(() => {
     if (!turnstileToken || !pendingSave || saved) return
 
@@ -74,6 +82,29 @@ export function AssessmentRunner({ config }: Props) {
 
     verifyAndSave()
   }, [turnstileToken, pendingSave, saved])
+
+  // When Turnstile token arrives and there's a pending anonymous save, save via API
+  useEffect(() => {
+    if (!turnstileToken || !pendingAnonymousSave) return
+
+    const saveAnonymous = async () => {
+      try {
+        await fetch('/api/save-anonymous-result', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            ...pendingAnonymousSave,
+            turnstileToken,
+          }),
+        })
+      } catch {
+        // Silent fail — localStorage backup exists
+      }
+      setPendingAnonymousSave(null)
+    }
+
+    saveAnonymous()
+  }, [turnstileToken, pendingAnonymousSave])
 
   const handleStart = () => {
     setScreen('questions')
@@ -103,7 +134,7 @@ export function AssessmentRunner({ config }: Props) {
           // Don't save yet — wait for Turnstile verification (triggered by useEffect)
           setPendingSave({ userId: authUser.id, result, answers: newAnswers })
         } else {
-          // Not logged in — store result in localStorage (no DB risk from bots)
+          // Not logged in — save anonymously to DB AND store in localStorage for account linking
           const pendingResult = {
             assessment_type: config.id,
             score: result.score,
@@ -116,6 +147,9 @@ export function AssessmentRunner({ config }: Props) {
             completed_at: new Date().toISOString(),
           }
           localStorage.setItem('pendingAssessmentResult', JSON.stringify(pendingResult))
+
+          // Also save anonymously to DB so admin dashboard captures all completions
+          setPendingAnonymousSave(pendingResult)
         }
       })
     } else {
