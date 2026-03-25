@@ -15,10 +15,18 @@ export function SplashScreen() {
     // Clear all pending timeouts
     timers.current.forEach(clearTimeout)
     timers.current = []
+    sessionStorage.setItem('splash_seen', '1')
     setPhase('done')
   }, [])
 
   useEffect(() => {
+    // Skip if already seen this session
+    if (sessionStorage.getItem('splash_seen')) {
+      skipped.current = true
+      setPhase('done')
+      return
+    }
+
     // Always start at top of page on refresh
     window.scrollTo(0, 0)
 
@@ -35,7 +43,10 @@ export function SplashScreen() {
     schedule(() => setPhase('name'), 7200)
     schedule(() => setPhase('nameOut'), 10500)
     schedule(() => setPhase('fadeout'), 12500)
-    schedule(() => setPhase('done'), 15000)
+    schedule(() => {
+      sessionStorage.setItem('splash_seen', '1')
+      setPhase('done')
+    }, 15000)
 
     return () => {
       timers.current.forEach(clearTimeout)

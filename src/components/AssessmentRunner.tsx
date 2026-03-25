@@ -89,7 +89,7 @@ export function AssessmentRunner({ config }: Props) {
 
     const saveAnonymous = async () => {
       try {
-        await fetch('/api/save-anonymous-result', {
+        const res = await fetch('/api/save-anonymous-result', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -97,8 +97,11 @@ export function AssessmentRunner({ config }: Props) {
             turnstileToken,
           }),
         })
-      } catch {
-        // Silent fail — localStorage backup exists
+        if (!res.ok) {
+          console.error('Anonymous save failed:', res.status, await res.text())
+        }
+      } catch (err) {
+        console.error('Anonymous save network error:', err)
       }
       setPendingAnonymousSave(null)
     }

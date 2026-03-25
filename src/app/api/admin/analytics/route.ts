@@ -2,6 +2,8 @@ import { createClient } from '@/lib/supabase-server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
 
+export const dynamic = 'force-dynamic'
+
 const ALLOWED_EMAILS = ['fernandez.nicholas@gmail.com']
 
 export async function GET() {
@@ -37,7 +39,7 @@ export async function GET() {
     // Users created in last 7 days
     admin.auth.admin.listUsers({ perPage: 1000, page: 1 }),
     // All assessment results (includes all users — service role bypasses RLS)
-    admin.from('assessment_results').select('assessment_type, score, completed_at, created_at, user_id'),
+    admin.from('assessment_results').select('assessment_type, score, completed_at, created_at, user_id').limit(10000),
     // Recent assessment results (last 30 days)
     admin.from('assessment_results')
       .select('assessment_type, score, completed_at')
