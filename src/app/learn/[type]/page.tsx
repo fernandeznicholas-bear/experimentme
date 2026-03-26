@@ -7,6 +7,7 @@ import { getAssessmentConfig, calculateScore } from '@/lib/assessments'
 import { getDeepDiveContent } from '@/lib/deep-dive-content'
 import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
 import { createClient } from '@/lib/supabase-browser'
+import { ResearchPredictions } from '@/components/ResearchPredictions'
 
 interface StoredResult {
   score: number
@@ -331,6 +332,13 @@ export default function LearnPage() {
                 )}
               </div>
             </Section>
+
+            {/* Research Predictions — flipthrough cards */}
+            {config.researchFindings && (
+              <Section title={viewMode === 'simple' ? 'What Your Score Predicts' : 'Predictive Validity'}>
+                <ResearchPredictions findings={config.researchFindings} />
+              </Section>
+            )}
 
             {/* Practical Applications */}
             <Section title="Where It&apos;s Used">

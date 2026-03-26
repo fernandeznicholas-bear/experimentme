@@ -8,6 +8,7 @@ import { buildShareUrl, type ShareData } from '@/lib/share'
 import { getAssessmentNorms, calculatePercentile } from '@/lib/population-norms'
 import { DemographicQuickAsk } from '@/components/DemographicQuickAsk'
 import { ResearchConsentPrompt } from '@/components/ResearchConsentPrompt'
+import { ResearchPredictions } from '@/components/ResearchPredictions'
 import Turnstile from '@/components/Turnstile'
 
 interface Props {
@@ -28,7 +29,7 @@ export function AssessmentRunner({ config }: Props) {
   const [saved, setSaved] = useState(false)
   const [user, setUser] = useState<{ id: string } | null>(null)
   const [showAllLevels, setShowAllLevels] = useState(false)
-  const [expandedFinding, setExpandedFinding] = useState<number | null>(null)
+  const [findingIndex, setFindingIndex] = useState(0)
   const [userChecked, setUserChecked] = useState(false)
   const [showDemoAsk, setShowDemoAsk] = useState(false)
   const [demoAskDismissed, setDemoAskDismissed] = useState(false)
@@ -337,54 +338,7 @@ export function AssessmentRunner({ config }: Props) {
 
           {/* Research Findings — What Your Score Predicts */}
           {config.researchFindings && (
-            <div className="bg-white rounded-2xl shadow-sm border border-[var(--border)] p-6 mb-6">
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-lg">🔬</span>
-                <h3 className="font-[family-name:var(--font-heading)] text-lg font-bold text-brown-deep">
-                  What Research Predicts
-                </h3>
-              </div>
-              <p className="font-[family-name:var(--font-body)] text-text-muted text-sm leading-relaxed mb-5">
-                {config.researchFindings.overview}
-              </p>
-              <div className="space-y-2">
-                {config.researchFindings.predictions.map((pred, idx) => (
-                  <button
-                    key={pred.domain}
-                    onClick={() => setExpandedFinding(expandedFinding === idx ? null : idx)}
-                    className="w-full text-left cursor-pointer"
-                  >
-                    <div className={`rounded-xl border transition-colors ${expandedFinding === idx ? 'bg-cream/60 border-terracotta/20' : 'bg-cream/30 border-[var(--border)] hover:bg-cream/50'}`}>
-                      <div className="flex items-center gap-3 p-3.5">
-                        <span className="text-2xl shrink-0">{pred.icon}</span>
-                        <span className="font-[family-name:var(--font-body)] text-sm font-semibold text-brown-deep flex-1">
-                          {pred.domain}
-                        </span>
-                        <span className={`text-text-muted text-xs transition-transform ${expandedFinding === idx ? 'rotate-180' : ''}`}>
-                          ▼
-                        </span>
-                      </div>
-                      {expandedFinding === idx && (
-                        <div className="px-3.5 pb-3.5 pt-0 animate-fade-up">
-                          <p className="font-[family-name:var(--font-body)] text-text-main text-sm leading-relaxed mb-2">
-                            {pred.finding}
-                          </p>
-                          <p className="font-mono text-[10px] text-text-muted">
-                            {pred.citation}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </button>
-                ))}
-              </div>
-              <div className="mt-5 p-4 rounded-xl bg-sage/10 border border-sage/20">
-                <p className="font-[family-name:var(--font-body)] text-sm text-text-main leading-relaxed">
-                  <span className="font-bold text-brown-deep">The bottom line: </span>
-                  {config.researchFindings.keyInsight}
-                </p>
-              </div>
-            </div>
+            <ResearchPredictions findings={config.researchFindings} findingIndex={findingIndex} setFindingIndex={setFindingIndex} />
           )}
 
           {/* Score Level Explorer */}
