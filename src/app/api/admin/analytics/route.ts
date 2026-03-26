@@ -1,17 +1,16 @@
 import { createClient } from '@/lib/supabase-server'
 import { createClient as createAdminClient } from '@supabase/supabase-js'
 import { NextResponse } from 'next/server'
+import { isAdmin } from '@/lib/admin'
 
 export const dynamic = 'force-dynamic'
-
-const ALLOWED_EMAILS = ['fernandez.nicholas@gmail.com']
 
 export async function GET() {
   // Verify the user is authenticated and authorized
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user || !ALLOWED_EMAILS.includes(user.email || '')) {
+  if (!user || !(await isAdmin(user.email))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
   }
 
@@ -148,6 +147,24 @@ export async function GET() {
     ? Math.round((consentedCount / consentData.length) * 100)
     : 0
 
+  // Build user list with assessment counts
+  const userAssessmentCounts = new Map<string, number>()
+  for (const r of allResults) {
+    if (r.user_id) {
+      userAssessmentCounts.set(r.user_id, (userAssessmentCounts.get(r.user_id) || 0) + 1)
+    }
+  }
+
+  const userList = allUsers
+    .map(u => ({
+      id: u.id,
+      email: u.email || '—',
+      provider: u.app_metadata?.provider || 'email',
+      createdAt: u.created_at,
+      assessmentCount: userAssessmentCounts.get(u.id) || 0,
+    }))
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+
   return NextResponse.json({
     stats: {
       totalUsers,
@@ -160,5 +177,6 @@ export async function GET() {
     assessmentStats,
     recentActivity,
     demographics,
+    userList,
   })
 }

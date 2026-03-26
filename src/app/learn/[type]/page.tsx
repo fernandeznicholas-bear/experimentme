@@ -104,17 +104,17 @@ export default function LearnPage() {
             <div className="mt-5 inline-flex items-center rounded-full bg-cream/80 border border-[var(--border)] p-1">
               <button
                 onClick={() => setViewMode('simple')}
-                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all cursor-pointer ${
                   viewMode === 'simple'
                     ? 'bg-white text-brown-deep shadow-sm'
                     : 'text-text-muted hover:text-brown-deep'
                 }`}
               >
-                Simple
+                Simply Put
               </button>
               <button
                 onClick={() => setViewMode('research')}
-                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all cursor-pointer ${
                   viewMode === 'research'
                     ? 'bg-white text-brown-deep shadow-sm'
                     : 'text-text-muted hover:text-brown-deep'

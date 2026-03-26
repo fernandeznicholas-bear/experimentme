@@ -430,27 +430,25 @@ export default function PrototypeClient() {
           </div>
           <div className="flex items-center gap-3">
             {/* Discovery / Research toggle */}
-            <div className="relative inline-flex items-center bg-brown-deep/6 rounded-xl p-1 border border-brown-deep/10">
+            <button
+              onClick={() => setResearchMode(prev => !prev)}
+              className="relative inline-flex items-center h-9 w-[200px] bg-brown-deep/8 rounded-full p-1 border border-brown-deep/10 cursor-pointer transition-colors hover:bg-brown-deep/12"
+              aria-label={`Switch to ${researchMode ? 'Discovery' : 'Research'} mode`}
+            >
               <div
-                className="absolute top-1 bottom-1 rounded-lg bg-white shadow-sm transition-all duration-300 ease-out"
+                className="absolute top-1 bottom-1 rounded-full bg-white shadow-md transition-all duration-300 ease-out pointer-events-none"
                 style={{
-                  left: researchMode ? 'calc(50% + 2px)' : '4px',
-                  width: 'calc(50% - 6px)',
+                  left: researchMode ? 'calc(50%)' : '4px',
+                  width: 'calc(50% - 4px)',
                 }}
               />
-              <button
-                onClick={() => setResearchMode(false)}
-                className={`relative z-10 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${!researchMode ? 'text-brown-deep' : 'text-text-muted'}`}
-              >
+              <span className={`relative z-10 flex-1 text-center text-xs font-semibold transition-colors select-none ${!researchMode ? 'text-brown-deep' : 'text-text-muted'}`}>
                 Discovery
-              </button>
-              <button
-                onClick={() => setResearchMode(true)}
-                className={`relative z-10 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${researchMode ? 'text-brown-deep' : 'text-text-muted'}`}
-              >
+              </span>
+              <span className={`relative z-10 flex-1 text-center text-xs font-semibold transition-colors select-none ${researchMode ? 'text-brown-deep' : 'text-text-muted'}`}>
                 Research
-              </button>
-            </div>
+              </span>
+            </button>
             <Link
               href="/prototype/dashboard"
               className="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brown-deep text-white text-sm font-medium hover:bg-brown-deep/90 transition-colors"
@@ -491,7 +489,6 @@ export default function PrototypeClient() {
           onMouseLeave={handleMouseUp}
           className="flex gap-6 overflow-x-auto py-6 no-scrollbar select-none"
           style={{
-            cursor: isDragging.current ? 'grabbing' : 'grab',
             paddingLeft: 'calc(50vw - 140px)',
             paddingRight: 'calc(50vw - 140px)',
             scrollSnapType: 'x mandatory',
@@ -508,7 +505,7 @@ export default function PrototypeClient() {
               <div
                 key={album.slug}
                 className="shrink-0 snap-center"
-                style={{ width: CARD_W, zIndex }}
+                style={{ width: CARD_W, zIndex, cursor: idx !== activeIndex ? 'pointer' : 'default' }}
                 onClick={() => {
                   if (preventClick.current) return
                   if (idx !== activeIndex) goTo(idx)

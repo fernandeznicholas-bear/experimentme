@@ -5,6 +5,7 @@ import { ProfileResults } from '@/components/ProfileResults'
 import { PendingResultSaver } from '@/components/PendingResultSaver'
 import { ExtendedDemographics } from '@/components/ExtendedDemographics'
 import { ResearchConsentManager } from '@/components/ResearchConsentManager'
+import { isAdmin } from '@/lib/admin'
 
 export default async function ProfilePage() {
   const supabase = await createClient()
@@ -24,6 +25,7 @@ export default async function ProfilePage() {
   const userName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'Explorer'
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const assessmentTypes = Array.from(new Set(((results || []) as any[]).map((r) => String(r.assessment_type))))
+  const userIsAdmin = await isAdmin(user.email)
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
@@ -46,7 +48,7 @@ export default async function ProfilePage() {
             Your psychological profile grows with every assessment you take.
             Each result is backed by validated, peer-reviewed science.
           </p>
-          {user.email === 'fernandez.nicholas@gmail.com' && (
+          {userIsAdmin && (
             <Link
               href="/prototype/dashboard"
               className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-xl bg-brown-deep text-white font-semibold text-sm hover:bg-brown-deep/90 transition-colors no-underline"

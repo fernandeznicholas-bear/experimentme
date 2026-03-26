@@ -51,6 +51,16 @@ export interface AssessmentConfig {
     questionIndices: number[] // 0-indexed
     description: string
   }[]
+  researchFindings?: {
+    overview: string // Brief intro to what research says about this construct
+    predictions: {
+      icon: string
+      domain: string // e.g., "Academic Achievement", "Career Success"
+      finding: string // What the research actually found
+      citation: string // Short citation
+    }[]
+    keyInsight: string // One compelling takeaway
+  }
 }
 
 // ─── SWLS ───────────────────────────────────────────
@@ -149,6 +159,60 @@ export const gritConfig: AssessmentConfig = {
     { min: 2.5, max: 3.49, label: 'Moderate Grit', emoji: '🌤️', description: 'You show average perseverance with room to grow.', insight: 'You have a moderate level of grit — sometimes you stick with things, sometimes you move on. This is very common and does not predict failure. Research suggests grit can be developed by finding work that feels purposeful, practicing deliberate effort, and building habits of follow-through in small areas first.' },
     { min: 1.0, max: 2.49, label: 'Developing Grit', emoji: '🌱', description: 'You may find it challenging to stick with long-term goals.', insight: 'You tend to shift interests frequently or give up when things get hard. This does not mean you lack potential — it may mean you have not yet found work or goals that truly engage you. Duckworth\'s research shows that grit grows when you discover something worth being gritty about. Focus on finding your passion first, then practice perseverance.' },
   ],
+  researchFindings: {
+    overview: 'Grit has been studied across military, academic, professional, and personal contexts. Here is what decades of research say your score may predict about real-world outcomes.',
+    predictions: [
+      {
+        icon: '🎓',
+        domain: 'Educational Achievement',
+        finding: 'Grittier students earn higher GPAs and are more likely to graduate. In a study of Ivy League undergraduates, grit predicted GPA above and beyond SAT scores and IQ. Among Chicago public school juniors, grittier students were significantly more likely to graduate on time.',
+        citation: 'Duckworth et al., 2007; Eskreis-Winkler et al., 2014',
+      },
+      {
+        icon: '⚔️',
+        domain: 'Surviving Tough Selections',
+        finding: 'At West Point Military Academy, grit was the single best predictor of which cadets would survive the grueling "Beast Barracks" summer training — outperforming physical fitness, leadership potential, and SAT scores. This has been replicated across multiple West Point cohorts.',
+        citation: 'Duckworth et al., 2007; Duckworth & Quinn, 2009',
+      },
+      {
+        icon: '💼',
+        domain: 'Career Retention & Performance',
+        finding: 'Grittier sales employees at a vacation ownership company were 31% less likely to quit. Grittier novice teachers in tough schools produced better student outcomes by the end of the academic year, as measured by standardized test gains.',
+        citation: 'Eskreis-Winkler et al., 2014; Duckworth et al., 2009',
+      },
+      {
+        icon: '🏆',
+        domain: 'Competitive Achievement',
+        finding: 'In the Scripps National Spelling Bee, grittier competitors advanced further in the competition. This was partly because grit predicted more hours of deliberate practice — the kind of focused, effortful study that builds expertise.',
+        citation: 'Duckworth et al., 2011',
+      },
+      {
+        icon: '😊',
+        domain: 'Life Satisfaction & Well-Being',
+        finding: 'Higher grit is associated with greater life satisfaction, positive affect, and psychological well-being. Gritty individuals tend to find more meaning and engagement in daily activities, which contributes to an overall sense of fulfillment.',
+        citation: 'Singh & Jha, 2008; Von Culin et al., 2014',
+      },
+      {
+        icon: '🧠',
+        domain: 'Mental Health & Resilience',
+        finding: 'Grit is inversely related to depression and anxiety symptoms. Grittier individuals show greater emotional stability under stress and are less likely to develop helplessness in the face of repeated setbacks. The perseverance component appears particularly protective.',
+        citation: 'Duckworth et al., 2007; Musumari et al., 2018',
+      },
+      {
+        icon: '💪',
+        domain: 'Health Behaviors',
+        finding: 'Grittier adults exercise more regularly, maintain healthier diets, and are less likely to smoke. The consistency-of-interest subscale — sticking with the same goals — is particularly predictive of sustained health behavior change.',
+        citation: 'Reed et al., 2013; Sharkey et al., 2017',
+      },
+      {
+        icon: '💍',
+        domain: 'Relationship Stability',
+        finding: 'Grittier adults are more likely to stay married. In a large representative sample, each one-point increase in grit was associated with a 17% increase in the likelihood of remaining in a stable marriage.',
+        citation: 'Eskreis-Winkler et al., 2014',
+      },
+    ],
+    keyInsight: 'Grit is not about talent or intelligence — it is about sustained passion and effort over years. The research consistently shows that gritty people do not just work hard; they work hard on the same thing for a long time. The good news: grit tends to increase with age, and Duckworth identifies four psychological assets that build it — interest, practice, purpose, and hope.',
+  },
 }
 
 // ─── Growth Mindset ─────────────────────────────────
